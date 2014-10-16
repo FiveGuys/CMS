@@ -1,4 +1,0 @@
-CMS
-===
-
-Course Management System
