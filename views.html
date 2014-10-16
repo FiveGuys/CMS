@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<link rel='shortcut icon' href='images/favicon.ico'>
+    <link rel='stylesheet' type='text/css' href='css/main.css'>
+    <link rel='stylesheet' type='text/css' href='css/navbar.css'>
+	<link rel='stylesheet' type='text/css' href='css/views.css'>
+    <meta name='viewport' content='width=device-width'>
+    <title>Course Management Site</title>
+</head>
+<body>
+<div id='main-container'>
+    <div id='header'>  
+      <div class='settings'><a href='add-user.html'>Add New User</a><a href='index.html'>Logout</a></div>
+        <div class='uwmlogo'> 
+            <a href='https://www4.uwm.edu/' target='_new'>
+                <img src='images/logo_uwm.png'><img>
+            </a>
+        </div>
+        <div class='header-title'>Schedule</div>
+        <div id='navbar'>
+        <ul>
+           <li class='active has-sub'><a href='#'>Courses</a>
+            <ul>
+              <li><a href='assign-prof.html'>Assign Professor</a></li>
+              <li><a href='assign-ta.html'>Assign TA</a></li>
+              <li><a href='create-course.html'>Create a Course</a></li>
+              <li><a href='create-lab-dis.html'>Create Lab/Discussion</a></li>
+
+              <li><a href='courses.html'>View All Courses</a></li>
+            </ul>
+           </li>
+           <li class='active has-sub'><a class='selected' href='views.html'>Schedule Views</a>
+              <ul style='display: none'> <!-- add these views later -->
+                 <li class='has-sub'><a href='#'>View 1</a>
+                    <ul>
+                       <li><a href='#'>Sub View</a></li>
+                       <li class='last'><a href='#'>Sub View</a></li>
+                    </ul>
+                 </li>
+                 <li class='has-sub'><a href='#'>View 2</a>
+                    <ul>
+                       <li><a href='#'>Sub View</a></li>
+                       <li class='last'><a href='#'>Sub View</a></li>
+                    </ul>
+                 </li>
+              </ul>
+           </li>
+           <li><a href='edit-info.html'>Edit Info</a></li>
+           <li><a href='user-search.html'>Search User</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id='content'>
+	<table id='schedule'>
+		<tr>
+			<th>Time</th>
+			<th>Monday</th>
+			<th>Tuesday</th>
+			<th>Wednesday</th>
+			<th>Thursday</th>
+			<th>Friday</th>
+		</tr>
+
+		<tr>
+			<td><b>8:00AM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>9:00AM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>10:00AM</b></td>
+
+			<td class='course'><b>COMPSCI 361 - 401</b><br>
+			Lecture<br>
+			10:00AM - 10:50AM<br>
+			Engineer &amp; Math Sciences E145</td>
+
+			<td class='course'><b>COMPSCI 337 - 401</b><br>
+			Lecture<br>
+			10:00AM - 10:50AM<br>
+			Engineer &amp; Math Sciences E145</td>
+
+			<td class='course'><b>COMPSCI 361 - 401</b><br>
+			Lecture<br>
+			10:00AM - 10:50AM<br>
+			Engineer &amp; Math Sciences E145</td>
+
+			<td class='course'><b>COMPSCI 337 - 401</b><br>
+			Lecture<br>
+			10:00AM - 10:50AM<br>
+			Engineer &amp; Math Sciences E145</td>
+
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>11:00AM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>12:00PM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td class='course' rowspan='2'><b>COMPSCI 337 - 803</b><br>
+			Laboratory<br>
+			12:00PM - 1:50PM<br>
+			Engineer &amp; Math Sciences E150</td>
+
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>1:00PM</b></td>
+			<td></td>
+			<td></td>
+
+			<td  class='course' rowspan='2'><b>COMPSCI 361 - 802</b><br>
+			Laboratory<br>
+			1:00PM - 2:50PM<br>
+			Engineer &amp; Math Sciences E942</td>
+
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>2:00PM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>3:00PM</b></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td class='course' rowspan='2'><b>COMPSCI 595 - 401</b><br>
+			Lecture<br>
+			3:00PM - 4:50PM<br>
+			Engineer &amp; Math Sciences E190</td>
+		</tr>
+
+		<tr>
+			<td><b>4:00PM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>5:00PM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><b>6:00PM</b></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
