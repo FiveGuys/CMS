@@ -1,0 +1,70 @@
+#profile
+{
+font-weight: normal;
+font-size: 150%;
+color:black;
+}
+
+#name
+{
+color:black;
+font-size: 1.5em;
+}
+
+#content
+{
+font-family: "PT Sans", sans-serif;
+font-size: 13px;
+color: #6b6b6b;
+font-weight: bold;
+}
+
+#image
+{
+float:left;
+}
+
+#name-form
+{
+margin-left:150px;
+}
+
+#contact
+{
+color:black;
+font-size: 16px;
+}
+
+#contact-form
+{
+float:left;
+}
+
+#contact-form2
+{
+margin-left:325px;
+}
+
+#contact-form3 {
+
+}
+
+div.section {
+	font-size: 20px;
+	margin: 15px 0px;
+}
+
+h1.heading {
+	padding-left: 28px;
+}
+
+#contact-form3 select {
+	width: 50px;
+}
+
+#contact-form3 .separator {
+	float: none;
+	display: inline;
+	margin-right: -14px;
+	margin-left: -20px;
+}
