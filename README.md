@@ -1,6 +1,7 @@
 CMS
 ===
 
+Ibrahim is cool
 Course Management System
 
 Download GitHub app for Windows / Mac 
