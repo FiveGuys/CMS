@@ -53,26 +53,28 @@
       </div>
     </div>
     <div id='content'>
-    <form action="#" method="post" class="standard-form">
-		<h1>Add User Form</h1>
-		<label>
-			<span>First Name:</span>
-			<input id="lname" type="text" name="fname" placeholder='' />
-		</label>
-		<label>
-		  <span>Last Name: </span>
-		  <input id='lname' type='text' name='lname' placeholder='' />
-		</label>
-		<label>          
-		  <span>Access Level: </span>
-			<select name='access'>
-				<option value='1'>Administrator</option>
-				<option value='2'>Professor</option>
-				<option value='3'>TA</option>
-			</select>
-		</label>	
-		<div class='submit'><input type="button" class="button" value="Save" /></div>
-	</form>
+	    <form action='/add-user' method='post' class='standard-form'>
+			<h1>Add User</h1>
+			<label>
+				<span>First Name:</span>
+				<input id='firstName' type='text' name='firstName' placeholder='' />
+			</label>
+			<label>
+			  <span>Last Name: </span>
+			  <input id='lastName' type='text' name='lastName' placeholder='' />
+			</label>
+			<label>          
+			  <span>Access Level: </span>
+				<select name='access'>
+					<option value='3'>Administrator</option>
+					<option value='2'>Professor</option>
+					<option value='1'>TA</option>
+				</select>
+			</label>	
+			<button>Save</button>
+		<!--  <div class='submit'><input type='button' class='button' value='Save' /></div>-->	
+		</form>
+	</div>
 </div>
 </body>
 </html>
