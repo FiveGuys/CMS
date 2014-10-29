@@ -1,14 +1,20 @@
 package edu.uwm.cs361;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class HtmlOutputHelper {
+public class HtmlOutputHelper 
+{
+	private final static String[] STYLE = {"", "course.css", "views.css", "edit-info.css", "user.css"};
+	
  	public static void printHeader(HttpServletResponse rsp, String title, int index) throws IOException {
-		rsp.setContentType("text/html");
- 		String html = 
+		
+ 		rsp.setContentType("text/html");
+		
+ 		rsp.getWriter().println( 
  		"<!DOCTYPE html>" 
 		+"<html>" 
 		+"<head>" 
@@ -17,14 +23,14 @@ public class HtmlOutputHelper {
 		    +"<link rel='stylesheet' type='text/css' href='css/main.css'>" 
 		    +"<link rel='stylesheet' type='text/css' href='css/navbar.css'>" 
 			+"<link rel='stylesheet' type='text/css' href='css/form.css'>" 
-			+"<link rel='stylesheet' type='text/css' href='css/user.css'>" 
+			+"<link rel='stylesheet' type='text/css' href='css/"+STYLE[index]+"'>" 
 		    +"<meta name='viewport' content='width=device-width'>" 
 		    +"<title>Course Management Site</title>" 
 		+"</head>" 
 		+"<body>" 
  		+"<div id='main-container'>" 
 		+"<div id='header'>  " 
-		    +"<div class='settings'><a href='add-user.html'>Add New User</a><a href='index.html'>Logout</a></div>" 
+		    +"<div class='settings'><a href='add-user'>Add New User</a><a href='index.html'>Logout</a></div>" 
 		      +"<div class='uwmlogo'>" 
 		        +"<a href='https://www4.uwm.edu/' target='_new'>" 
 		            +"<img src='images/logo_uwm.png'><img>" 
@@ -63,16 +69,42 @@ public class HtmlOutputHelper {
 		           +"</ul>" 
 		        +"</div>" 
 		      +"</div>"
-		      + "<div id='content'>";
- 		rsp.getWriter().println(html);
+		      + "<div id='content'>");
  	}
  	
  	public static void printFooter(HttpServletResponse rsp) throws IOException {
- 		String html = "</div>"
- 				+ "</div>"
-			 		+"</body>"
-			 		+"</html>";
  		
- 		rsp.getWriter().println(html);
+ 		rsp.getWriter().println("</div></div></body></html>");
  	}
+ 	
+ 	public static void printErrors(HttpServletResponse rsp, List<String> errors) throws IOException{
+ 		
+ 		PrintWriter out = rsp.getWriter();
+ 		
+ 		if (errors.size() > 0) {
+ 			
+			out.println("<ul class='errors'>");
+
+			for (String error : errors) {
+				out.println("  <li>" + error + "</li>");
+			}
+
+			out.println("</ul>");
+		}
+ 	}
+
+	public static void showMessage(HttpServletResponse resp, String message, Boolean result) throws IOException {
+		
+		if(result == true) {
+			resp.getWriter().println("<div id='message'>"+message+"</div>");
+		}
+		
+	}
+	
+	public static void checkAccess(HttpServletResponse resp) throws IOException {
+		
+		//Check for login
+		//resp.sendRedirect("/invalidLogin");
+		
+	}
 }

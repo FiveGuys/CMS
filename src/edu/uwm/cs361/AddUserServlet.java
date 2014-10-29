@@ -3,7 +3,6 @@ package edu.uwm.cs361;
 import java.io.IOException;
 import java.util.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +13,14 @@ import com.google.appengine.api.datastore.*;
 public class AddUserServlet extends HttpServlet
 {
 	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
-	{
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    
+		displayForm(req, resp, new ArrayList<String>());
+		
+	}
+	
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String firstName = req.getParameter("firstName");
 		String lastName = req.getParameter("lastName");
 		String access = req.getParameter("access");
@@ -57,24 +62,27 @@ public class AddUserServlet extends HttpServlet
 			user.setProperty("Access", access);
 			ds.put(user);			
 		}
+		
 		displayForm(req, resp, errors);
 	}
 	
-	private void displayForm(HttpServletRequest req, HttpServletResponse resp, List<String> errors) throws IOException{
-		HtmlOutputHelper.printHeader(resp, "Add User", -1);
-		if (errors.size() > 0) {
-			resp.getWriter().println("<ul class='errors'>");
-
-			for (String error : errors) {
-				resp.getWriter().println("  <li>" + error + "</li>");
-			}
-
-			resp.getWriter().println("</ul>");
-		}
+	private void displayForm(HttpServletRequest req, HttpServletResponse resp, List<String> errors) throws IOException {
+		
+		HtmlOutputHelper.printHeader(resp, "Add User", 0);
+		
+		HtmlOutputHelper.printErrors(resp, errors);
+		
+		printContent(resp);
+		
+		HtmlOutputHelper.printFooter(resp);
+	}
+	
+	private void printContent(HttpServletResponse resp)  throws IOException {
+		
 		resp.getWriter().println( 
 				"<form action='/add-user' method='post' class='standard-form'>" + 
 					"<h1>Add User</h1>" +
-					(errors.size() == 0 ? "<span>User has been created</span>" : "") +
+					//(errors.size() == 0 ? "<span>User has been created</span>" : "") +
 					"<label>" +
 						"<span>First Name:</span>" +
 						"<input id='firstName' type='text' name='firstName' placeholder='' />" +
@@ -91,24 +99,8 @@ public class AddUserServlet extends HttpServlet
 							"<option value='1'>TA</option>" +
 						"</select>" +
 					"</label>" +
-					"<button>Save</button>" +
-				"<!--  <div class='submit'><input type='button' class='button' value='Save' /></div>-->" +	
+				"<div class='submit'><input type='button' class='button' value='Save' /></div>" +	
 				"</form>" +
-			"</div>"); // this is the end of div 'content'
-		HtmlOutputHelper.printFooter(resp);
+			"</div>");
 	}
-
-	/*public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
-	{
-		try {
-			throw new Exception();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Cookie c = new Cookie("username", req.getParameter("name"));
-
-		//resp.addCookie(c);
-		//resp.sendRedirect("/login.html");
-	}*/
 }
