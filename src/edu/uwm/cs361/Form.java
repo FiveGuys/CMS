@@ -1,12 +1,28 @@
 package edu.uwm.cs361;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class Form
 {
+	private final static String[] STYLE = {"", "course.css", "views.css", "edit-info.css", "user.css"};
+	private HttpServletRequest _req;
+	private HttpServletResponse _resp;
+	private List<String> _errors;
+	
+	public Form(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
+		
+		_req = req;
+		_resp = resp;
+		_errors = errors;
+	}
+
 	private static String formInput(String label, String cssClass, String html) {
 		
 		return "<label class='"+cssClass+"'>" +
@@ -46,13 +62,13 @@ public class Form
 				"</div>");
 	}
 	
-	public static String DateTime(String label, String cssClass, String html){
+	public static String DateTime(String label, String cssClass, String firstSelect, String secondSelect){
 		
 		return formInput(label, cssClass, 
 				  "<span class='startend'>Start:</span>" +
-					html +
+						  firstSelect +
 					"<span class='startend'>End:</span>" +
-					html );
+					secondSelect );
 	}
 	
 	public static String WeekCheckBoxes() {
@@ -64,20 +80,20 @@ public class Form
 				"</label>";
 	}
 	
-	public static String selectDate(String startName, String endName, HttpServletRequest req) {
+	public String selectDate(String startName, String endName, String cssClass) {
 		
-		return getSelectField(startName + "-1", testParam(req, startName + "-1"), "datetime", 1, 12) +
+		return getSelectField(startName, testParam(startName), cssClass, 1, 12) +
 				"<div class='separator'>&nbsp; / &nbsp;</div>" +
-				getSelectField(endName + "-2", testParam(req, endName + "-2"), "datetime", 1, 31);
+				getSelectField(endName, testParam(endName + "-2"), cssClass, 1, 31);
 	}
 	
-	public static String selectTime(String startName, String endName, HttpServletRequest req) {
+	public String selectTime(String startName, String endName, String cssClass) {
 		
 		List<String> endTime = Arrays.asList("00","10","15","30","40","45","50");
 		
-		return getSelectField(startName + "_1", testParam(req, startName + "-1"), "datetime", 0, 23) +
+		return getSelectField(startName, testParam(startName), cssClass, 0, 23) +
 				"<div class='separator'>&nbsp; : &nbsp;</div>" +
-				getSelectField(endName + "_2", testParam(req, endName + "-2"), "datetime", endTime);
+				getSelectField(endName, testParam(endName), cssClass, endTime);
 	}
 	
 	private static String getSelectField(String name, String selected, String cssClass, List<String> options) {
@@ -109,9 +125,147 @@ public class Form
 		
 	}
 	
-	private static String testParam(HttpServletRequest req, String name) {
+	public String testParam(String param) {
 		
-		return (req.getParameter(name) != null ? req.getParameter(name) : "");
+		return (_req.getParameter(param) != null ? _req.getParameter(param) : "");
 	}
 	
+	private void displayForm(String header, int page, CallBack servlet) throws IOException {
+		
+		printHeader(header, page);
+		
+		printList(_errors, "errors");
+		
+		servlet.printContent();
+		
+		printFooter();
+	}
+	
+	public void handleGet(String header, int page, CallBack servlet, String method) throws IOException {
+		
+		Datastore ds = new Datastore(_req, _resp, _errors);
+		
+		ds.checkAccess();
+		
+		servlet.validate();
+		
+		ds.callMethod("addCourse");
+		
+		displayForm("Create Course", 1, servlet);
+		
+	}
+ 	public void printHeader(String title, int index) throws IOException {
+		
+ 		_resp.setContentType("text/html");
+		
+ 		_resp.getWriter().println( 
+ 		"<!DOCTYPE html>" 
+		+"<html>" 
+		+"<head>" 
+			+"<meta charset='utf-8'>" 
+			+"<link rel='shortcut icon' href='images/favicon.ico'>" 
+		    +"<link rel='stylesheet' type='text/css' href='css/main.css'>" 
+		    +"<link rel='stylesheet' type='text/css' href='css/navbar.css'>" 
+			+"<link rel='stylesheet' type='text/css' href='css/form.css'>" 
+			+"<link rel='stylesheet' type='text/css' href='css/"+STYLE[index]+"'>" 
+		    +"<meta name='viewport' content='width=device-width'>" 
+		    +"<title>Course Management Site</title>" 
+		+"</head>" 
+		+"<body>" 
+ 		+"<div id='main-container'>" 
+		+"<div id='header'>  " 
+		    +"<div class='settings'><a href='add-user'>Add New User</a><a href='index.html'>Logout</a></div>" 
+		      +"<div class='uwmlogo'>" 
+		        +"<a href='https://www4.uwm.edu/' target='_new'>" 
+		            +"<img src='images/logo_uwm.png'><img>" 
+		                +"</a>" 
+		            +"</div>" 
+		        +"<div class='header-title'>"+title+"</div>" 
+		        +"<div id='navbar'>" 
+		        +"<ul>" 
+		        +"<li class='active has-sub'><a "+( index == 1 ? "class='selected'" : "")+" href='#'>Courses</a>" 
+		           +"<ul>" 
+		            +"<li><a href='assign-prof.html'>Assign Professor</a></li>" 
+		              +"<li><a href='assign-ta.html'>Assign TA</a></li>" 
+		              +"<li><a href='create-course.html'>Create a Course</a></li>" 
+		              +"<li><a href='create-lab-dis.html'>Create Lab/Discussion</a></li>	" 	
+		              +"<li><a href='courses.html'>View All Courses</a></li>" 
+		              +"</ul>" 
+		            +"</li>" 
+		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='views.html'>Schedule Views</a>" 
+		           +"<ul style='display: none'>" 
+		              +"<li class='has-sub'><a href='#'>View 1</a>" 
+		                 +"<ul>" 
+		                    +"<li><a href='#'>Sub View</a></li>" 
+		                       +"<li class='last'><a href='#'>Sub View</a></li>" 
+		                       +"</ul>" 
+		                    +"</li>" 
+		                 +"<li class='has-sub'><a href='#'>View 2</a>" 
+		                 +"<ul>" 
+		                    +"<li><a href='#'>Sub View</a></li>" 
+		                       +"<li class='last'><a href='#'>Sub View</a></li>" 
+		                       +"</ul>" 
+		                    +"</li>" 
+		                 +"</ul>" 
+		              +"</li>" 
+		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info.html'>Edit Info</a></li>" 
+		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search.html'>Search User</a></li>" 
+		           +"</ul>" 
+		        +"</div>" 
+		      +"</div>"
+		      + "<div id='content'>");
+ 	}
+ 	
+ 	public void printFooter() throws IOException {
+ 		
+ 		_resp.getWriter().println("</div></div></body></html>");
+ 	}
+ 	
+ 	public void printList(List<String> list, String cssClass) throws IOException{
+ 		
+ 		if (list.size() > 0) {
+ 			
+ 			PrintWriter out = _resp.getWriter();
+ 			
+			out.println("<ul class='"+cssClass+"'>");
+
+			for (String e : list) {
+				out.println("  <li>" + e + "</li>");
+			}
+
+			out.println("</ul>");
+		}
+ 	}
+ 	
+ 	public static String getUserFromCookie(HttpServletRequest req) {
+ 		
+ 		Cookie cookies[] = req.getCookies();  
+
+ 		String user = null;
+ 		
+ 		if(cookies != null){  
+ 			
+ 			for (Cookie c : cookies) {
+ 				
+				if (c.getName().equals("user")) {
+					
+					user = c.getValue();
+				}
+			} 
+ 			
+ 		}
+ 		
+ 		return user;
+ 	}
+
+	public static void deleteCookie(HttpServletResponse resp) throws IOException {
+		
+		Cookie c = new Cookie("user", null);
+		
+		c.setMaxAge(0);
+
+		resp.addCookie(c);
+		
+		resp.sendRedirect("index.html");
+	}
 }

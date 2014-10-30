@@ -9,6 +9,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-class>edu.uwm.cs361.LoginServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>Logout</servlet-name>
+		<servlet-class>edu.uwm.cs361.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>AddUser</servlet-name>
 		<servlet-class>edu.uwm.cs361.AddUserServlet</servlet-class>
 	</servlet>
@@ -21,6 +25,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>Logout</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>AddUser</servlet-name>
 		<url-pattern>/add-user</url-pattern>
 	</servlet-mapping>
@@ -29,6 +37,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/create-course</url-pattern>
 	</servlet-mapping>		
 	<welcome-file-list>
-		<welcome-file>login.html</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 </web-app>

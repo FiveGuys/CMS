@@ -16,6 +16,12 @@ body { height: 100%; width: 100%; background: #f8f8f8; color: #999999; text-alig
 	height: 100%; width: 100%; min-width: 400px; 
 }
 
+#errors {
+	color: red;
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
 .login_form { 
 	width: 100%; padding: 30px 30px 10px 30px; font-size: 14px; text-align: left; color: #333333; background: #ffffff; display: block; position: relative;
 }

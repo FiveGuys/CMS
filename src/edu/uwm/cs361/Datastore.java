@@ -1,13 +1,31 @@
 package edu.uwm.cs361;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 public class Datastore 
 {
- 	public static List<String> getAllInstructors() {
+	private HttpServletRequest _req;
+	private HttpServletResponse _resp;
+	private List<String> _errors;
+	
+ 	public Datastore(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
+ 		
+ 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+ 		
+ 		_req = req;
+		_resp = resp;
+		_errors = errors;
+	}
+
+	public static List<String> getAllInstructors() {
  		return new ArrayList<String>();
  	}
  	
@@ -58,4 +76,29 @@ public class Datastore
 		*/
  		return true;
  	}
+
+	public void callMethod(String methodName) {
+		
+		switch(methodName) {
+		
+		case "addCourse": this.addCourse(); break;
+		
+		}
+	}
+
+	private void addCourse() {
+		
+		
+	}
+
+	public void checkAccess() throws IOException {
+		
+		if(Form.getUserFromCookie(_req) == null) {
+			
+			_resp.sendRedirect("401.html");
+		}
+		
+	}
+	
+	
 }

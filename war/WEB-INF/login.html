@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="css/login.css">
     <meta name="viewport" content="width=device-width">
     <title>Course Management Site</title>
+    <style>#errors{ display: none; }</style>
 </head>
 <body>
 <div class="page">
@@ -25,15 +26,16 @@
                 </a>
             </div>
             <div class='sitelogo'></div>
-            <form action="courses.html" method="post">
-                <label for="username">Username</label>
-                <input class="input-text" type="text" id="username" name="username" tabindex="1" required/>
-                <label for="password">Password</label>
-                <input class="input-text" type="password" id="password" name="password" tabindex="2" required/>
+            <div id='errors'>User:admin Pass:pass</div>
+            <form action="login" method="post">
+                <label for="user">Username</label>
+                <input class="input-text" type="text" id="user" name="user" tabindex="1" required/>
+                <label for="pass">Password</label>
+                <input class="input-text" type="password" id="pass" name="pass" tabindex="2" required/>
                 <input class="input-btn" name="submit" type="submit" value="LOG IN" tabindex="3" />
             </form>
             <div class='footer'>
-				<a href="#" target="_new">Register</a> | <a href="#" target="_new">Forgot Password</a>
+				<a href="forgot.html" target="_new">Forgot Password</a>
 			</div>
           </div>
         </div>

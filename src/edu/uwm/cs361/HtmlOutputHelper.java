@@ -92,19 +92,4 @@ public class HtmlOutputHelper
 			out.println("</ul>");
 		}
  	}
-
-	public static void showMessage(HttpServletResponse resp, String message, Boolean result) throws IOException {
-		
-		if(result == true) {
-			resp.getWriter().println("<div id='message'>"+message+"</div>");
-		}
-		
-	}
-	
-	public static void checkAccess(HttpServletResponse resp) throws IOException {
-		
-		//Check for login
-		//resp.sendRedirect("/invalidLogin");
-		
-	}
 }

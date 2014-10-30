@@ -102,3 +102,7 @@ margin-right: -15px !important;
 	margin: 0px;
 	width: 100%
 }
+
+label.last {
+	width:230%;
+}
