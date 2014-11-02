@@ -26,7 +26,7 @@ public class CreateCourseServlet extends HttpServlet implements CallBack
 		
 		form = new Form(_req, _resp, _errors);
 		
-		form.handleGet("Create Course", 1, this, "addCourse");
+		form.handleGet("Create Course", 1, this, "addCourse", ACCESS_LEVEL);
 	}
 	
 	@Override

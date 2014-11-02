@@ -2,7 +2,6 @@ package edu.uwm.cs361;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +13,8 @@ public class LogoutServlet extends HttpServlet
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
 		Form.deleteCookie(resp);
+			
+		resp.sendRedirect("index.html");
 	}
 	
 	@Override

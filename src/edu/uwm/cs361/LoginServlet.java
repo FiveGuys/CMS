@@ -1,9 +1,7 @@
 package edu.uwm.cs361;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -13,29 +11,31 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet
 {
-	private final String USER = "admin";
-	private final String PASS = "pass";
-
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
+		String message = "";
+		
 		if(Form.getUserFromCookie(req) != null) {
 			
 			Form.deleteCookie(resp);
 			
-		} else {
-			
-			printContent(resp, "");
+			message = "You have been logged out";	
 		}
+			
+		printContent(resp, message);
 	}
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
 		String user = req.getParameter("user");
+		
 		String pass = req.getParameter("pass");
-				
-		if(USER.equals(user) && PASS.equals(pass)) {
+		
+		Datastore ds = new Datastore(req, resp, new ArrayList<String>());
+		
+		if(ds.validateLogin(user, pass)) {
 			
 			Cookie c = new Cookie("user", user);
 			
@@ -47,37 +47,54 @@ public class LoginServlet extends HttpServlet
 			
 		} else  {
 			
-			printContent(resp, "<style> #errors{ display: block !important; } </style>");
+			printContent(resp, "User:admin Pass:pass");
 		}
 	}
 
-	private void printContent(HttpServletResponse resp, String message) {
+	private void printContent(HttpServletResponse resp, String message) throws IOException {
 		
-		try {
+		resp.getWriter().println(
 			
-			File file = new File("WEB-INF/login.html");
-			FileReader fReader = new FileReader(file);
-			BufferedReader bReader = new BufferedReader(fReader);
-			
-			StringBuffer sBuffer = new StringBuffer();
-			
-			sBuffer.append(message);
-			System.out.println(message);
-			String html;
-			
-			while ((html = bReader.readLine()) != null) {
-				
-				sBuffer.append(html);
-			}
-			
-			fReader.close();
-			
-			resp.getWriter().println(sBuffer.toString());
-			
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-		
+			"<!DOCTYPE html>" +
+			"<html>" +
+			"<head>" +
+			    "<link rel='shortcut icon' href='images/favicon.ico'>" +
+			    "<link rel='stylesheet' type='text/css' href='css/login.css'>" +
+			    "<meta name='viewport' content='width=device-width'>" +
+			    "<title>Course Management Site</title>" +
+			"</head>" +
+			"<body>" +
+			"<div class='page'>" +
+			  "<div class='outer'>" +
+			    "<div class='middle'>" +
+			      "<div class='inner'>" +
+			        "<div class='content'>" +
+			          "<div class='login_form'>" +
+			            "<div class='uwmlogo'>" + 
+			            	"<a href='https://www4.uwm.edu/' target='_new'>" +
+			                	"<img src='images/logo_uwm.png'><img>" +
+			                "</a>" +
+			            "</div>" +
+			            "<div class='sitelogo'></div>" +
+			            "<div id='errors'>"+message+"</div>" +
+			            "<form action='login' method='post'>" +
+			                "<label for='user'>Username</label>" +
+			                "<input class='input-text' type='text' id='user' name='user' tabindex='1' required/>" +
+			                "<label for='pass'>Password</label>" +
+			                "<input class='input-text' type='password' id='pass' name='pass' tabindex='2' required/>" +
+			                "<input class='input-btn' name='submit' type='submit' value='LOG IN' tabindex='3' />" +
+			            "</form>" +
+			            "<div class='footer'>" +
+							"<a href='forgot' target='_new'>Forgot Password</a>" +
+						"</div>" +
+			          "</div>" +
+			        "</div>" +
+			      "</div>" +
+			    "</div>" +
+			  "</div>" +
+			"</div>" +
+			"</body>" +
+			"</html>"
+		);
 	}
 }

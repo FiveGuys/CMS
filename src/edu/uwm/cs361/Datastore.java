@@ -91,14 +91,27 @@ public class Datastore
 		
 	}
 
-	public void checkAccess() throws IOException {
+	public void checkAccess(int accessLevel) throws IOException {
 		
-		if(Form.getUserFromCookie(_req) == null) {
+		if(Form.getUserFromCookie(_req) == null ||
+			accessLevel >= Integer.parseInt(getAttributeFromUser("access"))) {
 			
 			_resp.sendRedirect("401.html");
 		}
-		
 	}
-	
-	
+
+	private String getAttributeFromUser(String string) {
+		// TODO Auto-generated method stub
+		return "3";
+	}
+
+	public boolean validateLogin(String user, String pass) {
+		
+		if(user.equals("admin") && pass.equals("pass")) {
+			
+			return true;
+		}
+		
+		return false;
+	}
 }

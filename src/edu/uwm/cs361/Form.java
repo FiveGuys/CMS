@@ -141,11 +141,11 @@ public class Form
 		printFooter();
 	}
 	
-	public void handleGet(String header, int page, CallBack servlet, String method) throws IOException {
+	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
 		
 		Datastore ds = new Datastore(_req, _resp, _errors);
 		
-		ds.checkAccess();
+		ds.checkAccess(accessLevel);
 		
 		servlet.validate();
 		
@@ -265,7 +265,5 @@ public class Form
 		c.setMaxAge(0);
 
 		resp.addCookie(c);
-		
-		resp.sendRedirect("index.html");
 	}
 }
