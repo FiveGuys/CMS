@@ -3,7 +3,10 @@ package edu.uwm.cs361;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +26,7 @@ public class Form
 		_errors = errors;
 	}
 
-	private static String formInput(String label, String cssClass, String html) {
+	private String formInput(String label, String cssClass, String html) {
 		
 		return "<label class='"+cssClass+"'>" +
 					"<span>"+label+"</span>" +
@@ -31,29 +34,29 @@ public class Form
 				"</label>";
 	}
 	
-	public static String Start(String label, String text, String action) {
+	public String Start(String label, String text, String action) {
 		
 		return "<form action='"+action+"' method='post' class='standard-form'>" +
 				"<h1>"+label+"<span>"+text+"</span></h1>";
 	}
 	
-	public static String End() {
+	public String End() {
 		
-		return "<div class='submit'><input type='button' class='button' value='Save' /></div></form>";
+		return "<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div></form>";
 		
 	}
-	public static String TextField(String label, String name, String val, String ph, String cssClass) {
+	public String TextField(String label, String name, String val, String ph, String cssClass) {
 		
 		return formInput(label, cssClass, "<input type='text' id='"+name+"' name='"+name+"' value='"+val+"'placeholder='"+ph+"' />");
 		
 	}
 	
-	public static String DropDown(String label,  String name, String selected, List<String> list, String cssClass) {
+	public String DropDown(String label,  String name, String selected, List<String> list, String cssClass) {
 		
 		return formInput(label, cssClass, getSelectField(name, selected, "", list));
 	}
 	
-	public static String CheckBox(String label, String cssClass, String name, Boolean checked) {
+	public String CheckBox(String label, String cssClass, String name, Boolean checked) {
 
 		return formInput(label, cssClass,
 				"<div class='checkbox'>" +
@@ -62,7 +65,7 @@ public class Form
 				"</div>");
 	}
 	
-	public static String DateTime(String label, String cssClass, String firstSelect, String secondSelect){
+	public String DateTime(String label, String cssClass, String firstSelect, String secondSelect){
 		
 		return formInput(label, cssClass, 
 				  "<span class='startend'>Start:</span>" +
@@ -71,7 +74,7 @@ public class Form
 					secondSelect );
 	}
 	
-	public static String WeekCheckBoxes() {
+	public String WeekCheckBoxes() {
 		
 		//<TODO> CHANGE INTO 7 CHECKBOXES ON SCREEN </TODO>
 		return "<label>" +
@@ -96,7 +99,7 @@ public class Form
 				getSelectField(endName, testParam(endName), cssClass, endTime);
 	}
 	
-	private static String getSelectField(String name, String selected, String cssClass, List<String> options) {
+	public String getSelectField(String name, String selected, String cssClass, List<String> options) {
 		
 		String select = "<select class='"+cssClass+"' name='"+name+"'>";
 		
@@ -111,7 +114,7 @@ public class Form
 		
 	}
 	
-	private static String getSelectField(String name, String selected, String cssClass, int start, int end) {
+	public String getSelectField(String name, String selected, String cssClass, int start, int end) {
 		
 		String select = "<select class='"+cssClass+"' name='"+name+"'>";
 		
@@ -123,6 +126,21 @@ public class Form
 		
 		return select;
 		
+	}
+	
+	public String printOfficeHours(int index) {
+
+		List<String> officeDay = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri");
+		
+		return "Office Hour "+index+"<br/>" +
+				
+			getSelectField("office-day-"+index, "office-day-", "", officeDay) +
+			
+			selectTime("office-hours-"+index+"-start-1", "office-hours-"+index+"-end-1", "") +
+					"&nbsp; - &nbsp;" + 
+			selectTime("office-hours-"+index+"-start-2", "office-hours-"+index+"-end-2", "") +
+			
+			"</br></br>";	
 	}
 	
 	public String testParam(String param) {
@@ -149,9 +167,9 @@ public class Form
 		
 		servlet.validate();
 		
-		ds.callMethod("addCourse");
+		ds.callMethod(method);
 		
-		displayForm("Create Course", 1, servlet);
+		displayForm(header, page, servlet);
 		
 	}
  	public void printHeader(String title, int index) throws IOException {
@@ -185,14 +203,14 @@ public class Form
 		        +"<ul>" 
 		        +"<li class='active has-sub'><a "+( index == 1 ? "class='selected'" : "")+" href='#'>Courses</a>" 
 		           +"<ul>" 
-		            +"<li><a href='assign-prof.html'>Assign Professor</a></li>" 
-		              +"<li><a href='assign-ta.html'>Assign TA</a></li>" 
-		              +"<li><a href='create-course.html'>Create a Course</a></li>" 
-		              +"<li><a href='create-lab-dis.html'>Create Lab/Discussion</a></li>	" 	
-		              +"<li><a href='courses.html'>View All Courses</a></li>" 
+		            +"<li><a href='assign-prof'>Assign Professor</a></li>" 
+		              +"<li><a href='assign-ta'>Assign TA</a></li>" 
+		              +"<li><a href='create-course'>Create a Course</a></li>" 
+		              +"<li><a href='create-lab-dis'>Create Lab/Discussion</a></li>	" 	
+		              +"<li><a href='courses'>View All Courses</a></li>" 
 		              +"</ul>" 
 		            +"</li>" 
-		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='views.html'>Schedule Views</a>" 
+		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='scheduleviews'>Schedule Views</a>" 
 		           +"<ul style='display: none'>" 
 		              +"<li class='has-sub'><a href='#'>View 1</a>" 
 		                 +"<ul>" 
@@ -208,8 +226,8 @@ public class Form
 		                    +"</li>" 
 		                 +"</ul>" 
 		              +"</li>" 
-		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info.html'>Edit Info</a></li>" 
-		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search.html'>Search User</a></li>" 
+		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info'>Edit Info</a></li>" 
+		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search'>Search User</a></li>" 
 		           +"</ul>" 
 		        +"</div>" 
 		      +"</div>"
@@ -252,7 +270,6 @@ public class Form
 					user = c.getValue();
 				}
 			} 
- 			
  		}
  		
  		return user;
@@ -265,5 +282,31 @@ public class Form
 		c.setMaxAge(0);
 
 		resp.addCookie(c);
+	}
+	
+	public Map<String, String> getParameters() {
+
+		Map<String, String> map = new HashMap<String, String>();
+
+		if(_req.getParameter("submit") != null) {
+
+			Enumeration<?> params = _req.getParameterNames();
+
+			while(params.hasMoreElements()) {
+
+				String key = (String) params.nextElement(); 
+				String value = _req.getParameter(key);
+
+				map.put(key, value);
+			}
+
+		} else {
+
+			Datastore ds = new Datastore(_req, _resp, _errors);
+			
+			map = ds.getUser();
+		}
+		
+		return map;
 	}
 }

@@ -21,12 +21,18 @@ public class AddUserServlet extends HttpServlet
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		
+		String userName = req.getParameter("userName");
 		String firstName = req.getParameter("firstName");
 		String lastName = req.getParameter("lastName");
 		String access = req.getParameter("access");
 
 		List<String> errors = new ArrayList<String>();
 
+		if (userName.isEmpty()) {
+			errors.add("Username is required.");
+		}
+		
 		if (firstName.isEmpty()) {
 			errors.add("First Name is required.");
 		}
@@ -51,14 +57,23 @@ public class AddUserServlet extends HttpServlet
 		for(Entity u : users){
 			//keys.add(u.getKey());
 			System.out.println("datastore first name" + (f++) + ":" + u.getProperty("FirstName").toString());
-			if((u.getProperty("FirstName").toString().equalsIgnoreCase(firstName)) && u.getProperty("LastName").toString().equalsIgnoreCase(lastName)) 
+			if(u.getProperty("UserName").toString().equalsIgnoreCase(userName)) 
 				errors.add("This person is already a user");
 		}
 		//ds.delete(keys);
 		if (errors.size() == 0) {
 			Entity user = new Entity("User");
+			user.setProperty("UserName", userName);
 			user.setProperty("FirstName", firstName);
+			user.setProperty("MiddleName", "");
 			user.setProperty("LastName", lastName);
+			user.setProperty("Email", "");
+			user.setProperty("Location", "");
+			user.setProperty("Phone", "");
+			user.setProperty("AltPhone", "");
+			user.setProperty("OfficeHour1", "");
+			user.setProperty("OfficeHour2", "");
+			user.setProperty("OfficeHour3", "");
 			user.setProperty("Access", access);
 			ds.put(user);			
 		}
@@ -84,12 +99,16 @@ public class AddUserServlet extends HttpServlet
 					"<h1>Add User</h1>" +
 					//(errors.size() == 0 ? "<span>User has been created</span>" : "") +
 					"<label>" +
+						"<span>Username:</span>" +
+						"<input id='userName' type='text' name='userName' />" +
+					"</label>" +
+					"<label>" +
 						"<span>First Name:</span>" +
-						"<input id='firstName' type='text' name='firstName' placeholder='' />" +
+						"<input id='firstName' type='text' name='firstName' />" +
 					"</label>" +
 					"<label>" +
 					  "<span>Last Name: </span>" +
-					  "<input id='lastName' type='text' name='lastName' placeholder='' />" +
+					  "<input id='lastName' type='text' name='lastName' />" +
 					"</label>" +
 					"<label>" +   
 					  "<span>Access Level: </span>" +
@@ -99,7 +118,7 @@ public class AddUserServlet extends HttpServlet
 							"<option value='1'>TA</option>" +
 						"</select>" +
 					"</label>" +
-				"<div class='submit'><input type='button' class='button' value='Save' /></div>" +	
+				"<div class='submit'><input type='submit' class='button' value='Save' /></div>" +	
 				"</form>" +
 			"</div>");
 	}

@@ -179,7 +179,7 @@ ul.errors {
 	margin-left: 40%;
 }
 
-.standard-form .submit input[type=button]{
+.standard-form .submit input[type=submit]{
     padding: 10px 30px 10px 30px;
     background: #ffbc00;
     border: none;

@@ -3,6 +3,7 @@ package edu.uwm.cs361;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,10 +16,10 @@ public class Datastore
 	private HttpServletRequest _req;
 	private HttpServletResponse _resp;
 	private List<String> _errors;
-	
+	private DatastoreService ds;
  	public Datastore(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
  		
- 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+ 		ds = DatastoreServiceFactory.getDatastoreService();
  		
  		_req = req;
 		_resp = resp;
@@ -82,11 +83,16 @@ public class Datastore
 		switch(methodName) {
 		
 		case "addCourse": this.addCourse(); break;
-		
+		case "updateInfo": this.updateInfo(); break;
 		}
 	}
 
 	private void addCourse() {
+		
+		
+	}
+
+	private void updateInfo() {
 		
 		
 	}
@@ -113,5 +119,10 @@ public class Datastore
 		}
 		
 		return false;
+	}
+
+	public Map<String, String> getUser() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

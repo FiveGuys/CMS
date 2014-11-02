@@ -12,16 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 public class CreateCourseServlet extends HttpServlet implements CallBack
 {
 	private final int ACCESS_LEVEL = 1;
+	
 	private HttpServletRequest _req;
+	
 	private HttpServletResponse _resp;
+	
 	private List<String> _errors;
+	
 	private Form form;
 	
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
 		_req = req;
+		
 		_resp = resp;
+		
 		_errors = new ArrayList<String>();
 		
 		form = new Form(_req, _resp, _errors);
@@ -40,33 +46,33 @@ public class CreateCourseServlet extends HttpServlet implements CallBack
 		
 		_resp.getWriter().println( 
 				
-				Form.Start("Course Form", "Please fill all the texts in the fields.", "#") +
+				form.Start("Course Form", "Please fill all the texts in the fields.", "#") +
 				
-				Form.TextField("Title: ", "course-name", form.testParam("course-name"), "Course Name", "") +
+				form.TextField("Title: ", "course-name", form.testParam("course-name"), "Course Name", "") +
 				
-				Form.TextField("Course #: ", "course-number", form.testParam("course-num"), "XXX", "") +
+				form.TextField("Course #: ", "course-number", form.testParam("course-num"), "XXX", "") +
 				
-				Form.TextField("Section: ", "section-number", form.testParam("section-num"), "XXX-LAB/LEC/DIS", "") +
+				form.TextField("Section: ", "section-number", form.testParam("section-num"), "XXX-LAB/LEC/DIS", "") +
 				
-				Form.TextField("Class #: ", "class-number", form.testParam("class-num"), "XXXXX", "") +
+				form.TextField("Class #: ", "class-number", form.testParam("class-num"), "XXXXX", "") +
 				
-				Form.TextField("Credits: ", "credits", form.testParam("credits"), "Units", "") +
+				form.TextField("Credits: ", "credits", form.testParam("credits"), "Units", "") +
 				
-				Form.DropDown("Instructor: ", "instructor", form.testParam("instructor"), Datastore.getAllInstructors(), "") +
+				form.DropDown("Instructor: ", "instructor", form.testParam("instructor"), Datastore.getAllInstructors(), "") +
 				
-				Form.TextField("Room #: ", "room-number", form.testParam("room-number"), "EMS", "") +
+				form.TextField("Room #: ", "room-number", form.testParam("room-number"), "EMS", "") +
 				
-				//Form.DateTime("Hours: ", "", Form.selectTime("time-start", "time-end", req)) +
+				//form.DateTime("Hours: ", "", form.selectTime("time-start", "time-end", req)) +
 				
-				//Form.DateTime("Dates: ", "", Form.selectDate("date-start", "date-end", req)) +
+				//form.DateTime("Dates: ", "", form.selectDate("date-start", "date-end", req)) +
 				
-				Form.WeekCheckBoxes() +
+				form.WeekCheckBoxes() +
 				
-				Form.CheckBox("Has Lab: ", "", "has-lab", (form.testParam("has-lab") != "")) +
+				form.CheckBox("Has Lab: ", "", "has-lab", (form.testParam("has-lab") != "")) +
 				
-				Form.CheckBox("Has Dis: ", "last", "has-dis", (form.testParam("has-dis") != "")) +
+				form.CheckBox("Has Dis: ", "last", "has-dis", (form.testParam("has-dis") != "")) +
 				
-				Form.End()
+				form.End()
 		);
 	}
 	
