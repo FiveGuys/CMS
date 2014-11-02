@@ -42,7 +42,11 @@ public class Form
 	
 	public String End() {
 		
+<<<<<<< Updated upstream
 		return "<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div></form>";
+=======
+		return "<button type='submit'>Save User</button></form>";
+>>>>>>> Stashed changes
 		
 	}
 	public String TextField(String label, String name, String val, String ph, String cssClass) {

@@ -21,8 +21,12 @@ public class AddUserServlet extends HttpServlet
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+<<<<<<< Updated upstream
 		
 		String userName = req.getParameter("userName");
+=======
+		System.out.println("HERE!");
+>>>>>>> Stashed changes
 		String firstName = req.getParameter("firstName");
 		String lastName = req.getParameter("lastName");
 		String access = req.getParameter("access");
@@ -43,9 +47,9 @@ public class AddUserServlet extends HttpServlet
 		
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
-		System.out.println("Gotten username: " + firstName);
-		System.out.println("GOtten last name" + lastName);
-		System.out.println("Gotten access :" + access);
+		//System.out.println("Gotten username: " + firstName);
+		//System.out.println("GOtten last name" + lastName);
+		//System.out.println("Gotten access :" + access);
 		//Key[] s = {KeyFactory.createKey("User", "username")};
 		//ds.delete();
 		Query q = new Query("User");
@@ -65,6 +69,7 @@ public class AddUserServlet extends HttpServlet
 			Entity user = new Entity("User");
 			user.setProperty("UserName", userName);
 			user.setProperty("FirstName", firstName);
+<<<<<<< Updated upstream
 			user.setProperty("MiddleName", "");
 			user.setProperty("LastName", lastName);
 			user.setProperty("Email", "");
@@ -74,6 +79,11 @@ public class AddUserServlet extends HttpServlet
 			user.setProperty("OfficeHour1", "");
 			user.setProperty("OfficeHour2", "");
 			user.setProperty("OfficeHour3", "");
+=======
+			user.setProperty("UserName", firstName + "." + lastName); // firstName.LastName is username
+			user.setProperty("LastName", lastName);
+			user.setProperty("Password", lastName); // default password for first time login is last name
+>>>>>>> Stashed changes
 			user.setProperty("Access", access);
 			ds.put(user);			
 		}
@@ -118,7 +128,11 @@ public class AddUserServlet extends HttpServlet
 							"<option value='1'>TA</option>" +
 						"</select>" +
 					"</label>" +
+<<<<<<< Updated upstream
 				"<div class='submit'><input type='submit' class='button' value='Save' /></div>" +	
+=======
+				"<button type='submit'>Save User</button>" +	
+>>>>>>> Stashed changes
 				"</form>" +
 			"</div>");
 	}
