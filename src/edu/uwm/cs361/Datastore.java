@@ -2,6 +2,8 @@ package edu.uwm.cs361;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 
 public class Datastore 
 {
@@ -80,10 +88,13 @@ public class Datastore
 
 	public void callMethod(String methodName) {
 		
-		switch(methodName) {
-		
-		case "addCourse": this.addCourse(); break;
-		case "updateInfo": this.updateInfo(); break;
+		if(_errors.size() == 0 && _req.getParameter("Submit") != null) {
+			
+			switch(methodName) {
+			
+				case "addCourse": this.addCourse(); break;
+				case "updateInfo": this.updateInfo(); break;
+			}
 		}
 	}
 
@@ -94,26 +105,17 @@ public class Datastore
 
 	private void updateInfo() {
 		
-		
+		System.out.println("updateInfo");
 	}
 
-	public void checkAccess(int accessLevel) throws IOException {
-		
-		if(Form.getUserFromCookie(_req) == null ||
-			accessLevel >= Integer.parseInt(getAttributeFromUser("access"))) {
-			
-			_resp.sendRedirect("401.html");
-		}
-	}
-
-	private String getAttributeFromUser(String string) {
+	public String getAttributeFromUser(String string) {
 		// TODO Auto-generated method stub
 		return "3";
 	}
 
 	public boolean validateLogin(String user, String pass) {
 		
-		if(user.equals("admin") && pass.equals("pass")) {
+		if(user.equals("admin.pass") && pass.equals("pass")) {
 			
 			return true;
 		}
@@ -122,7 +124,22 @@ public class Datastore
 	}
 
 	public Map<String, String> getUser() {
-		// TODO Auto-generated method stub
-		return null;
+	
+		Map<String, String> map = new HashMap<String, String>();
+		
+		List<Entity> users = ds.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
+
+		for(Entity user : users){
+			
+			if(user.getProperty("UserName").toString().equals(Form.getUserFromCookie(_req))) {
+				 
+				for(Map.Entry<String, Object> entry : user.getProperties().entrySet())
+				{
+					map.put(entry.getKey(), entry.getValue().toString());
+				}
+			}
+		}
+
+		return map;
 	}
 }

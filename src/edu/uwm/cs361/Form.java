@@ -42,12 +42,7 @@ public class Form
 	
 	public String End() {
 		
-<<<<<<< Updated upstream
 		return "<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div></form>";
-=======
-		return "<button type='submit'>Save User</button></form>";
->>>>>>> Stashed changes
-		
 	}
 	public String TextField(String label, String name, String val, String ph, String cssClass) {
 		
@@ -87,20 +82,20 @@ public class Form
 				"</label>";
 	}
 	
-	public String selectDate(String startName, String endName, String cssClass) {
+	public String selectDate(String startName, String endName, String selected1, String selected2, String cssClass) {
 		
-		return getSelectField(startName, testParam(startName), cssClass, 1, 12) +
+		return getSelectField(startName, (selected1 != null ? selected1 : ""), cssClass, 1, 12) +
 				"<div class='separator'>&nbsp; / &nbsp;</div>" +
-				getSelectField(endName, testParam(endName + "-2"), cssClass, 1, 31);
+				getSelectField(endName, (selected2 != null ? selected2 : ""), cssClass, 1, 31);
 	}
 	
-	public String selectTime(String startName, String endName, String cssClass) {
+	public String selectTime(String startName, String endName, String selected1, String selected2, String cssClass) {
 		
 		List<String> endTime = Arrays.asList("00","10","15","30","40","45","50");
 		
-		return getSelectField(startName, testParam(startName), cssClass, 0, 23) +
+		return getSelectField(startName, (selected1 != null ? selected1 : ""), cssClass, 0, 23) +
 				"<div class='separator'>&nbsp; : &nbsp;</div>" +
-				getSelectField(endName, testParam(endName), cssClass, endTime);
+				getSelectField(endName, (selected2 != null ? selected2 : ""), cssClass, endTime);
 	}
 	
 	public String getSelectField(String name, String selected, String cssClass, List<String> options) {
@@ -132,26 +127,6 @@ public class Form
 		
 	}
 	
-	public String printOfficeHours(int index) {
-
-		List<String> officeDay = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri");
-		
-		return "Office Hour "+index+"<br/>" +
-				
-			getSelectField("office-day-"+index, "office-day-", "", officeDay) +
-			
-			selectTime("office-hours-"+index+"-start-1", "office-hours-"+index+"-end-1", "") +
-					"&nbsp; - &nbsp;" + 
-			selectTime("office-hours-"+index+"-start-2", "office-hours-"+index+"-end-2", "") +
-			
-			"</br></br>";	
-	}
-	
-	public String testParam(String param) {
-		
-		return (_req.getParameter(param) != null ? _req.getParameter(param) : "");
-	}
-	
 	private void displayForm(String header, int page, CallBack servlet) throws IOException {
 		
 		printHeader(header, page);
@@ -165,13 +140,16 @@ public class Form
 	
 	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
 		
-		Datastore ds = new Datastore(_req, _resp, _errors);
+		checkAccess(accessLevel);
 		
-		ds.checkAccess(accessLevel);
-		
-		servlet.validate();
-		
-		ds.callMethod(method);
+		if(_req.getParameter("submit") != null) {
+			
+			Datastore ds = new Datastore(_req, _resp, _errors);
+			
+			servlet.validate();
+			
+			ds.callMethod(method);
+		}
 		
 		displayForm(header, page, servlet);
 		
@@ -302,15 +280,37 @@ public class Form
 				String value = _req.getParameter(key);
 
 				map.put(key, value);
+				System.out.println(key + " " + value);
 			}
-
+			
+			// Must combine office hours into database
+			if(_req.getParameter("office-day-1") != null){
+				map.put("OfficeHour1", _req.getParameter("office-day-1") + ";" +_req.getParameter("office-hours-1-start-1") + ";" + _req.getParameter("office-hours-1-start-2") + ";" + _req.getParameter("office-hours-1-end-1") + ";" + _req.getParameter("office-hours-1-end-2"));
+				map.put("OfficeHour2", _req.getParameter("office-day-2") + ";" + _req.getParameter("office-hours-2-start-1") + ";" + _req.getParameter("office-hours-2-start-2") + ";" + _req.getParameter("office-hours-2-end-1") + ";" + _req.getParameter("office-hours-2-end-2"));
+				map.put("OfficeHour3", _req.getParameter("office-day-3") + ";" + _req.getParameter("office-hours-3-start-1") + ";" + _req.getParameter("office-hours-3-start-2") + ";" + _req.getParameter("office-hours-3-end-1") + ";" + _req.getParameter("office-hours-3-end-2"));
+			}
+			
+			System.out.println("submitted");
 		} else {
 
 			Datastore ds = new Datastore(_req, _resp, _errors);
 			
 			map = ds.getUser();
+			
+			System.out.println("not submitted");
 		}
 		
 		return map;
+	}
+	
+	private void checkAccess(int accessLevel) throws IOException {
+		
+		Datastore ds = new Datastore(_req, _resp, _errors);
+		
+		if(Form.getUserFromCookie(_req) == null ||
+			accessLevel >= Integer.parseInt(ds.getAttributeFromUser("access"))) {
+			
+			_resp.sendRedirect("401.html");
+		}
 	}
 }

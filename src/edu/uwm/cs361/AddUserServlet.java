@@ -21,22 +21,13 @@ public class AddUserServlet extends HttpServlet
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-<<<<<<< Updated upstream
-		
-		String userName = req.getParameter("userName");
-=======
-		System.out.println("HERE!");
->>>>>>> Stashed changes
+
 		String firstName = req.getParameter("firstName");
 		String lastName = req.getParameter("lastName");
 		String access = req.getParameter("access");
 
 		List<String> errors = new ArrayList<String>();
 
-		if (userName.isEmpty()) {
-			errors.add("Username is required.");
-		}
-		
 		if (firstName.isEmpty()) {
 			errors.add("First Name is required.");
 		}
@@ -61,29 +52,26 @@ public class AddUserServlet extends HttpServlet
 		for(Entity u : users){
 			//keys.add(u.getKey());
 			System.out.println("datastore first name" + (f++) + ":" + u.getProperty("FirstName").toString());
-			if(u.getProperty("UserName").toString().equalsIgnoreCase(userName)) 
+			if(u.getProperty("UserName").toString().equalsIgnoreCase(firstName+"."+lastName)) 
 				errors.add("This person is already a user");
 		}
 		//ds.delete(keys);
 		if (errors.size() == 0) {
+			
 			Entity user = new Entity("User");
-			user.setProperty("UserName", userName);
+			
+			user.setProperty("UserName", firstName + "." + lastName);
+			user.setProperty("Password", lastName); 
 			user.setProperty("FirstName", firstName);
-<<<<<<< Updated upstream
 			user.setProperty("MiddleName", "");
 			user.setProperty("LastName", lastName);
 			user.setProperty("Email", "");
 			user.setProperty("Location", "");
 			user.setProperty("Phone", "");
 			user.setProperty("AltPhone", "");
-			user.setProperty("OfficeHour1", "");
-			user.setProperty("OfficeHour2", "");
-			user.setProperty("OfficeHour3", "");
-=======
-			user.setProperty("UserName", firstName + "." + lastName); // firstName.LastName is username
-			user.setProperty("LastName", lastName);
-			user.setProperty("Password", lastName); // default password for first time login is last name
->>>>>>> Stashed changes
+			user.setProperty("OfficeHour1", "Wed;0;00;0;00");
+			user.setProperty("OfficeHour2", "Wed;0;00;0;00");
+			user.setProperty("OfficeHour3", "Wed;0;00;0;00");
 			user.setProperty("Access", access);
 			ds.put(user);			
 		}
@@ -109,10 +97,6 @@ public class AddUserServlet extends HttpServlet
 					"<h1>Add User</h1>" +
 					//(errors.size() == 0 ? "<span>User has been created</span>" : "") +
 					"<label>" +
-						"<span>Username:</span>" +
-						"<input id='userName' type='text' name='userName' />" +
-					"</label>" +
-					"<label>" +
 						"<span>First Name:</span>" +
 						"<input id='firstName' type='text' name='firstName' />" +
 					"</label>" +
@@ -128,11 +112,7 @@ public class AddUserServlet extends HttpServlet
 							"<option value='1'>TA</option>" +
 						"</select>" +
 					"</label>" +
-<<<<<<< Updated upstream
-				"<div class='submit'><input type='submit' class='button' value='Save' /></div>" +	
-=======
-				"<button type='submit'>Save User</button>" +	
->>>>>>> Stashed changes
+				"<div class='submit'><input type='submit' class='button' value='Save' /></div>" +
 				"</form>" +
 			"</div>");
 	}

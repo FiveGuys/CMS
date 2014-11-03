@@ -48,19 +48,19 @@ public class CreateCourseServlet extends HttpServlet implements CallBack
 				
 				form.Start("Course Form", "Please fill all the texts in the fields.", "#") +
 				
-				form.TextField("Title: ", "course-name", form.testParam("course-name"), "Course Name", "") +
+				form.TextField("Title: ", "course-name", testParam("course-name"), "Course Name", "") +
 				
-				form.TextField("Course #: ", "course-number", form.testParam("course-num"), "XXX", "") +
+				form.TextField("Course #: ", "course-number", testParam("course-num"), "XXX", "") +
 				
-				form.TextField("Section: ", "section-number", form.testParam("section-num"), "XXX-LAB/LEC/DIS", "") +
+				form.TextField("Section: ", "section-number", testParam("section-num"), "XXX-LAB/LEC/DIS", "") +
 				
-				form.TextField("Class #: ", "class-number", form.testParam("class-num"), "XXXXX", "") +
+				form.TextField("Class #: ", "class-number", testParam("class-num"), "XXXXX", "") +
 				
-				form.TextField("Credits: ", "credits", form.testParam("credits"), "Units", "") +
+				form.TextField("Credits: ", "credits", testParam("credits"), "Units", "") +
 				
-				form.DropDown("Instructor: ", "instructor", form.testParam("instructor"), Datastore.getAllInstructors(), "") +
+				form.DropDown("Instructor: ", "instructor", testParam("instructor"), Datastore.getAllInstructors(), "") +
 				
-				form.TextField("Room #: ", "room-number", form.testParam("room-number"), "EMS", "") +
+				form.TextField("Room #: ", "room-number", testParam("room-number"), "EMS", "") +
 				
 				//form.DateTime("Hours: ", "", form.selectTime("time-start", "time-end", req)) +
 				
@@ -68,9 +68,9 @@ public class CreateCourseServlet extends HttpServlet implements CallBack
 				
 				form.WeekCheckBoxes() +
 				
-				form.CheckBox("Has Lab: ", "", "has-lab", (form.testParam("has-lab") != "")) +
+				form.CheckBox("Has Lab: ", "", "has-lab", (testParam("has-lab") != "")) +
 				
-				form.CheckBox("Has Dis: ", "last", "has-dis", (form.testParam("has-dis") != "")) +
+				form.CheckBox("Has Dis: ", "last", "has-dis", (testParam("has-dis") != "")) +
 				
 				form.End()
 		);
@@ -79,5 +79,10 @@ public class CreateCourseServlet extends HttpServlet implements CallBack
 	@Override
 	public void validate() {
 		
+	}
+	
+	private String testParam(String name) {
+		
+		return (_req.getParameter(name) != null ? _req.getParameter(name) : "");
 	}
 }

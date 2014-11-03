@@ -43,11 +43,11 @@ public class LoginServlet extends HttpServlet
 			
 			resp.addCookie(c);
 			
-			resp.sendRedirect("create-course");
+			resp.sendRedirect("edit-info");
 			
 		} else  {
 			
-			printContent(resp, "User:admin Pass:pass");
+			printContent(resp, "User:admin.pass Pass:pass");
 		}
 	}
 
