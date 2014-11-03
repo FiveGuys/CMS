@@ -2,23 +2,32 @@ package edu.uwm.cs361;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 
 public class Datastore 
 {
 	private HttpServletRequest _req;
 	private HttpServletResponse _resp;
 	private List<String> _errors;
-	
+	private DatastoreService ds;
  	public Datastore(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
  		
- 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+ 		ds = DatastoreServiceFactory.getDatastoreService();
  		
  		_req = req;
 		_resp = resp;
@@ -79,10 +88,13 @@ public class Datastore
 
 	public void callMethod(String methodName) {
 		
-		switch(methodName) {
-		
-		case "addCourse": this.addCourse(); break;
-		
+		if(_errors.size() == 0 && _req.getParameter("Submit") != null) {
+			
+			switch(methodName) {
+			
+				case "addCourse": this.addCourse(); break;
+				case "updateInfo": this.updateInfo(); break;
+			}
 		}
 	}
 
@@ -91,14 +103,43 @@ public class Datastore
 		
 	}
 
-	public void checkAccess() throws IOException {
+	private void updateInfo() {
 		
-		if(Form.getUserFromCookie(_req) == null) {
+		System.out.println("updateInfo");
+	}
+
+	public String getAttributeFromUser(String string) {
+		// TODO Auto-generated method stub
+		return "3";
+	}
+
+	public boolean validateLogin(String user, String pass) {
+		
+		if(user.equals("admin.pass") && pass.equals("pass")) {
 			
-			_resp.sendRedirect("401.html");
+			return true;
 		}
 		
+		return false;
 	}
+
+	public Map<String, String> getUser() {
 	
-	
+		Map<String, String> map = new HashMap<String, String>();
+		
+		List<Entity> users = ds.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
+
+		for(Entity user : users){
+			
+			if(user.getProperty("UserName").toString().equals(Form.getUserFromCookie(_req))) {
+				 
+				for(Map.Entry<String, Object> entry : user.getProperties().entrySet())
+				{
+					map.put(entry.getKey(), entry.getValue().toString());
+				}
+			}
+		}
+
+		return map;
+	}
 }
