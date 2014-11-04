@@ -91,12 +91,10 @@ public class ScheduleViewServlet extends HttpServlet{
 			htmlTable += "<tr>"+"<td>"+times[i]+"</td>";
 			
 			for(int j = 0; j < table[i].length; ++j){
-				java.lang.System.out.println(table[i][j]);
 				htmlTable += table[i][j];
 			}
 			
 			htmlTable += "</tr>";
-			java.lang.System.out.println("");
 		}
 		
 		htmlTable += "</table>";
@@ -113,8 +111,6 @@ public class ScheduleViewServlet extends HttpServlet{
 		Query q = new Query("Class");
 		List<Entity> courses = ds.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		
-		java.lang.System.out.println("THIS IS A TEST MESSAGE POOP PEEPEE WEEEEEEE");
-		
 		for(Entity course: courses){
 			if(course.getProperty("classNumber").equals(courseID)){
 				LocalTime start = LocalTime.parse(course.getProperty("startTime").toString());
@@ -128,8 +124,8 @@ public class ScheduleViewServlet extends HttpServlet{
 				+start.toString("h:mm a")+" - "+end.toString("h:mm a")+"<br>"
 				+course.getProperty("location")+"</td>";
 				
-				java.lang.System.out.println(element);
 				for(char day: course.getProperty("days").toString().toCharArray()){
+					java.lang.System.out.println(new String(dates).indexOf(day)+" " + Arrays.asList(times).indexOf(start.toString("h:mm a")));
 					this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))][new String(dates).indexOf(day)] = element;
 				}
 				
@@ -154,8 +150,8 @@ public class ScheduleViewServlet extends HttpServlet{
 		cs251.setProperty("classNumber", "COMP SCI 251");
 		cs251.setProperty("classType","Lecture");
 		cs251.setProperty("days","TR");
-		cs251.setProperty("startTime","1:00");
-		cs251.setProperty("endTime","2:50");
+		cs251.setProperty("startTime","13:00");
+		cs251.setProperty("endTime","14:50");
 		cs251.setProperty("location","EMS E190");
 		ds.put(cs251);
 		
