@@ -14,16 +14,155 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Form
 {
-	private final static String[] STYLE = {"", "course.css", "views.css", "edit-info.css", "user.css"};
 	private HttpServletRequest _req;
+	
 	private HttpServletResponse _resp;
+	
 	private List<String> _errors;
 	
 	public Form(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
 		
 		_req = req;
+		
 		_resp = resp;
+		
 		_errors = errors;
+	}
+
+	private void displayForm(String header, int page, CallBack servlet) throws IOException {
+		
+		printHeader(header, page);
+		
+		printMessage();
+		
+		servlet.printContent();
+		
+		printFooter();
+	}
+	
+	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
+		
+		checkAccess(accessLevel);
+		
+		if(_req.getParameter("submit") != null) {
+			
+			Datastore ds = new Datastore(_req, _resp, _errors);
+			
+			servlet.validate();
+			
+			ds.callMethod(method);
+		}
+		
+		displayForm(header, page, servlet);
+	}
+	
+ 	public void printHeader(String title, int page) throws IOException {
+		
+ 		HtmlOutputHelper.printHeader(_resp, title, page);
+ 	}
+ 	
+ 	public void printFooter() throws IOException {
+ 		
+ 		HtmlOutputHelper.printFooter(_resp);
+ 	}
+ 	
+ 	public void printMessage() throws IOException{
+ 		
+ 		PrintWriter out = _resp.getWriter();
+ 		
+ 		if(_errors.size() == 0 && _req.getParameter("submit") != null) {
+ 			
+ 			out.println("<div class='success-msg'>Successfully Saved</div>");
+ 			
+ 		} else if (_errors.size() > 0) {
+ 			
+			out.println("<ul class='errors'>");
+
+			for (String e : _errors) {
+				out.println("  <li>" + e + "</li>");
+			}
+
+			out.println("</ul>");
+		}
+ 	}
+ 	
+	public Map<String, String> getParameters() {
+
+		Map<String, String> map = new HashMap<String, String>();
+
+		if(_req.getParameter("submit") != null) {
+
+			Enumeration<?> params = _req.getParameterNames();
+
+			while(params.hasMoreElements()) {
+
+				String key = (String) params.nextElement(); 
+				String value = _req.getParameter(key);
+
+				map.put(key, value);
+			}
+			
+			// Must combine office hours into database
+			if(_req.getParameter("office-day-1") != null){
+				
+				map.put("OfficeHour1", Form.calcOfficeHours(1, _req));
+				map.put("OfficeHour2", Form.calcOfficeHours(2, _req));
+				map.put("OfficeHour3", Form.calcOfficeHours(3, _req));
+			}
+			
+		} else {
+
+			Datastore ds = new Datastore(_req, _resp, _errors);
+			
+			map = ds.getUser();
+		}
+		
+		return map;
+	}
+	
+	public static String calcOfficeHours(int num, HttpServletRequest req) {
+		
+		return req.getParameter("office-day-"+num) + ";" +req.getParameter("office-hours-"+num+"-start-1") + ";" + req.getParameter("office-hours-"+num+"-end-1") + ";" + req.getParameter("office-hours-"+num+"-start-2") + ";" + req.getParameter("office-hours-"+num+"-end-2");
+	}
+
+	public static String getUserFromCookie(HttpServletRequest req) {
+ 		
+ 		Cookie cookies[] = req.getCookies();  
+
+ 		String user = null;
+ 		
+ 		if(cookies != null){  
+ 			
+ 			for (Cookie c : cookies) {
+ 				
+				if (c.getName().equals("user")) {
+					
+					user = c.getValue();
+				}
+			} 
+ 		}
+ 		
+ 		return user;
+ 	}
+
+	public static void deleteCookie(HttpServletResponse resp) throws IOException {
+		
+		Cookie c = new Cookie("user", null);
+		
+		c.setMaxAge(0);
+
+		resp.addCookie(c);
+	}
+	
+	private void checkAccess(int accessLevel) throws IOException {
+		
+		Datastore ds = new Datastore(_req, _resp, _errors);
+		
+		if(Form.getUserFromCookie(_req) == null ||
+			accessLevel > Integer.parseInt(ds.getAttrFromUser("Access"))) {
+			
+			_resp.sendRedirect("401.html");
+		}
 	}
 
 	private String formInput(String label, String cssClass, String html) {
@@ -44,10 +183,10 @@ public class Form
 		
 		return "<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div></form>";
 	}
+	
 	public String TextField(String label, String name, String val, String ph, String cssClass) {
 		
 		return formInput(label, cssClass, "<input type='text' id='"+name+"' name='"+name+"' value='"+val+"'placeholder='"+ph+"' />");
-		
 	}
 	
 	public String DropDown(String label,  String name, String selected, List<String> list, String cssClass) {
@@ -67,10 +206,9 @@ public class Form
 	public String DateTime(String label, String cssClass, String firstSelect, String secondSelect){
 		
 		return formInput(label, cssClass, 
-				  "<span class='startend'>Start:</span>" +
-						  firstSelect +
-					"<span class='startend'>End:</span>" +
-					secondSelect );
+				  "<span class='startend'>Start:</span>" + firstSelect +
+					"<span class='startend'>End:</span>" + secondSelect 
+		);
 	}
 	
 	public String WeekCheckBoxes() {
@@ -110,7 +248,6 @@ public class Form
 		select += "</select>";
 		
 		return select;
-		
 	}
 	
 	public String getSelectField(String name, String selected, String cssClass, int start, int end) {
@@ -124,193 +261,5 @@ public class Form
 		select += "</select>";
 		
 		return select;
-		
-	}
-	
-	private void displayForm(String header, int page, CallBack servlet) throws IOException {
-		
-		printHeader(header, page);
-		
-		printList(_errors, "errors");
-		
-		servlet.printContent();
-		
-		printFooter();
-	}
-	
-	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
-		
-		checkAccess(accessLevel);
-		
-		if(_req.getParameter("submit") != null) {
-			
-			Datastore ds = new Datastore(_req, _resp, _errors);
-			
-			servlet.validate();
-			
-			ds.callMethod(method);
-		}
-		
-		displayForm(header, page, servlet);
-		
-	}
- 	public void printHeader(String title, int index) throws IOException {
-		
- 		_resp.setContentType("text/html");
-		
- 		_resp.getWriter().println( 
- 		"<!DOCTYPE html>" 
-		+"<html>" 
-		+"<head>" 
-			+"<meta charset='utf-8'>" 
-			+"<link rel='shortcut icon' href='images/favicon.ico'>" 
-		    +"<link rel='stylesheet' type='text/css' href='css/main.css'>" 
-		    +"<link rel='stylesheet' type='text/css' href='css/navbar.css'>" 
-			+"<link rel='stylesheet' type='text/css' href='css/form.css'>" 
-			+"<link rel='stylesheet' type='text/css' href='css/"+STYLE[index]+"'>" 
-		    +"<meta name='viewport' content='width=device-width'>" 
-		    +"<title>Course Management Site</title>" 
-		+"</head>" 
-		+"<body>" 
- 		+"<div id='main-container'>" 
-		+"<div id='header'>  " 
-		    +"<div class='settings'><a href='add-user'>Add New User</a><a href='index.html'>Logout</a></div>" 
-		      +"<div class='uwmlogo'>" 
-		        +"<a href='https://www4.uwm.edu/' target='_new'>" 
-		            +"<img src='images/logo_uwm.png'><img>" 
-		                +"</a>" 
-		            +"</div>" 
-		        +"<div class='header-title'>"+title+"</div>" 
-		        +"<div id='navbar'>" 
-		        +"<ul>" 
-		        +"<li class='active has-sub'><a "+( index == 1 ? "class='selected'" : "")+" href='#'>Courses</a>" 
-		           +"<ul>" 
-		            +"<li><a href='assign-prof'>Assign Professor</a></li>" 
-		              +"<li><a href='assign-ta'>Assign TA</a></li>" 
-		              +"<li><a href='create-course'>Create a Course</a></li>" 
-		              +"<li><a href='create-lab-dis'>Create Lab/Discussion</a></li>	" 	
-		              +"<li><a href='courses'>View All Courses</a></li>" 
-		              +"</ul>" 
-		            +"</li>" 
-		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='scheduleviews'>Schedule Views</a>" 
-		           +"<ul style='display: none'>" 
-		              +"<li class='has-sub'><a href='#'>View 1</a>" 
-		                 +"<ul>" 
-		                    +"<li><a href='#'>Sub View</a></li>" 
-		                       +"<li class='last'><a href='#'>Sub View</a></li>" 
-		                       +"</ul>" 
-		                    +"</li>" 
-		                 +"<li class='has-sub'><a href='#'>View 2</a>" 
-		                 +"<ul>" 
-		                    +"<li><a href='#'>Sub View</a></li>" 
-		                       +"<li class='last'><a href='#'>Sub View</a></li>" 
-		                       +"</ul>" 
-		                    +"</li>" 
-		                 +"</ul>" 
-		              +"</li>" 
-		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info'>Edit Info</a></li>" 
-		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search'>Search User</a></li>" 
-		           +"</ul>" 
-		        +"</div>" 
-		      +"</div>"
-		      + "<div id='content'>");
- 	}
- 	
- 	public void printFooter() throws IOException {
- 		
- 		_resp.getWriter().println("</div></div></body></html>");
- 	}
- 	
- 	public void printList(List<String> list, String cssClass) throws IOException{
- 		
- 		if (list.size() > 0) {
- 			
- 			PrintWriter out = _resp.getWriter();
- 			
-			out.println("<ul class='"+cssClass+"'>");
-
-			for (String e : list) {
-				out.println("  <li>" + e + "</li>");
-			}
-
-			out.println("</ul>");
-		}
- 	}
- 	
- 	public static String getUserFromCookie(HttpServletRequest req) {
- 		
- 		Cookie cookies[] = req.getCookies();  
-
- 		String user = null;
- 		
- 		if(cookies != null){  
- 			
- 			for (Cookie c : cookies) {
- 				
-				if (c.getName().equals("user")) {
-					
-					user = c.getValue();
-				}
-			} 
- 		}
- 		
- 		return user;
- 	}
-
-	public static void deleteCookie(HttpServletResponse resp) throws IOException {
-		
-		Cookie c = new Cookie("user", null);
-		
-		c.setMaxAge(0);
-
-		resp.addCookie(c);
-	}
-	
-	public Map<String, String> getParameters() {
-
-		Map<String, String> map = new HashMap<String, String>();
-
-		if(_req.getParameter("submit") != null) {
-
-			Enumeration<?> params = _req.getParameterNames();
-
-			while(params.hasMoreElements()) {
-
-				String key = (String) params.nextElement(); 
-				String value = _req.getParameter(key);
-
-				map.put(key, value);
-				System.out.println(key + " " + value);
-			}
-			
-			// Must combine office hours into database
-			if(_req.getParameter("office-day-1") != null){
-				map.put("OfficeHour1", _req.getParameter("office-day-1") + ";" +_req.getParameter("office-hours-1-start-1") + ";" + _req.getParameter("office-hours-1-start-2") + ";" + _req.getParameter("office-hours-1-end-1") + ";" + _req.getParameter("office-hours-1-end-2"));
-				map.put("OfficeHour2", _req.getParameter("office-day-2") + ";" + _req.getParameter("office-hours-2-start-1") + ";" + _req.getParameter("office-hours-2-start-2") + ";" + _req.getParameter("office-hours-2-end-1") + ";" + _req.getParameter("office-hours-2-end-2"));
-				map.put("OfficeHour3", _req.getParameter("office-day-3") + ";" + _req.getParameter("office-hours-3-start-1") + ";" + _req.getParameter("office-hours-3-start-2") + ";" + _req.getParameter("office-hours-3-end-1") + ";" + _req.getParameter("office-hours-3-end-2"));
-			}
-			
-			System.out.println("submitted");
-		} else {
-
-			Datastore ds = new Datastore(_req, _resp, _errors);
-			
-			map = ds.getUser();
-			
-			System.out.println("not submitted");
-		}
-		
-		return map;
-	}
-	
-	private void checkAccess(int accessLevel) throws IOException {
-		
-		Datastore ds = new Datastore(_req, _resp, _errors);
-		
-		if(Form.getUserFromCookie(_req) == null ||
-			accessLevel >= Integer.parseInt(ds.getAttributeFromUser("access"))) {
-			
-			_resp.sendRedirect("401.html");
-		}
 	}
 }

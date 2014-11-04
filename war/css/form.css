@@ -193,3 +193,10 @@ ul.errors {
 .standard-form .submit input[type=button]:hover{
     background-color: rgb(255, 158, 0);
 }
+
+.success-message {
+	color: green;
+	text-align: center;
+	font-size: 20px;
+	margin-bottom: 10px;
+}

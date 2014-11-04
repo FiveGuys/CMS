@@ -2,11 +2,14 @@ package edu.uwm.cs361;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.datastore.Entity;
 
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet
@@ -33,9 +36,7 @@ public class LoginServlet extends HttpServlet
 		
 		String pass = req.getParameter("pass");
 		
-		Datastore ds = new Datastore(req, resp, new ArrayList<String>());
-		
-		if(ds.validateLogin(user, pass)) {
+		if(validate(user, pass, req, resp)) {
 			
 			Cookie c = new Cookie("user", user);
 			
@@ -47,7 +48,7 @@ public class LoginServlet extends HttpServlet
 			
 		} else  {
 			
-			printContent(resp, "User:admin.pass Pass:pass");
+			printContent(resp, "Invalid Username / Password");
 		}
 	}
 
@@ -96,5 +97,21 @@ public class LoginServlet extends HttpServlet
 			"</body>" +
 			"</html>"
 		);
+	}
+	
+	private boolean validate(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
+		
+		List<Entity> users = Datastore.getAllUsers();
+		
+		for(Entity user : users) {
+			
+			if(username.equals(user.getProperty("UserName")) && 
+				password.equals(user.getProperty("Password")) ) {
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

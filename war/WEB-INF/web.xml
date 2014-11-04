@@ -5,6 +5,26 @@ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
+		<servlet-name>AddUser</servlet-name>
+		<servlet-class>edu.uwm.cs361.AddUserServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AssignProf</servlet-name>
+		<servlet-class>edu.uwm.cs361.AssignProfServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AssignTA</servlet-name>
+		<servlet-class>edu.uwm.cs361.AssignTAServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>EditInfo</servlet-name>
+		<servlet-class>edu.uwm.cs361.EditInfoServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Forgot</servlet-name>
+		<servlet-class>edu.uwm.cs361.ForgotServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>Login</servlet-name>
 		<servlet-class>edu.uwm.cs361.LoginServlet</servlet-class>
 	</servlet>
@@ -13,21 +33,41 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-class>edu.uwm.cs361.LogoutServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>AddUser</servlet-name>
-		<servlet-class>edu.uwm.cs361.AddUserServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>CreateCourse</servlet-name>
-		<servlet-class>edu.uwm.cs361.CreateCourseServlet</servlet-class>
+		<servlet-name>Proxy</servlet-name>
+		<servlet-class>edu.uwm.cs361.ProxyServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Schedule</servlet-name>
 		<servlet-class>edu.uwm.cs361.ScheduleViewServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>EditInfo</servlet-name>
-		<servlet-class>edu.uwm.cs361.EditInfoServlet</servlet-class>
+		<servlet-name>UserSearch</servlet-name>
+		<servlet-class>edu.uwm.cs361.UserSearchServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>ViewCourses</servlet-name>
+		<servlet-class>edu.uwm.cs361.ViewCoursesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AddUser</servlet-name>
+		<url-pattern>/add-user</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AssignProf</servlet-name>
+		<url-pattern>/assign-prof</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AssignTA</servlet-name>
+		<url-pattern>/assign-ta</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>EditInfo</servlet-name>
+		<url-pattern>/edit-info</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>Forgot</servlet-name>
+		<url-pattern>/forgot</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Login</servlet-name>
 		<url-pattern>/login</url-pattern>
@@ -37,21 +77,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AddUser</servlet-name>
-		<url-pattern>/add-user</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>CreateCourse</servlet-name>
-		<url-pattern>/create-course</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
 		<servlet-name>Schedule</servlet-name>
 		<url-pattern>/scheduleview</url-pattern>
 	</servlet-mapping>	
 	<servlet-mapping>
-		<servlet-name>EditInfo</servlet-name>
-		<url-pattern>/edit-info</url-pattern>
-	</servlet-mapping>	
+		<servlet-name>UserSearch</servlet-name>
+		<url-pattern>/user-search</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ViewCourses</servlet-name>
+		<url-pattern>/view-courses</url-pattern>
+	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

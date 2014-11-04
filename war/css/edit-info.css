@@ -31,10 +31,12 @@
 
 #contact-form {
 	float: left;
+	width: 230px;
 }
 
 #contact-form2 {
 	margin-left: 325px;
+	margin-right: -60px;
 }
 
 #contact-form3 {

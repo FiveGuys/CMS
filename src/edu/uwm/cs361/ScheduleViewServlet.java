@@ -25,7 +25,7 @@ public class ScheduleViewServlet extends HttpServlet{
 	//Yes, I wrote out this array because I am a fucking scrub
 	private String[] times = {"8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"};
 	private char[] dates = {'M','T','W','R','F'};
-	private boolean canCreateData = true;
+	private boolean canCreateData = false;
 	
 	
 	@Override
@@ -62,14 +62,14 @@ public class ScheduleViewServlet extends HttpServlet{
 		resp.setContentType("text/html");
 		
 		resp.getWriter().println(
-				"<form action='scheduleview' method='post' id='classid'>"
-				+"<select class='classSelect' name='course' form='classid'>"
-				+"<option>COMP SCI 201</option><option>COMP SCI 251</option><option>COMP SCI 351</option>"
+			"<form action='scheduleview' method='post' class='standard-form'>"
+				+"<select name='course'>"
+					+Datastore.getAllCourses()
 				+"</select>"
-				+"<input type='submit'>"
-				+"</form>"
-				+ createHTMLTable(req, resp, course)
-				);
+				+"<div class='submit'><input type='submit' name='submit' class='button' value='Submit' /></div>"
+			+"</form>"
+			+ createHTMLTable(req, resp, course)
+		);
 	}
 	
 	private String createHTMLTable(HttpServletRequest req, HttpServletResponse resp, String course) throws IOException{

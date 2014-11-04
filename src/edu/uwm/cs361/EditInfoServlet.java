@@ -5,8 +5,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class EditInfoServlet extends HttpServlet implements CallBack
 {
-	private final int ACCESS_LEVEL = 1;
+	private final int ACCESS_LEVEL = ACCESS_ALL;
 	
 	private HttpServletRequest _req;
 	
@@ -39,7 +37,7 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		
 		param = form.getParameters();
 		
-		form.handleGet("Edit Your Information", 3, this, "updateInfo", ACCESS_LEVEL);
+		form.handleGet("Edit Your Information", 3, this, "updateUser", ACCESS_LEVEL);
 	}
 	
 	@Override
@@ -52,7 +50,7 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	public void printContent()  throws IOException {
 
 		_resp.getWriter().println( 
-				
+
 				"<form action='edit-info' method='post' class='standard-form'>" +
 				
 				"<h1 class='heading'>" +
@@ -68,11 +66,11 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 
 				"<div id='name-form'>" +
 					"First Name <br/>" +
-					"<input type='text' name='FirstName' value='"+param.get("FirstName")+"'><br/>" +
+					"<input type='text' name='FirstName' readonly='readonly' value='"+param.get("FirstName")+"'><br/>" +
 					"Middle Name <br/>" +
 					"<input type='text' name='MiddleName' value='"+param.get("MiddleName")+"'><br/>" +
 					"Last Name<br/>" +
-					"<input type='text' name='LastName' value='"+param.get("LastName")+"'><br/>" +
+					"<input type='text' name='LastName' readonly='readonly' value='"+param.get("LastName")+"'><br/>" +
 				"</div>" +
 				
 				"<div class='section'>Contact Information</div>" +
@@ -106,15 +104,36 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	@Override
 	public void validate() {
 		
-		isEmpty(param.get("FirstName"), "First Name");
-		
-		isEmpty(param.get("LastName"), "Last Name");
-		
 		isEmail(param.get("Email"));
 		
-		isPhone(param.get("Phone"));
+		isPhone(param.get("Phone"), "Office Phone");
 		
-		isPhone(param.get("AltPhone"));
+		isPhone(param.get("AltPhone"), "Alt Phone");
+	}
+	
+	private void isEmail(String email) {
+		
+		isValid(email, "Email", "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"); 
+	}
+	
+	private void isPhone(String phone, String name) {
+		
+		isValid(phone, name, "\\d{3}-\\d{3}-\\d{4}");
+	}
+	
+	private void isValid(String param, String name, String regex) {
+
+		if(!param.isEmpty()) {
+			
+			Pattern pattern = Pattern.compile(regex);  
+			Matcher matcher = pattern.matcher(param);
+
+			if(!matcher.matches()) {
+
+				_errors.add(name + " is invalid");
+			}
+		}
 	}
 	
 	private String printOfficeHours(int index) {
@@ -127,9 +146,6 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 			
 			arr = param.get("OfficeHour" + index).split(";");
 			
-		} else {
-			
-			System.out.println("I got null");
 		}
 		
 		return "Office Hour "+index+"<br/>" +
@@ -141,36 +157,5 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 			form.selectTime("office-hours-"+index+"-start-2", "office-hours-"+index+"-end-2", arr[3], arr[4], "") +
 			
 			"</br></br>";	
-	}
-	
-	private void isEmail(String email) {
-		
-		try {
-
-			InternetAddress internetAddress = new InternetAddress(email);
-			internetAddress.validate();
-			
-		} catch (AddressException e) {
-			
-			_errors.add("Email is invalid format");
-		}
-	}
-	
-	private void isPhone(String phone) {
-		
-		Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");  
-		Matcher matcher = pattern.matcher(phone);
-		
-		if(!matcher.matches()) {
-			_errors.add("Phone is invalid format");
-		}
-	}
-	
-	private void isEmpty(String str, String errorName) {
-		
-		if(str.isEmpty()) {
-			
-			_errors.add(errorName + " is required");
-		}
 	}
 }

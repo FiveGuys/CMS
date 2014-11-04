@@ -52,8 +52,8 @@ public class AddUserServlet extends HttpServlet
 		for(Entity u : users){
 			//keys.add(u.getKey());
 			System.out.println("datastore first name" + (f++) + ":" + u.getProperty("FirstName").toString());
-			if(u.getProperty("UserName").toString().equalsIgnoreCase(firstName+"."+lastName)) 
-				errors.add("This person is already a user");
+			//if(u.getProperty("UserName").toString().equalsIgnoreCase(firstName+"."+lastName)) 
+				//errors.add("This person is already a user");
 		}
 		//ds.delete(keys);
 		if (errors.size() == 0) {
@@ -69,11 +69,12 @@ public class AddUserServlet extends HttpServlet
 			user.setProperty("Location", "");
 			user.setProperty("Phone", "");
 			user.setProperty("AltPhone", "");
-			user.setProperty("OfficeHour1", "Wed;0;00;0;00");
+			user.setProperty("OfficeHour1", "Wed;0;00;0;01");
 			user.setProperty("OfficeHour2", "Wed;0;00;0;00");
 			user.setProperty("OfficeHour3", "Wed;0;00;0;00");
 			user.setProperty("Access", access);
-			ds.put(user);			
+			user.setProperty("Semester", "2149");
+			ds.put(user);
 		}
 		
 		displayForm(req, resp, errors);

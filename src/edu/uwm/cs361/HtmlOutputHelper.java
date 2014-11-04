@@ -15,6 +15,7 @@ public class HtmlOutputHelper
  		rsp.setContentType("text/html");
 		
  		rsp.getWriter().println( 
+ 				
  		"<!DOCTYPE html>" 
 		+"<html>" 
 		+"<head>" 
@@ -30,7 +31,13 @@ public class HtmlOutputHelper
 		+"<body>" 
  		+"<div id='main-container'>" 
 		+"<div id='header'>  " 
-		    +"<div class='settings'><a href='add-user'>Add New User</a><a href='index.html'>Logout</a></div>" 
+		    +"<div class='settings'>"
+//		    + "<form><select>"
+//			    + "<option value='2149'>Fall 2014</option>"
+//			    + "<option value='2151'>WinterIM 2015</option>"
+//			    + "<option value='2152'>Spring 2015</option>"
+//		    + "</select></form>"
+		    + "<a href='add-user'>Add New User</a><a href='index.html'>Logout</a></div>" 
 		      +"<div class='uwmlogo'>" 
 		        +"<a href='https://www4.uwm.edu/' target='_new'>" 
 		            +"<img src='images/logo_uwm.png'><img>" 
@@ -41,14 +48,14 @@ public class HtmlOutputHelper
 		        +"<ul>" 
 		        +"<li class='active has-sub'><a "+( index == 1 ? "class='selected'" : "")+" href='#'>Courses</a>" 
 		           +"<ul>" 
-		            +"<li><a href='assign-prof.html'>Assign Professor</a></li>" 
-		              +"<li><a href='assign-ta.html'>Assign TA</a></li>" 
-		              +"<li><a href='create-course.html'>Create a Course</a></li>" 
-		              +"<li><a href='create-lab-dis.html'>Create Lab/Discussion</a></li>	" 	
-		              +"<li><a href='courses.html'>View All Courses</a></li>" 
+		            +"<li><a href='assign-prof'>Assign Professor</a></li>" 
+		              +"<li><a href='assign-ta'>Assign TA</a></li>" 
+		              //+"<li><a href='create-course.html'>Create a Course</a></li>" 
+		              //+"<li><a href='create-lab-dis.html'>Create Lab/Discussion</a></li>	" 	
+		              +"<li><a href='view-courses'>View All Courses</a></li>" 
 		              +"</ul>" 
 		            +"</li>" 
-		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='views.html'>Schedule Views</a>" 
+		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='scheduleview'>Schedule Views</a>" 
 		           +"<ul style='display: none'>" 
 		              +"<li class='has-sub'><a href='#'>View 1</a>" 
 		                 +"<ul>" 
@@ -64,12 +71,13 @@ public class HtmlOutputHelper
 		                    +"</li>" 
 		                 +"</ul>" 
 		              +"</li>" 
-		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info.html'>Edit Info</a></li>" 
-		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search.html'>Search User</a></li>" 
+		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info'>Edit Info</a></li>" 
+		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search'>Search User</a></li>" 
 		           +"</ul>" 
 		        +"</div>" 
 		      +"</div>"
-		      + "<div id='content'>");
+		      + "<div id='content'>"
+ 		);
  	}
  	
  	public static void printFooter(HttpServletResponse rsp) throws IOException {

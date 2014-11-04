@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+/*package edu.uwm.cs361;
 
 import java.io.IOException;
 import java.util.*;
@@ -86,3 +86,4 @@ public class CreateCourseServlet extends HttpServlet implements CallBack
 		return (_req.getParameter(name) != null ? _req.getParameter(name) : "");
 	}
 }
+*/

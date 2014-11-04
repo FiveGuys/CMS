@@ -27,3 +27,19 @@ table#schedule th:first-child {
 	text-align: center;
 	padding: 5px;
 }
+
+.standard-form {
+	margin: 0;
+	padding: 0;
+	border: none;
+	margin-bottom: 10px !important;
+}
+
+.standard-form .submit {
+	display:inline;
+	margin: 0;
+}
+
+.standard-form select {
+	width: 45%;
+}
