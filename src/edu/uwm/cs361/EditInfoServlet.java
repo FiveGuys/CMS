@@ -20,7 +20,7 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	
 	private List<String> _errors;
 	
-	private Form form;
+	private Form _form;
 	
 	private Map<String, String> param;
 	
@@ -33,11 +33,11 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		
 		_errors = new ArrayList<String>();
 		
-		form = new Form(_req, _resp, _errors);
+		_form = new Form(_req, _resp, _errors);
 		
-		param = form.getParameters();
+		param = _form.getParameters();
 		
-		form.handleGet("Edit Your Information", 3, this, "updateUser", ACCESS_LEVEL);
+		_form.handleGet("Edit Your Information", 3, this, "updateUser", ACCESS_LEVEL);
 	}
 	
 	@Override
@@ -97,7 +97,7 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 					
 				"</div>" +
 					
-				form.End()
+				_form.End()
 		);
 	}
 	
@@ -150,11 +150,11 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		
 		return "Office Hour "+index+"<br/>" +
 				
-			form.getSelectField("office-day-"+index, arr[0], "", officeDay) +
+			_form.getSelectField("office-day-"+index, arr[0], "", officeDay) +
 			
-			form.selectTime("office-hours-"+index+"-start-1", "office-hours-"+index+"-end-1", arr[1], arr[2], "") +
+			_form.selectTime("office-hours-"+index+"-start-1", "office-hours-"+index+"-end-1", arr[1], arr[2], "") +
 					"&nbsp; - &nbsp;" + 
-			form.selectTime("office-hours-"+index+"-start-2", "office-hours-"+index+"-end-2", arr[3], arr[4], "") +
+			_form.selectTime("office-hours-"+index+"-start-2", "office-hours-"+index+"-end-2", arr[3], arr[4], "") +
 			
 			"</br></br>";	
 	}

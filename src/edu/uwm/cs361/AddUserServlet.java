@@ -7,114 +7,91 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.*;
-
 @SuppressWarnings("serial")
-public class AddUserServlet extends HttpServlet
+public class AddUserServlet extends HttpServlet implements CallBack
 {
+	private final int ACCESS_LEVEL = ACCESS_ADMIN;
+	
+	private HttpServletRequest _req;
+	
+	private HttpServletResponse _resp;
+	
+	private List<String> _errors;
+	
+	private Form _form;
+	
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    
-		displayForm(req, resp, new ArrayList<String>());
+   
+		_req = req;
 		
+		_resp = resp;
+		
+		_errors = new ArrayList<String>();
+		
+		_form = new Form(_req, _resp, _errors);
+		
+		_form.handleGet("Add User", 0, this, "addUser", ACCESS_LEVEL);
 	}
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-		String firstName = req.getParameter("firstName");
-		String lastName = req.getParameter("lastName");
-		String access = req.getParameter("access");
+		doGet(req, resp);
+	}
 
-		List<String> errors = new ArrayList<String>();
-
-		if (firstName.isEmpty()) {
-			errors.add("First Name is required.");
-		}
-
-		if (lastName.isEmpty()) {
-			errors.add("Last Name is required.");
-		}
+	@Override
+	public void printContent() throws IOException {
 		
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		_resp.getWriter().println( 
+				
+			"<form action='/add-user' method='post' class='standard-form'>" + 
+				"<h1>Add User</h1>" +
+				"<label>" +
+					"<span>First Name:</span>" +
+					"<input type='text' name='FirstName' value='"+getParam("FirstName")+"' />" +
+				"</label>" +
+				"<label>" +
+				  "<span>Last Name: </span>" +
+				  "<input type='text' name='LastName' value='"+getParam("LastName")+"' />" +
+				"</label>" +
+				"<label>" +   
+				  "<span>Access Level: </span>" +
+					"<select name='Access'>" +
+						"<option value='3' "+ selected("3") +">Administrator</option>" +
+						"<option value='2' "+ selected("2") +">Professor</option>" +
+						"<option value='1' "+ selected("1") +">TA</option>" +
+					"</select>" +
+				"</label>" +
+			"<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div>" +
+			"</form>"
+		);
+	}
 
-		//System.out.println("Gotten username: " + firstName);
-		//System.out.println("GOtten last name" + lastName);
-		//System.out.println("Gotten access :" + access);
-		//Key[] s = {KeyFactory.createKey("User", "username")};
-		//ds.delete();
-		Query q = new Query("User");
+	@Override
+	public void validate() {
 		
-		List<Entity> users = ds.prepare(q).asList(FetchOptions.Builder.withDefaults());
-		//int i = 0;
-		//List<Key> keys = new ArrayList<Key>();
-		int f = 1;
-		for(Entity u : users){
-			//keys.add(u.getKey());
-			System.out.println("datastore first name" + (f++) + ":" + u.getProperty("FirstName").toString());
-			//if(u.getProperty("UserName").toString().equalsIgnoreCase(firstName+"."+lastName)) 
-				//errors.add("This person is already a user");
-		}
-		//ds.delete(keys);
-		if (errors.size() == 0) {
-			
-			Entity user = new Entity("User");
-			
-			user.setProperty("UserName", firstName + "." + lastName);
-			user.setProperty("Password", lastName); 
-			user.setProperty("FirstName", firstName);
-			user.setProperty("MiddleName", "");
-			user.setProperty("LastName", lastName);
-			user.setProperty("Email", "");
-			user.setProperty("Location", "");
-			user.setProperty("Phone", "");
-			user.setProperty("AltPhone", "");
-			user.setProperty("OfficeHour1", "Wed;0;00;0;01");
-			user.setProperty("OfficeHour2", "Wed;0;00;0;00");
-			user.setProperty("OfficeHour3", "Wed;0;00;0;00");
-			user.setProperty("Access", access);
-			user.setProperty("Semester", "2149");
-			ds.put(user);
-		}
+		isRequired(_req.getParameter("FirstName"), "First Name");
 		
-		displayForm(req, resp, errors);
+		isRequired(_req.getParameter("LastName"), "Last Name");
 	}
 	
-	private void displayForm(HttpServletRequest req, HttpServletResponse resp, List<String> errors) throws IOException {
+	public void isRequired(String param, String name) {
 		
-		HtmlOutputHelper.printHeader(resp, "Add User", 0);
-		
-		HtmlOutputHelper.printErrors(resp, errors);
-		
-		printContent(resp);
-		
-		HtmlOutputHelper.printFooter(resp);
+		if (param.isEmpty()) {
+			
+			_errors.add(name + " is required");
+		}
 	}
 	
-	private void printContent(HttpServletResponse resp)  throws IOException {
+	private String getParam(String name) {
 		
-		resp.getWriter().println( 
-				"<form action='/add-user' method='post' class='standard-form'>" + 
-					"<h1>Add User</h1>" +
-					//(errors.size() == 0 ? "<span>User has been created</span>" : "") +
-					"<label>" +
-						"<span>First Name:</span>" +
-						"<input id='firstName' type='text' name='firstName' />" +
-					"</label>" +
-					"<label>" +
-					  "<span>Last Name: </span>" +
-					  "<input id='lastName' type='text' name='lastName' />" +
-					"</label>" +
-					"<label>" +   
-					  "<span>Access Level: </span>" +
-						"<select name='access'>" +
-							"<option value='3'>Administrator</option>" +
-							"<option value='2'>Professor</option>" +
-							"<option value='1'>TA</option>" +
-						"</select>" +
-					"</label>" +
-				"<div class='submit'><input type='submit' class='button' value='Save' /></div>" +
-				"</form>" +
-			"</div>");
+		return (_req.getParameter(name) != null && _errors.size() != 0 ? 
+				_req.getParameter(name) : "");
+	}
+	
+	private String selected(String index) {
+		
+		return (getParam("Access").equals(index) ? "selected" : "");
 	}
 }

@@ -80,8 +80,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>Proxy</servlet-name>
+		<url-pattern>/hack</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>Schedule</servlet-name>
-		<url-pattern>/scheduleview</url-pattern>
+		<url-pattern>/schedule-view</url-pattern>
 	</servlet-mapping>	
 	<servlet-mapping>
 		<servlet-name>UserSearch</servlet-name>

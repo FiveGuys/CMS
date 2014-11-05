@@ -21,8 +21,6 @@ public class Datastore
 {
 	private HttpServletRequest _req;
 	
-	private HttpServletResponse _resp;
-	
 	private Map<String, String> _user;
 	
 	private DatastoreService _datastore;
@@ -35,8 +33,6 @@ public class Datastore
  		
  		_req = req;
  		
-		_resp = resp;
-		
 		_errors = errors;
 		
 		_user = findUser();
@@ -91,6 +87,71 @@ public class Datastore
 		return "<option>COMP SCI 201</option><option>COMP SCI 251</option><option>COMP SCI 351</option>";
  	}
 
+	public static String getAllClasses() {
+
+		return "<option>COMP SCI 201</option><option>COMP SCI 251</option><option>COMP SCI 351</option>";
+ 	}
+	
+	private void addUser() {
+		
+		String firstName = _req.getParameter("FirstName");
+		String lastName = _req.getParameter("LastName");
+		String access = _req.getParameter("Access");
+		
+		if(!userExists(firstName+"."+lastName)) {
+			
+			Entity user = new Entity("User");
+			
+			user.setProperty("UserName", firstName + "." + lastName);
+			user.setProperty("Password", lastName); 
+			user.setProperty("FirstName", firstName);
+			user.setProperty("MiddleName", "");
+			user.setProperty("LastName", lastName);
+			user.setProperty("Email", "");
+			user.setProperty("Location", "");
+			user.setProperty("Phone", "");
+			user.setProperty("AltPhone", "");
+			user.setProperty("OfficeHour1", "Wed;0;00;0;01");
+			user.setProperty("OfficeHour2", "Wed;0;00;0;00");
+			user.setProperty("OfficeHour3", "Wed;0;00;0;00");
+			user.setProperty("Access", access);
+			user.setProperty("Semester", "2149");
+			
+			_datastore.put(user);
+		}
+	}
+	
+	public void addCourse(String[] courseData) {
+		
+		Entity course = new Entity("Course", courseData[0]);
+		
+		String[] section = courseData[3].split(" ");
+		String[] time = courseData[5].split(" ");
+		
+		course.setProperty("Name", courseData[1]);
+		course.setProperty("Units", courseData[2]);
+		course.setProperty("ClassType", (section.length == 2 ? section[0] : ""));
+		course.setProperty("Section",   (section.length == 2 ? section[1] : ""));
+		course.setProperty("ClassNum", courseData[4]);
+		course.setProperty("StartTime", (time.length == 2 ? time[0] : "") );
+		course.setProperty("EndTime", (time.length == 2 ? time[1] : ""));
+		course.setProperty("Day", courseData[6]);
+		course.setProperty("Instructor", courseData[8]);
+		course.setProperty("Location", courseData[9]);
+		course.setProperty("ClassID", courseData[10]);
+		
+		_datastore.put(course);
+	}
+	
+	public void addClass(int classID, String className) {
+		
+		Entity classObj = new Entity("Class", classID);
+		
+		classObj.setProperty("Name", className);
+		
+		_datastore.put(classObj);
+	}
+	
 	private void updateUser(String userID) {
 		
 		try {
@@ -110,7 +171,7 @@ public class Datastore
 			
 		} catch (EntityNotFoundException e) { }
 	}
-	
+
 	public void callMethod(String methodName) throws IOException {
 		
 		if(_errors.size() == 0) {
@@ -118,9 +179,26 @@ public class Datastore
 			switch(methodName) {
 			
 				case "updateUser": this.updateUser(getAttrFromUser("ID")); break;
-				
+				case "addUser": this.addUser(); break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
+	}
+	
+	private boolean userExists(String username) {
+		
+		List<Entity> users = Datastore.getAllUsers();
+		
+		for(Entity user : users){
+			
+			if(username.equalsIgnoreCase((String) user.getProperty("UserName"))) {
+				
+				_errors.add("This person is already a user");
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

@@ -55,7 +55,7 @@ public class HtmlOutputHelper
 		              +"<li><a href='view-courses'>View All Courses</a></li>" 
 		              +"</ul>" 
 		            +"</li>" 
-		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='scheduleview'>Schedule Views</a>" 
+		           +"<li class='active has-sub'><a "+( index == 2 ? "class='selected'" : "")+" href='schedule-view'>Schedule Views</a>" 
 		           +"<ul style='display: none'>" 
 		              +"<li class='has-sub'><a href='#'>View 1</a>" 
 		                 +"<ul>" 

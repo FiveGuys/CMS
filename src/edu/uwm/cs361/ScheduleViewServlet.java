@@ -63,7 +63,7 @@ public class ScheduleViewServlet extends HttpServlet{
 		resp.setContentType("text/html");
 		
 		resp.getWriter().println(
-			"<form action='scheduleview' method='post' class='standard-form'>"
+			"<form action='schedule-view' method='post' class='standard-form'>"
 				+"<select name='course'>"
 					+Datastore.getAllCourses()
 				+"</select>"
@@ -116,7 +116,7 @@ public class ScheduleViewServlet extends HttpServlet{
 			if(course.getProperty("classNumber").equals(courseID)){
 				LocalTime start = LocalTime.parse(course.getProperty("startTime").toString());
 				LocalTime end = LocalTime.parse(course.getProperty("endTime").toString());
-				
+
 				rowspan += end.getValue(0)-start.getValue(0);
 				
 				element +=  "<td class='course' rowspan='"+rowspan+"'>"

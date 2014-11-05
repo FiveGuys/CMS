@@ -32,7 +32,9 @@ body { height: 100%; width: 100%; background: #f8f8f8; color: #999999; text-alig
 
 .login_form .input-text:focus{ outline: none; border-color: #4D90FE; box-shadow: 0 0 3px #4D90FE; }
 .login_form .input-btn:hover { background: #ff9e00; }
-.uwmlogo { margin-bottom: 30px; }
+.uwmlogo {  }
+.sitelogo { margin-left: auto; width: 130px; margin-top: -65px; }
+.sitelogo img { width:130px; }
 .footer { margin: 10px 0 10px 32%;  }
 .footer a { color: grey; text-decoration: none; }
 

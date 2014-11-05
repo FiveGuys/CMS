@@ -79,6 +79,7 @@ public class Form
 			out.println("<ul class='errors'>");
 
 			for (String e : _errors) {
+				
 				out.println("  <li>" + e + "</li>");
 			}
 
@@ -138,6 +139,8 @@ public class Form
 				if (c.getName().equals("user")) {
 					
 					user = c.getValue();
+					
+					break;
 				}
 			} 
  		}

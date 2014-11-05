@@ -1,7 +1,6 @@
 package edu.uwm.cs361;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -76,7 +75,7 @@ public class LoginServlet extends HttpServlet
 			                	"<img src='images/logo_uwm.png'><img>" +
 			                "</a>" +
 			            "</div>" +
-			            "<div class='sitelogo'></div>" +
+			            "<div class='sitelogo'><img src='images/cms-logo.jpg'><img></div>" +
 			            "<div id='errors'>"+message+"</div>" +
 			            "<form action='login' method='post'>" +
 			                "<label for='user'>Username</label>" +

@@ -194,9 +194,10 @@ ul.errors {
     background-color: rgb(255, 158, 0);
 }
 
-.success-message {
+.success-msg {
 	color: green;
 	text-align: center;
 	font-size: 20px;
 	margin-bottom: 10px;
+	margin-top: -15px;
 }
