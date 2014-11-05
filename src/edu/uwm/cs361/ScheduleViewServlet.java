@@ -22,10 +22,11 @@ public class ScheduleViewServlet extends HttpServlet{
 	private String[][] table = new String[11][5];
 	private boolean buildTable = false;
 	private String courseID = "COMP SCI 201";
-	//Yes, I wrote out this array because I am a fucking scrub
+	//Yes, I wrote out this array because I am a scrub
 	private String[] times = {"8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"};
 	private char[] dates = {'M','T','W','R','F'};
 	private boolean canCreateData = false;
+	private String[] vals =new String[3];
 	
 	
 	@Override
@@ -125,13 +126,28 @@ public class ScheduleViewServlet extends HttpServlet{
 				+course.getProperty("location")+"</td>";
 				
 				for(char day: course.getProperty("days").toString().toCharArray()){
-					java.lang.System.out.println(new String(dates).indexOf(day)+" " + Arrays.asList(times).indexOf(start.toString("h:mm a")));
 					this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))][new String(dates).indexOf(day)] = element;
+					if(rowspan==2){
+						this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))+1][new String(dates).indexOf(day)] = "";
+					}
 				}
+				
+				officeHourBuilder(courseID,course);
 				
 			}
 		}
 		
+	}
+	
+	private void officeHourBuilder(String courseID, Entity course){
+		String element1 =  "<td class='course' rowspan='2'>"
+				+"<b>"+course.getProperty("classNumber")+"</b><br>"
+				+"Office Hours<br>"
+				+"Rock, Jayson<br>"
+				+"3:00 - 5:00 PM<br>"
+				+"EMS W340</td>";
+		table[7][2] = element1;
+		table[8][2] = "";
 	}
 	
 	//BUILT FOR TESTING PORPOISES
@@ -144,6 +160,7 @@ public class ScheduleViewServlet extends HttpServlet{
 		cs201.setProperty("startTime","10:00");
 		cs201.setProperty("endTime","10:50");
 		cs201.setProperty("location","EMS E145");
+		cs201.setProperty("instructor","Rock, Jayson");
 		ds.put(cs201);
 		
 		Entity cs251 = new Entity("Class");
@@ -153,6 +170,7 @@ public class ScheduleViewServlet extends HttpServlet{
 		cs251.setProperty("startTime","13:00");
 		cs251.setProperty("endTime","14:50");
 		cs251.setProperty("location","EMS E190");
+		cs251.setProperty("instructor","Rock, Jayson");
 		ds.put(cs251);
 		
 		Entity cs351 = new Entity("Class");
@@ -162,6 +180,7 @@ public class ScheduleViewServlet extends HttpServlet{
 		cs351.setProperty("startTime","11:00");
 		cs351.setProperty("endTime","12:15");
 		cs351.setProperty("location","EMS E190");
+		cs201.setProperty("instructor","Rock, Jayson");
 		ds.put(cs351);
 	}
 }
