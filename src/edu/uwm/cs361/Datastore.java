@@ -123,7 +123,7 @@ public class Datastore
 	
 	public void addCourse(String[] courseData) {
 		
-		Entity course = new Entity("Course", courseData[0]);
+		Entity course = new Entity("Section", courseData[0]);
 		
 		String[] section = courseData[3].split(" ");
 		String[] time = courseData[5].split(" ");
@@ -138,14 +138,14 @@ public class Datastore
 		course.setProperty("Day", courseData[6]);
 		course.setProperty("Instructor", courseData[8]);
 		course.setProperty("Location", courseData[9]);
-		course.setProperty("ClassID", courseData[10]);
+		course.setProperty("CourseID", courseData[10]);
 		
 		_datastore.put(course);
 	}
 	
 	public void addClass(int classID, String className) {
 		
-		Entity classObj = new Entity("Class", classID);
+		Entity classObj = new Entity("Course", classID);
 		
 		classObj.setProperty("Name", className);
 		
