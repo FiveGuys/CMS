@@ -1,5 +1,7 @@
 package edu.uwm.cs361;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,6 +182,7 @@ public class Datastore
 			
 				case "updateUser": this.updateUser(getAttrFromUser("ID")); break;
 				case "addUser": this.addUser(); break;
+				case "addAdmin": this.addAdmin(); break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
@@ -200,5 +203,33 @@ public class Datastore
 		}
 		
 		return false;
+	}
+
+	private void addAdmin() {
+		
+		Entity user = new Entity("User");
+		
+		user.setProperty("UserName", "admin.pass");
+		user.setProperty("Password", "pass"); 
+		user.setProperty("FirstName", "admin");
+		user.setProperty("MiddleName", "");
+		user.setProperty("LastName", "pass");
+		user.setProperty("Email", "");
+		user.setProperty("Location", "");
+		user.setProperty("Phone", "");
+		user.setProperty("AltPhone", "");
+		user.setProperty("OfficeHour1", "Wed;0;00;0;00");
+		user.setProperty("OfficeHour2", "Wed;0;00;0;00");
+		user.setProperty("OfficeHour3", "Wed;0;00;0;00");
+		user.setProperty("Access", "3");
+		user.setProperty("Semester", "2149");
+		
+		_datastore.put(user);
+		
+	}
+
+	public int getCount(String entity) {
+		
+		return _datastore.prepare(new Query(entity)).countEntities(withLimit(10));
 	}
 }

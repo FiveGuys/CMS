@@ -1,6 +1,7 @@
 package edu.uwm.cs361;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,18 @@ public class ForgotServlet extends HttpServlet
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
-		resp.sendRedirect("forgot.html");
+		Datastore ds = new Datastore(req, resp, new ArrayList<String>());
+		
+		if(ds.getCount("User") == 0) {
+			
+			ds.callMethod("addAdmin");
+			
+			resp.getWriter().println("Created One Admin");
+			
+		} else {
+			
+			resp.sendRedirect("forgot.html");
+		}
 	}
 	
 	@Override
