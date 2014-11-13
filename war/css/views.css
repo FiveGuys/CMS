@@ -43,3 +43,15 @@ table#schedule th:first-child {
 .standard-form select {
 	width: 45%;
 }
+
+/* 
+* Print Preview Style 
+* Must be at the End of File 
+*/
+@media print {
+	* { margin: 0 !important; }
+	div#header, select, input { display:none; }
+	div#main-container { box-shadow: none; -webkit-box-shadow: none; -moz-box-shadow: none; }
+	div#content { margin-top: 50mm !important; }
+	.course { color: black; font-weight: bold; }
+}

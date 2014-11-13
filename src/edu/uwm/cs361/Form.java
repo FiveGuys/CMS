@@ -19,7 +19,7 @@ public class Form
 	private HttpServletResponse _resp;
 	
 	private List<String> _errors;
-	
+		
 	public Form(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
 		
 		_req = req;

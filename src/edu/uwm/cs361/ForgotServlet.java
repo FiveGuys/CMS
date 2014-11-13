@@ -17,7 +17,7 @@ public class ForgotServlet extends HttpServlet
 		
 		if(ds.getCount("User") == 0) {
 			
-			ds.callMethod("addAdmin");
+			ds.addAdmin();
 			
 			resp.getWriter().println("Created One Admin");
 			

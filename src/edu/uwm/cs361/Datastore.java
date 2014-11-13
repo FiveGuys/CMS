@@ -1,7 +1,5 @@
 package edu.uwm.cs361;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +100,7 @@ public class Datastore
 		
 		if(!userExists(firstName+"."+lastName)) {
 			
-			Entity user = new Entity("User");
+			Entity user = new Entity("User", getCount("User") + 1);
 			
 			user.setProperty("UserName", firstName + "." + lastName);
 			user.setProperty("Password", lastName); 
@@ -128,7 +126,7 @@ public class Datastore
 		Entity course = new Entity("Section", courseData[0]);
 		
 		String[] section = courseData[3].split(" ");
-		String[] time = courseData[5].split(" ");
+		String[] time = courseData[5].split("-");
 		
 		course.setProperty("Name", courseData[1]);
 		course.setProperty("Units", courseData[2]);
@@ -182,7 +180,6 @@ public class Datastore
 			
 				case "updateUser": this.updateUser(getAttrFromUser("ID")); break;
 				case "addUser": this.addUser(); break;
-				case "addAdmin": this.addAdmin(); break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
@@ -205,16 +202,16 @@ public class Datastore
 		return false;
 	}
 
-	private void addAdmin() {
+	public void addAdmin() {
 		
-		Entity user = new Entity("User");
+		Entity user = new Entity("User", 1);
 		
-		user.setProperty("UserName", "admin.pass");
+		user.setProperty("UserName", "admin.pass"); 
 		user.setProperty("Password", "pass"); 
 		user.setProperty("FirstName", "admin");
 		user.setProperty("MiddleName", "");
 		user.setProperty("LastName", "pass");
-		user.setProperty("Email", "");
+		user.setProperty("Email", "admin@uwm.edu");
 		user.setProperty("Location", "");
 		user.setProperty("Phone", "");
 		user.setProperty("AltPhone", "");
@@ -230,6 +227,6 @@ public class Datastore
 
 	public int getCount(String entity) {
 		
-		return _datastore.prepare(new Query(entity)).countEntities(withLimit(10));
+		return _datastore.prepare(new Query(entity)).countEntities(FetchOptions.Builder.withDefaults());
 	}
 }

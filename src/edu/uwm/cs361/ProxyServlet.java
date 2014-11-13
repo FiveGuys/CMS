@@ -3,6 +3,8 @@ package edu.uwm.cs361;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,58 +27,129 @@ import org.jsoup.select.Elements;
 @SuppressWarnings("serial")
 public class ProxyServlet extends HttpServlet {
 	
+	private HttpServletRequest _req;
+	
+	private HttpServletResponse _resp;
+	
+	private String url; 
+	
+	private String urlParameters;
+	
+	private String semester;
+	
+	private HttpURLConnection con;
+    
+	private String response;
+	
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            						throws ServletException, IOException {
-    	try {
-    		
-    		getScheduleFromUWM(req,resp);
-    		
-        } catch (Exception e) {
-        	
-            e.printStackTrace(resp.getWriter());
-
-        }
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	
+    	_req = req; 
+    	
+    	_resp = resp;
+    	
+    	semester = req.getParameter("semester");
+    
+		getScheduleFromUWM();
+    	
+    	//getEmailFromUWM("Rock, Jayson");
     }
     
- 	private void getScheduleFromUWM(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+ 	private void getScheduleFromUWM() throws IOException {
 
- 		String url = "http://www4.uwm.edu/schedule/pdf/pf_dsp_soc_search_results.cfm?strm=2149";
- 		HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-  
- 		con.setRequestMethod("POST");
- 		con.setRequestProperty("User-Agent", "Mozilla/5.0");
- 		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-  
- 		String urlParameters = "mon=0&tue=0&wed=0&thu=0&fri=0&sat=0&sun=0&gergroup=100&checkurl=N&subject=COMPSCI&category=&lastname=&firstname=&EXACTWORDPHRASE=&COURSETYPE=ALL&timerangefrom=&timerangeto=&datebeginning=&strm=2149&school=ALL&school_descrformal=&results_title=&term_descr=Fall+2014&term_status=L&term_season=Fall+&datasource=cf_web_soc&subjdtlhide=false&submit_couns=Printer-Friendly+Version";
-  
- 		con.setDoOutput(true);
+ 		url = "http://www4.uwm.edu/schedule/pdf/pf_dsp_soc_search_results.cfm?strm="+semester;
+ 		
+ 		initConnection(url, "POST");
+ 		
+ 		sendRequest();
+ 		
+ 		getResponse();
+ 		
+ 		parseSchedule();
+ 	}
+
+ 	private String getEmailFromUWM(String name) throws IOException {
+		
+ 		url = "http://www4.uwm.edu/search.cfm?s=people&q="+ name.replace(", ", "%2C+");
+ 		
+ 		initConnection(url, "GET");
+ 		
+ 		getResponse();
+ 		
+ 		return parseEmail();
+	}
+ 	
+	private void initConnection(String url, String action) throws IOException {
+
+		con = (HttpURLConnection) new URL(url).openConnection();
+
+		con.setRequestMethod(action);
+
+		con.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+		
+		if(action == "POST") {
+			
+			urlParameters = "mon=0&tue=0&wed=0&thu=0&fri=0&sat=0&sun=0&gergroup=100&checkurl=N&subject=COMPSCI&category=&lastname=&firstname=&EXACTWORDPHRASE=&COURSETYPE=ALL&timerangefrom=&timerangeto=&datebeginning=&strm="+semester+
+					"&school=ALL&school_descrformal=&results_title=&term_descr="+getTerm(0)+"&term_status=L&term_season="+getTerm(1)+"&datasource=cf_web_soc&subjdtlhide=false&submit_couns=Printer-Friendly+Version";
+		}
+		
+		System.out.println("\nSending "+action+" request to URL : " + url);
+	}
+	
+	private void sendRequest() throws IOException {
+		
+		con.setDoOutput(true);
+		
  		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+ 		
  		wr.writeBytes(urlParameters);
+ 		
  		wr.flush();
+ 		
  		wr.close();
-  
- 		int responseCode = con.getResponseCode();
- 		System.out.println("\nSending 'POST' request to URL : " + url);
- 		System.out.println("Post parameters : " + urlParameters);
- 		System.out.println("Response Code : " + responseCode);
+	}
+
+	private void getResponse() throws IOException {
+		
+ 		System.out.println("Response Code : " + con.getResponseCode());
   
  		BufferedReader in = new BufferedReader(
  		        new InputStreamReader(con.getInputStream()));
  		
  		String inputLine;
- 		StringBuffer response = new StringBuffer();
+ 		
+ 		StringBuffer temp = new StringBuffer();
   
  		while ((inputLine = in.readLine()) != null) {
  		
- 			response.append(inputLine);
+ 			temp.append(inputLine);
  		}
  		
- 		Document doc = Jsoup.parse(response.toString());
+ 		in.close();
+ 		
+		response = temp.toString();
+		
+		_resp.getWriter().println(response);
+	}
+
+	private String parseEmail() {
+		
+		Document doc = Jsoup.parse(response.toString());
+ 		
+ 		Elements email = doc.select("td.email");
+ 		
+		return email.text();
+	}
+
+	private void parseSchedule() {
+		
+		Document doc = Jsoup.parse(response.toString());
  		
  		Elements ClassNames = doc.select("span.subhead");
  		
- 		Datastore ds = new Datastore(req, resp, new ArrayList<String>());
+ 		Datastore ds = new Datastore(_req, _resp, new ArrayList<String>());
  		
  		int classID = 1;
  		int courseID = 1;
@@ -116,12 +190,8 @@ public class ProxyServlet extends HttpServlet {
 			
 			classID++;
  		}
- 		
- 		in.close();
-  
- 		resp.getWriter().println(response.toString());
- 	}
-
+	}
+	
 	private String getName(String inputLine) {
 		
 		String temp = inputLine.substring(inputLine.indexOf('>') + 1, inputLine.indexOf("</span>"));
@@ -136,5 +206,50 @@ public class ProxyServlet extends HttpServlet {
 			}*/
 			
 			return temp;
+	}
+	
+	public static String md5(String message) { 
+
+		String hash = null; 
+
+		try { 
+			
+			MessageDigest md = MessageDigest.getInstance("MD5"); 
+			
+			byte[] bytes = md.digest(message.getBytes("UTF-8")); 
+			
+			StringBuilder sb = new StringBuilder(2 * bytes.length); 
+			
+			for(byte b : bytes){ 
+				
+				sb.append(String.format("%02x", b&0xff)); 
+			} 
+			
+			hash = sb.toString(); 
+			
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) { 
+			
+		}
+		
+		return hash; 
+	}
+	
+	private String getTerm(int type) {
+		
+		String term = "";
+		
+		if(semester.equals("2149")) {
+			term = (type == 0 ? "Fall+2014" : "Fall+");
+		}
+		
+		if(semester.equals("2151")) {
+			term = (type == 0 ? "UWinteriM+2015" : "UWinteriM+");
+		}
+		
+		if(semester.equals("2152")) {
+			term = (type == 0 ? "Spring+2015" : "Spring+");
+		}
+		
+		return term;
 	}
 }
