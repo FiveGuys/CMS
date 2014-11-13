@@ -48,7 +48,7 @@ public class ProxyServlet extends HttpServlet {
     	
     	_resp = resp;
     	
-    	semester = req.getParameter("semester");
+    	semester = (req.getParameter("semester") != null ? req.getParameter("semester") : "2149");
     
 		getScheduleFromUWM();
     	
