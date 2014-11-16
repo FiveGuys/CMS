@@ -26,6 +26,7 @@
 	border: 1px solid grey;
 	padding: 7px;
 	color: grey;
+	min-height: 16px;
 }
 
 h1.heading {

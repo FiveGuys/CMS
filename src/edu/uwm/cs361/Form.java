@@ -40,6 +40,17 @@ public class Form
 		printFooter();
 	}
 	
+	/**
+	 * Handle doGet() call from servlet to display page in a format:
+	 * Header, Message, Content, Footer
+	 * Will call a database function if _req.getParameter("submit") is not NULL.
+	 * @param header - Message seen at the top of the page in black banner.
+	 * @param page - Integer value of hard-coded index assigned to each page in HtmlOutputHelper.printHeader
+	 * @param servlet - 'this' //calls validate
+	 * @param method - String used to call particular database function
+	 * @param accessLevel - Integer value to determine access level of current user.
+	 * @throws IOException
+	 */
 	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
 		
 		checkAccess(accessLevel);
@@ -185,6 +196,10 @@ public class Form
 	public String End() {
 		
 		return "<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div></form>";
+	}
+	public String EndSearchUser() {//RJP
+		
+		return "<div class='submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
 	}
 	
 	public String TextField(String label, String name, String val, String ph, String cssClass) {

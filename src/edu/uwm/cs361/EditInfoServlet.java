@@ -26,7 +26,6 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		
 		_req = req;
 		
 		_resp = resp;

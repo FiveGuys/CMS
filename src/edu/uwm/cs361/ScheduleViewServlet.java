@@ -111,7 +111,7 @@ public class ScheduleViewServlet extends HttpServlet{
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("Class");
 		List<Entity> courses = ds.prepare(q).asList(FetchOptions.Builder.withDefaults());
-		
+
 		for(Entity course: courses){
 			if(course.getProperty("classNumber").equals(courseID)){
 				LocalTime start = LocalTime.parse(course.getProperty("startTime").toString());
