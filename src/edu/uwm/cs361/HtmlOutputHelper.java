@@ -72,7 +72,7 @@ public class HtmlOutputHelper
 		                 +"</ul>" 
 		              +"</li>" 
 		           +"<li><a "+( index == 3 ? "class='selected'" : "")+" href='edit-info'>Edit Info</a></li>" 
-		           //+"<li style='display: none><a "+( index == 4 ? "class='selected'" : "")+" href='user-search'>Search User</a></li>" 
+		           +"<li><a "+( index == 4 ? "class='selected'" : "")+" href='user-search'>Search User</a></li>" 
 		           +"</ul>" 
 		        +"</div>" 
 		      +"</div>"

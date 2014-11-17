@@ -197,6 +197,11 @@ public class Form
 		return formInput(label, cssClass, getSelectField(name, selected, "", list));
 	}
 	
+	public String EndSearchUser() {//RJP
+		
+		return "<div class='submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
+	}
+	
 	public String CheckBox(String label, String cssClass, String name, Boolean checked) {
 
 		return formInput(label, cssClass,
