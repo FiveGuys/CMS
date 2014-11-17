@@ -142,6 +142,7 @@ public class ScheduleViewServlet extends HttpServlet{
 		String element = "";
 		int rowspan=1;
 		
+
 		Query q = pm.newQuery(Course.class);
 		q.declareParameters("String CourseID");
 		@SuppressWarnings("unchecked")
@@ -151,6 +152,7 @@ public class ScheduleViewServlet extends HttpServlet{
 			if(course.getClassNum().equals(courseID) && ScheduleViewTests.testCourseValues(course)){
 				LocalTime start = LocalTime.parse(course.getStartTime(), DateTimeFormat.forPattern("h:m a"));
 				LocalTime end = LocalTime.parse(course.getEndTime(), DateTimeFormat.forPattern("h:m a"));
+
 
 				rowspan += end.getValue(0)-start.getValue(0);
 				

@@ -214,35 +214,9 @@ public class Datastore
 			
 				case "updateUser": this.updateUser(getAttrFromUser("ID")); break;
 				case "addUser": this.addUser(); break;
-				case "searchUser": this.searchUser(); break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
-	}
-	
-	private void searchUser() {
-		String firstName = _req.getParameter("FirstName");
-		String lastName = _req.getParameter("LastName");
-		
-		if(userExists(firstName+"."+lastName, 3)) {
-			//TODO not sure how to do this yet RJP
-		}else{
-			
-		}
-		
-	}
-
-	private boolean userExists(String username, int page){//RJP, this was just so I don't _errors.add in the userExists below...
-		List<Entity> users = Datastore.getAllUsers();
-		if(page == 3){
-			for(Entity user : users){
-				if(username.equalsIgnoreCase((String) user.getProperty("UserName"))) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
 	}
 	
 	private boolean userExists(String username) {

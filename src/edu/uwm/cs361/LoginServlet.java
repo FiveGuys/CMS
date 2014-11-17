@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet
 			resp.addCookie(c);
 			
 			resp.sendRedirect("edit-info");
-
+			
 		} else  {
 			
 			printContent(resp, "Invalid Username / Password");
@@ -54,7 +54,7 @@ public class LoginServlet extends HttpServlet
 	private void printContent(HttpServletResponse resp, String message) throws IOException {
 		
 		resp.getWriter().println(
-
+			
 			"<!DOCTYPE html>" +
 			"<html>" +
 			"<head>" +
