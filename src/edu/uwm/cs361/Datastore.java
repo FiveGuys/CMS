@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,13 +34,16 @@ public class Datastore
 	
 	private List<String> _errors;
 	
+	private static PersistenceManager _pm;
+	
  	public Datastore(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
- 		
  		_datastore = DatastoreServiceFactory.getDatastoreService();
  		
  		_req = req;
  		
 		_errors = errors;
+		
+		_pm = JDOHelper.getPersistenceManagerFactory("transaction-optional").getPersistenceManager();
 		
 		_user = findUser();
 	}
@@ -74,11 +80,11 @@ public class Datastore
 		return _user.get(attr);
 	}
 	
-	public static List<Entity> getAllUsers() {
+	public static List<User> getAllUsers() {
 		
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		
-		return ds.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
+		//DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		//return ds.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
+		return (List<User>) _pm.newQuery(User.class).execute();
 	}
 	
 	public static List<String> getAllInstructors() {
@@ -190,22 +196,24 @@ public class Datastore
 		
 		try {
 			
-			Entity user = _datastore.get(KeyFactory.createKey("User", Long.parseLong(userID, 10)));
+			//Entity user = _datastore.get(KeyFactory.createKey("User", Long.parseLong(userID, 10)));
+			User user = new User();
 			
-			user.setProperty("MiddleName", _req.getParameter("MiddleName"));
-			user.setProperty("Email", _req.getParameter("Email"));
-			user.setProperty("Location", _req.getParameter("Location"));
-			user.setProperty("Phone", _req.getParameter("Phone"));
-			user.setProperty("AltPhone", _req.getParameter("AltPhone"));
-			user.setProperty("OfficeHour1", Form.calcOfficeHours(1, _req));
-			user.setProperty("OfficeHour2", Form.calcOfficeHours(2, _req));
-			user.setProperty("OfficeHour3", Form.calcOfficeHours(3, _req));
+			user.setMiddleName( _req.getParameter("MiddleName"));
+			user.setEmail( _req.getParameter("Email"));
+			user.setLocation( _req.getParameter("Location"));
+			user.setPhone( _req.getParameter("Phone"));
+			user.setAltPhone( _req.getParameter("AltPhone"));
+			user.setOfficeHour1( Form.calcOfficeHours(1, _req));
+			user.setOfficeHour2( Form.calcOfficeHours(2, _req));
+			user.setOfficeHour3(Form.calcOfficeHours(3, _req));
 			
-			_datastore.put(user);
+			_pm.makePersistent(user);
 			
-		} catch (EntityNotFoundException e) { }
+		} catch (Exception e) { }
 	}
 
+	//we have a method called "callMethod" 
 	public void callMethod(String methodName) throws IOException {
 		
 		if(_errors.size() == 0) {
@@ -233,10 +241,10 @@ public class Datastore
 	}
 
 	private boolean userExists(String username, int page){//RJP, this was just so I don't _errors.add in the userExists below...
-		List<Entity> users = Datastore.getAllUsers();
+		List<User> users = Datastore.getAllUsers();
 		if(page == 3){
-			for(Entity user : users){
-				if(username.equalsIgnoreCase((String) user.getProperty("UserName"))) {
+			for(User user : users){
+				if(username.equalsIgnoreCase((String) user.getUserName())) {
 					return true;
 				}
 			}
@@ -247,11 +255,11 @@ public class Datastore
 	
 	private boolean userExists(String username) {
 		
-		List<Entity> users = Datastore.getAllUsers();
+		List<User> users = Datastore.getAllUsers();
 		
-		for(Entity user : users){
+		for(User user : users){
 			
-			if(username.equalsIgnoreCase((String) user.getProperty("UserName"))) {
+			if(username.equalsIgnoreCase((String) user.getUserName())) {
 				
 				_errors.add("This person is already a user");
 				
@@ -264,24 +272,24 @@ public class Datastore
 
 	public void addAdmin() {
 		
-		Entity user = new Entity("User", 1);
+		User user = new User();
 		
-		user.setProperty("UserName", "admin.pass"); 
-		user.setProperty("Password", "pass"); 
-		user.setProperty("FirstName", "admin");
-		user.setProperty("MiddleName", "");
-		user.setProperty("LastName", "pass");
-		user.setProperty("Email", "admin@uwm.edu");
-		user.setProperty("Location", "");
-		user.setProperty("Phone", "");
-		user.setProperty("AltPhone", "");
-		user.setProperty("OfficeHour1", "Wed;0;00;0;00");
-		user.setProperty("OfficeHour2", "Wed;0;00;0;00");
-		user.setProperty("OfficeHour3", "Wed;0;00;0;00");
-		user.setProperty("Access", "3");
-		user.setProperty("Semester", "2149");
+		user.setUserName("admin.pass"); 
+		user.setPassword( "pass"); 
+		user.setFirstName( "admin");
+		user.setMiddleName( "");
+		user.setLastName( "pass");
+		user.setEmail( "admin@uwm.edu");
+		user.setLocation( "");
+		user.setPhone( "");
+		user.setAltPhone( "");
+		user.setOfficeHour1( "Wed;0;00;0;00");
+		user.setOfficeHour2( "Wed;0;00;0;00");
+		user.setOfficeHour3( "Wed;0;00;0;00");
+		user.setAccess("3");
+		user.setSemester("2149");
 		
-		_datastore.put(user);
+		_pm.makePersistent(user);
 		
 	}
 
