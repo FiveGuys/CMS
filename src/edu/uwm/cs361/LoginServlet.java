@@ -100,12 +100,12 @@ public class LoginServlet extends HttpServlet
 	
 	private boolean validate(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
 		
-		List<Entity> users = Datastore.getAllUsers();
+		List<User> users = Datastore.getAllUsers();
 		
-		for(Entity user : users) {
+		for(User user : users) {
 			
-			if(username.equals(user.getProperty("UserName")) && 
-				password.equals(user.getProperty("Password")) ) {
+			if(username.equals(user.getUserName()) && 
+				password.equals(user.getPassword())) {
 				
 				return true;
 			}
