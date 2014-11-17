@@ -160,7 +160,7 @@ public class ProxyServlet extends HttpServlet {
  			
  			String ClassName = getName(e.toString());
  			
- 			ds.addClass(classID, ClassName);
+ 			//ds.addClass(classID, ClassName);
  			System.out.println(ClassName);
  			
 			Elements tr = e.parent().parent().parent().getElementsByClass("body");

@@ -4,24 +4,29 @@ import java.util.List;
 import java.io.IOException;
 import java.util.Arrays;
 
+import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Query;
 
 import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
 
 @SuppressWarnings("serial")
 public class ScheduleViewServlet extends HttpServlet{
 	
 	private String[][] table = new String[11][5];
 	private boolean buildTable = false;
-	private String courseID = "COMP SCI 201";
+	private String courseID = "";
 	//Yes, I wrote out this array because I am a scrub
 	private String[] times = {"8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"};
 	private char[] dates = {'M','T','W','R','F'};
@@ -46,7 +51,12 @@ public class ScheduleViewServlet extends HttpServlet{
 	 //TODO doPost should take the class, instructor, or ta, from the select, and input elements from the datastore into the array table
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		courseID = req.getParameter("course");
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(Course.class);
+		q.setUnique(true);
+		q.declareParameters("String Name");
+		Course selectCourse = (Course)q.execute(req.getParameter("course"));
+		courseID = selectCourse.getCourseID();
 		doGet(req, resp);
 	}
 	
@@ -65,12 +75,34 @@ public class ScheduleViewServlet extends HttpServlet{
 		resp.getWriter().println(
 			"<form action='schedule-view' method='post' class='standard-form'>"
 				+"<select name='course'>"
-					+Datastore.getAllCourses()
+					+selectBuilder()
 				+"</select>"
 				+"<div class='submit'><input type='submit' name='submit' class='button' value='Submit' /></div>"
 			+"</form>"
 			+ createHTMLTable(req, resp, course)
 		);
+	}
+
+	@SuppressWarnings("unchecked")
+	private String selectBuilder(){
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		String select = "";
+		
+		Query q = pm.newQuery(Course.class);
+		q.declareParameters("String CourseId");
+		
+		List<Course> courses = null;
+		System.out.println("BEFORE THE STUFF");
+		for(int i = 1; i < 46; ++i){
+			courses = (List<Course>)q.execute(((Integer)i).toString());
+			System.out.println(i+" OUTSIDE IF");
+			if(courses != null){
+				System.out.println(i+" INSIDE THE IF"+courses.get(0).getName());
+				select += "<option>"+ courses.get(0).getName()+"</option>";
+			}
+			
+		}
+		return select;
 	}
 	
 	private String createHTMLTable(HttpServletRequest req, HttpServletResponse resp, String course) throws IOException{
@@ -105,41 +137,42 @@ public class ScheduleViewServlet extends HttpServlet{
 	
 	//Creates the HTML formating for the table element
 	private void courseBuilder(String courseID){
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		
 		String element = "";
 		int rowspan=1;
 		
-		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		Query q = new Query("Class");
-		List<Entity> courses = ds.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Query q = pm.newQuery(Course.class);
+		q.declareParameters("String CourseID");
+		@SuppressWarnings("unchecked")
+		List<Course> courses = (List<Course>)q.execute(courseID);
 
-		for(Entity course: courses){
-			if(course.getProperty("classNumber").equals(courseID)){
-				LocalTime start = LocalTime.parse(course.getProperty("startTime").toString());
-				LocalTime end = LocalTime.parse(course.getProperty("endTime").toString());
+		for(Course course: courses){
+			if(course.getClassNum().equals(courseID) && ScheduleViewTests.testCourseValues(course)){
+				LocalTime start = LocalTime.parse(course.getStartTime(), DateTimeFormat.forPattern("h:m a"));
+				LocalTime end = LocalTime.parse(course.getEndTime(), DateTimeFormat.forPattern("h:m a"));
 
 				rowspan += end.getValue(0)-start.getValue(0);
 				
 				element +=  "<td class='course' rowspan='"+rowspan+"'>"
-				+"<b>"+course.getProperty("classNumber")+"</b><br>"
-				+course.getProperty("classType")+"<br>"
+				+"<b>"+course.getClassNum()+"</b><br>"
+				+course.getClassType()+"<br>"
 				+start.toString("h:mm a")+" - "+end.toString("h:mm a")+"<br>"
-				+course.getProperty("location")+"</td>";
+				+course.getLocation()+"</td>";
 				
-				for(char day: course.getProperty("days").toString().toCharArray()){
+				for(char day: course.getDay().toCharArray()){
 					this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))][new String(dates).indexOf(day)] = element;
 					if(rowspan==2){
 						this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))+1][new String(dates).indexOf(day)] = "";
 					}
 				}
 				
-				officeHourBuilder(courseID,course);
-				
 			}
 		}
 		
 	}
 	
-	private void officeHourBuilder(String courseID, Entity course){
+	/*private void officeHourBuilder(String courseID, Entity course){
 		String element1 =  "<td class='course' rowspan='2'>"
 				+"<b>"+course.getProperty("classNumber")+"</b><br>"
 				+"Office Hours<br>"
@@ -148,7 +181,7 @@ public class ScheduleViewServlet extends HttpServlet{
 				+"EMS W340</td>";
 		table[7][2] = element1;
 		table[8][2] = "";
-	}
+	}*/
 	
 	//BUILT FOR TESTING PORPOISES
 	private void createDummyContent(){

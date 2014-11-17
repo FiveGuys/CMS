@@ -9,6 +9,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -121,7 +125,9 @@ public class Datastore
 		}
 	}
 	
-	public void addCourse(String[] courseData) {
+	/* Creating new addCourse, keeping this here for reference
+	 * 
+	 * public void addCourse(String[] courseData) {
 		
 		Entity course = new Entity("Section", courseData[0]);
 		
@@ -141,6 +147,34 @@ public class Datastore
 		course.setProperty("CourseID", courseData[10]);
 		
 		_datastore.put(course);
+	}
+	*/
+	
+	public void addCourse(String[] CourseData) {
+		String[] section = CourseData[3].split(" ");
+		String[] time = CourseData[5].split("-");
+		
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		
+		try{
+			Course course = new Course(
+					section.length == 2 ? section[1] : "",
+					CourseData[1],
+					CourseData[2],
+					section.length == 2 ? section[0] : "",
+					CourseData[4],
+					time.length == 2 ? time[0] : "", 
+					time.length == 2 ? time[1] : "",
+					CourseData[6],
+					CourseData[8],
+					CourseData[9],
+					CourseData[10]);
+			
+			pm.makePersistent(course);
+		}
+		finally{
+			pm.close();
+		}
 	}
 	
 	public void addClass(int classID, String className) {
