@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -31,7 +30,8 @@ public class Datastore
 	
 	private List<String> _errors;
 	
-	private static PersistenceManager _pm;
+	private static final PersistenceManager _pm = getPersistenceManager();
+
 	
  	public Datastore(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
  		_datastore = DatastoreServiceFactory.getDatastoreService();
@@ -40,32 +40,10 @@ public class Datastore
  		
 		_errors = errors;
 		
-		_pm = PMF.get().getPersistenceManager();
-		
 		_user = findUser();
 	}
 
- 	private Map<String, String> findUser() {
- 		
-		Map<String, String> map = new HashMap<String, String>();
-		
-		List<Entity> users = _datastore.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
 
-		for(Entity user : users) {
-			
-			if(user.getProperty("UserName").toString().equals(Form.getUserFromCookie(_req))) {
-				 
-				for(Map.Entry<String, Object> entry : user.getProperties().entrySet()) {
-					
-					map.put(entry.getKey(), entry.getValue().toString());
-				}
-				
-				map.put("ID", user.getKey().getId() + "");
-			}
-		}
-
-		return map;
-	}
  	
  	public Map<String, String> getUser() {
  		
@@ -77,11 +55,25 @@ public class Datastore
 		return _user.get(attr);
 	}
 	
+	@SuppressWarnings("finally")
 	public static List<User> getAllUsers() {
 		
 		//DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		//return ds.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
-		return (List<User>) _pm.newQuery(User.class).execute();
+		javax.jdo.Query q = _pm.newQuery(User.class);
+		List<User> users = new ArrayList<User>();
+		
+		//Query q = pm.newQuery(Person.class);
+		//q.setFilter("lastName == lastNameParam");
+		//q.setOrdering("height desc");
+		//q.declareParameters("String lastNameParam");
+
+		try {
+		  users = (List<User>) q.execute();
+		} finally {
+		  q.closeAll();
+		  return users;
+		}
 	}
 	
 	public static List<String> getAllInstructors() {
@@ -99,34 +91,7 @@ public class Datastore
 		return "<option>COMP SCI 201</option><option>COMP SCI 251</option><option>COMP SCI 351</option>";
  	}
 	
-	private void addUser() {
-		
-		String firstName = _req.getParameter("FirstName");
-		String lastName = _req.getParameter("LastName");
-		String access = _req.getParameter("Access");
-		
-		if(!userExists(firstName+"."+lastName)) {
-			
-			Entity user = new Entity("User", getCount("User") + 1);
-			
-			user.setProperty("UserName", firstName + "." + lastName);
-			user.setProperty("Password", lastName); 
-			user.setProperty("FirstName", firstName);
-			user.setProperty("MiddleName", "");
-			user.setProperty("LastName", lastName);
-			user.setProperty("Email", "");
-			user.setProperty("Location", "");
-			user.setProperty("Phone", "");
-			user.setProperty("AltPhone", "");
-			user.setProperty("OfficeHour1", "Wed;0;00;0;01");
-			user.setProperty("OfficeHour2", "Wed;0;00;0;00");
-			user.setProperty("OfficeHour3", "Wed;0;00;0;00");
-			user.setProperty("Access", access);
-			user.setProperty("Semester", "2149");
-			
-			_datastore.put(user);
-		}
-	}
+
 	
 	/* Creating new addCourse, keeping this here for reference
 	 * 
@@ -177,7 +142,20 @@ public class Datastore
 			_pm.close();
 		}
 	}
-	
+	//we have a method called "callMethod" 
+	public void callMethod(String methodName) throws IOException {
+		
+		if(_errors.size() == 0) {
+			
+			switch(methodName) {
+			
+				//case "updateUser": this.updateUser(getAttrFromUser("ID")); break; TODO change this to work with user JDO 
+				case "addUser": this.addUser(); break;
+				case "searchUser": this.searchUser(); break;
+				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
+			}
+		}
+	}
 	public void addClass(int classID, String className) {
 		
 		Entity classObj = new Entity("Course", classID);
@@ -187,6 +165,33 @@ public class Datastore
 		_datastore.put(classObj);
 	}
 	
+	public void addAdmin() {
+		
+		User user = new User();
+		
+		user.setUserName("admin.pass"); 
+		user.setPassword( "pass"); 
+		user.setFirstName( "admin");
+		user.setMiddleName( "");
+		user.setLastName( "pass");
+		user.setEmail( "admin@uwm.edu");
+		user.setLocation( "");
+		user.setPhone( "");
+		user.setAltPhone( "");
+		user.setOfficeHour1( "Wed;0;00;0;00");
+		user.setOfficeHour2( "Wed;0;00;0;00");
+		user.setOfficeHour3( "Wed;0;00;0;00");
+		user.setAccess("3");
+		user.setSemester("2149");
+		
+		_pm.makePersistent(user);
+		
+	}
+
+	public int getCount(String entity) {//TODO why do we need this
+		
+		return _datastore.prepare(new Query(entity)).countEntities(FetchOptions.Builder.withDefaults());
+	}
 	private void updateUser(String userID) {
 		
 		try {
@@ -208,20 +213,7 @@ public class Datastore
 		} catch (Exception e) { }
 	}
 
-	//we have a method called "callMethod" 
-	public void callMethod(String methodName) throws IOException {
-		
-		if(_errors.size() == 0) {
-			
-			switch(methodName) {
-			
-				case "updateUser": this.updateUser(getAttrFromUser("ID")); break;
-				case "addUser": this.addUser(); break;
-				case "searchUser": this.searchUser(); break;
-				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
-			}
-		}
-	}
+
 	
 	private void searchUser() {
 		String firstName = _req.getParameter("FirstName");
@@ -264,32 +256,62 @@ public class Datastore
 		
 		return false;
 	}
+	
+	//TODO dee change this to work the JDO this method is coupling to everything but the kitchen sink
+ 	private Map<String, String> findUser() {
+ 		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		List<Entity> users = _datastore.prepare(new Query("User")).asList(FetchOptions.Builder.withDefaults());
 
-	public void addAdmin() {
+		for(Entity user : users) {
+			
+			if(user.getProperty("UserName").toString().equals(Form.getUserFromCookie(_req))) {
+				 
+				for(Map.Entry<String, Object> entry : user.getProperties().entrySet()) {
+					
+					map.put(entry.getKey(), entry.getValue().toString());
+				}
+				
+				map.put("ID", user.getKey().getId() + "");
+			}
+		}
+
+		return map;
+	}
+ 	
+	private void addUser() {
 		
-		User user = new User();
+		String firstName = _req.getParameter("FirstName");
+		String lastName = _req.getParameter("LastName");
+		String access = _req.getParameter("Access");
 		
-		user.setUserName("admin.pass"); 
-		user.setPassword( "pass"); 
-		user.setFirstName( "admin");
-		user.setMiddleName( "");
-		user.setLastName( "pass");
-		user.setEmail( "admin@uwm.edu");
-		user.setLocation( "");
-		user.setPhone( "");
-		user.setAltPhone( "");
-		user.setOfficeHour1( "Wed;0;00;0;00");
-		user.setOfficeHour2( "Wed;0;00;0;00");
-		user.setOfficeHour3( "Wed;0;00;0;00");
-		user.setAccess("3");
-		user.setSemester("2149");
-		
-		_pm.makePersistent(user);
-		
+		if(!userExists(firstName+"."+lastName)) {
+			
+			User user = new User();
+			
+			user.setUserName( firstName + "." + lastName);
+			user.setPassword( lastName); 
+			user.setFirstName( firstName);
+			user.setMiddleName( "");
+			user.setLastName( lastName);
+			user.setEmail("");
+			user.setLocation( "");
+			user.setPhone( "");
+			user.setAltPhone( "");
+			user.setOfficeHour1( "Wed;0;00;0;01");
+			user.setOfficeHour2( "Wed;0;00;0;00");
+			user.setOfficeHour3( "Wed;0;00;0;00");
+			user.setAccess(access);
+			user.setSemester("2149");
+			
+			_pm.makePersistent(user);
+		}
+	}
+	
+	private static PersistenceManager getPersistenceManager(){
+		return JDOHelper.getPersistenceManagerFactory("transactions-optional").getPersistenceManager();
 	}
 
-	public int getCount(String entity) {
-		
-		return _datastore.prepare(new Query(entity)).countEntities(FetchOptions.Builder.withDefaults());
-	}
+
 }
