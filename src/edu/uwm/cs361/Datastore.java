@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,7 +40,7 @@ public class Datastore
  		
 		_errors = errors;
 		
-		_pm = JDOHelper.getPersistenceManagerFactory("transaction-optional").getPersistenceManager();
+		_pm = PMF.get().getPersistenceManager();
 		
 		_user = findUser();
 	}
@@ -160,12 +157,10 @@ public class Datastore
 		String[] section = CourseData[3].split(" ");
 		String[] time = CourseData[5].split("-");
 		
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		
 		try{
 			Course course = new Course(
-					section.length == 2 ? section[1] : "",
-					CourseData[1],
+					section.length == 2 ? section[1] : "", //section
+					CourseData[1],//Name
 					CourseData[2],
 					section.length == 2 ? section[0] : "",
 					CourseData[4],
@@ -176,10 +171,10 @@ public class Datastore
 					CourseData[9],
 					CourseData[10]);
 			
-			pm.makePersistent(course);
+			_pm.makePersistent(course);
 		}
 		finally{
-			pm.close();
+			_pm.close();
 		}
 	}
 	

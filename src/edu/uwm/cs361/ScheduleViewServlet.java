@@ -53,10 +53,13 @@ public class ScheduleViewServlet extends HttpServlet{
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(Course.class);
-		q.setUnique(true);
-		q.declareParameters("String Name");
-		Course selectCourse = (Course)q.execute(req.getParameter("course"));
-		courseID = selectCourse.getCourseID();
+		q.declareParameters("String NameParam");
+		q.setFilter("Name == NameParam");
+		
+		@SuppressWarnings("unchecked")
+		List<Course> selectCourse = (List<Course>)q.execute(req.getParameter("course"));
+		courseID = selectCourse.get(0).getCourseID();
+		System.out.println("DoPost Doing THings");
 		doGet(req, resp);
 	}
 	
@@ -89,15 +92,15 @@ public class ScheduleViewServlet extends HttpServlet{
 		String select = "";
 		
 		Query q = pm.newQuery(Course.class);
-		q.declareParameters("String CourseId");
+		q.declareParameters("String CourseIDParam");
+		q.setFilter("CourseID == CourseIDParam");
 		
 		List<Course> courses = null;
-		System.out.println("BEFORE THE STUFF");
+		
 		for(int i = 1; i < 46; ++i){
 			courses = (List<Course>)q.execute(((Integer)i).toString());
-			System.out.println(i+" OUTSIDE IF");
+			
 			if(courses != null){
-				System.out.println(i+" INSIDE THE IF"+courses.get(0).getName());
 				select += "<option>"+ courses.get(0).getName()+"</option>";
 			}
 			
@@ -144,12 +147,15 @@ public class ScheduleViewServlet extends HttpServlet{
 		
 
 		Query q = pm.newQuery(Course.class);
-		q.declareParameters("String CourseID");
+		q.declareParameters("String CourseIDParam");
+		q.setFilter("CourseID == CourseIDParam");
 		@SuppressWarnings("unchecked")
 		List<Course> courses = (List<Course>)q.execute(courseID);
 
 		for(Course course: courses){
-			if(course.getClassNum().equals(courseID) && ScheduleViewTests.testCourseValues(course)){
+			System.out.println("Course Name: "+course.getName());
+			if(ScheduleViewTests.testCourseValues(course) && course.getClassType().equals("LEC")){
+				System.out.println("Passed Test!");
 				LocalTime start = LocalTime.parse(course.getStartTime(), DateTimeFormat.forPattern("h:m a"));
 				LocalTime end = LocalTime.parse(course.getEndTime(), DateTimeFormat.forPattern("h:m a"));
 
@@ -157,7 +163,7 @@ public class ScheduleViewServlet extends HttpServlet{
 				rowspan += end.getValue(0)-start.getValue(0);
 				
 				element +=  "<td class='course' rowspan='"+rowspan+"'>"
-				+"<b>"+course.getClassNum()+"</b><br>"
+				+"<b>"+course.getName()+"</b><br>"
 				+course.getClassType()+"<br>"
 				+start.toString("h:mm a")+" - "+end.toString("h:mm a")+"<br>"
 				+course.getLocation()+"</td>";
