@@ -74,6 +74,6 @@ public class DatastoreTest {
     	
     	Datastore.addAdmin();
     	
-    	assertEquals(1, Datastore.getAllUsers(null));
+    	assertEquals(1, Datastore.getUsers(null));
     }
 }

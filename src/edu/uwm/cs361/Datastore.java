@@ -34,7 +34,7 @@ public class Datastore
  	
 	
 	@SuppressWarnings("unchecked")
-	public static List<User> getAllUsers(String query) {
+	public static List<User> getUsers(String query) {
 		
 		Query q = _pm.newQuery(User.class);
 		
@@ -46,23 +46,31 @@ public class Datastore
 		return (List<User>) q.execute();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static List<Course> getAllCourses(String query) {
+	@SuppressWarnings({ "unchecked", "null" })
+	public static List<Course> getCourses() {
 
 		Query q = _pm.newQuery(Course.class);
 		
-		if(query != null) {
+		q.setFilter("CourseID == CourseIDParam");
+		
+		q.declareParameters("String CourseIDParam");
+		
+		List<Course> courses = null;
+		
+		for(int i = 1; i < 46; ++i){
 			
-			q.setFilter(query);
+			Course course = (Course) q.execute(i);
+			
+			courses.add(course);
 		}
 		
-		return (List<Course>) q.execute();
+		return courses;
  	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<Section> getAllSections(String query) {
+	public static List<Section> getSections(String query) {
 
-		Query q = _pm.newQuery(Section.class);
+		Query q = _pm.newQuery(Section.class,query);
 		
 		if(query != null) {
 			
@@ -74,7 +82,7 @@ public class Datastore
 	
 	public static List<User> getAllInstructors() {
 		
- 		return Datastore.getAllUsers("Access=='2'");
+ 		return Datastore.getUsers("Access=='2'");
  	}
 
 	private User findUser() {
@@ -83,7 +91,7 @@ public class Datastore
  		
  		String query = "UserName=='"+username+"'";
  		
- 		return Datastore.getAllUsers(query).get(0);
+ 		return Datastore.getUsers(query).get(0);
 	}
 	
 	/* Creating new addCourse, keeping this here for reference
@@ -151,6 +159,7 @@ public class Datastore
 				case "updateUser": this.updateUser(); break;
 				case "addUser": this.addUser(); break;
 				case "searchUser": this.searchUser(); break;
+				case "": break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
@@ -158,7 +167,7 @@ public class Datastore
 	
 	public static void addAdmin() {
 		
-		if(Datastore.getAllUsers(null).size() == 0) {
+		if(Datastore.getUsers(null).size() == 0) {
 			
 			User user = new User();
 			
@@ -214,7 +223,7 @@ public class Datastore
 
 	private boolean userExists(String username) {
 		
-		List<User> users = Datastore.getAllUsers("UserName=='"+_user.getUserName()+"'");
+		List<User> users = Datastore.getUsers("UserName=='"+_user.getUserName()+"'");
 		
 		if(users.size() != 0) {
 			

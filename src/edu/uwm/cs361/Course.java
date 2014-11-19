@@ -8,6 +8,8 @@ public class Course {
 	@PrimaryKey
 	@Persistent
 	private String name;
+	public String getID() { return name; }
+	public void setID(String ID) { this.name = ID; }
 	
 	@Persistent
 	private String CourseName;
