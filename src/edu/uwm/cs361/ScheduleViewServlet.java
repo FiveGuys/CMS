@@ -33,7 +33,6 @@ public class ScheduleViewServlet extends HttpServlet{
 	private boolean canCreateData = false;
 	private String[] vals =new String[3];
 	
-	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		for(int i = 0; i < table.length; ++i){
@@ -52,12 +51,12 @@ public class ScheduleViewServlet extends HttpServlet{
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Query q = pm.newQuery(Course.class);
+		Query q = pm.newQuery(Section.class);
 		q.declareParameters("String NameParam");
 		q.setFilter("Name == NameParam");
 		
 		@SuppressWarnings("unchecked")
-		List<Course> selectCourse = (List<Course>)q.execute(req.getParameter("course"));
+		List<Section> selectCourse = (List<Section>)q.execute(req.getParameter("course"));
 		courseID = selectCourse.get(0).getCourseID();
 		System.out.println("DoPost Doing THings");
 		doGet(req, resp);
@@ -91,14 +90,14 @@ public class ScheduleViewServlet extends HttpServlet{
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		String select = "";
 		
-		Query q = pm.newQuery(Course.class);
+		Query q = pm.newQuery(Section.class);
 		q.declareParameters("String CourseIDParam");
 		q.setFilter("CourseID == CourseIDParam");
 		
-		List<Course> courses = null;
+		List<Section> courses = null;
 		
 		for(int i = 1; i < 46; ++i){
-			courses = (List<Course>)q.execute(((Integer)i).toString());
+			courses = (List<Section>)q.execute(((Integer)i).toString());
 			
 			if(courses != null){
 				select += "<option>"+ courses.get(0).getName()+"</option>";
@@ -146,13 +145,13 @@ public class ScheduleViewServlet extends HttpServlet{
 		int rowspan=1;
 		
 
-		Query q = pm.newQuery(Course.class);
+		Query q = pm.newQuery(Section.class);
 		q.declareParameters("String CourseIDParam");
 		q.setFilter("CourseID == CourseIDParam");
 		@SuppressWarnings("unchecked")
-		List<Course> courses = (List<Course>)q.execute(courseID);
+		List<Section> courses = (List<Section>)q.execute(courseID);
 
-		for(Course course: courses){
+		for(Section course: courses){
 			System.out.println("Course Name: "+course.getName());
 			if(ScheduleViewTests.testCourseValues(course) && course.getClassType().equals("LEC")){
 				System.out.println("Passed Test!");

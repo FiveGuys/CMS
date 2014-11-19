@@ -68,4 +68,12 @@ public class DatastoreTest {
     	
     	assertEquals(Long.parseLong("1000"), ds.get(KeyFactory.createKey("update", update.getKey().getId())).getProperty("Param1"));
     }
+    
+    @Test
+    public void addAdmin() {
+    	
+    	Datastore.addAdmin();
+    	
+    	assertEquals(1, Datastore.getAllUsers(null));
+    }
 }

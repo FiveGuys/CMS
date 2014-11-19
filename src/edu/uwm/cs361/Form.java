@@ -115,7 +115,7 @@ public class Form
 
 			Datastore ds = new Datastore(_req, _resp, _errors);
 			
-			map = ds.getUser();
+			//map = ds.getUser();
 		}
 		
 		return map;
@@ -162,7 +162,7 @@ public class Form
 		Datastore ds = new Datastore(_req, _resp, _errors);
 		
 		if(Form.getUserFromCookie(_req) == null ||
-			accessLevel > Integer.parseInt(ds.getAttrFromUser("Access"))) {
+			accessLevel > Integer.parseInt(ds.getUser().getAccess())) {
 			
 			_resp.sendRedirect("401.html");
 		}

@@ -13,9 +13,9 @@ public class User {
 	private Key key;
 	
 	@Persistent
-	private String _userName;
-	public String getUserName() {return _userName;}
-	public void setUserName(String name) {this._userName = name;}
+	private String UserName;
+	public String getUserName() {return UserName;}
+	public void setUserName(String UserName) {this.UserName = UserName;}
 	
 	@Persistent
 	private String Password;
@@ -44,7 +44,7 @@ public class User {
 	
 	@Persistent
 	private String Email;
-	public String getEmail() {return _userName;}
+	public String getEmail() {return Email;}
 	public void setEmail(String Email) {this.Email = Email;}
 	
 	@Persistent
@@ -59,7 +59,7 @@ public class User {
 	
 	@Persistent
 	private String OfficeHour1;
-	public String getOfficeHour1() {return _userName;}
+	public String getOfficeHour1() {return OfficeHour1;}
 	public void setOfficeHour1(String OfficeHour1) {this.OfficeHour1 = OfficeHour1;}
 	
 	@Persistent
@@ -79,6 +79,6 @@ public class User {
 	
 	@Persistent
 	private String Semester;
-	public String getSemester() {return _userName;}
+	public String getSemester() {return Semester;}
 	public void setSemester(String Semester) {this.Semester = Semester;}
 }

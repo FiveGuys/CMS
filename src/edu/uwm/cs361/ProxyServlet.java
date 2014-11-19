@@ -147,21 +147,24 @@ public class ProxyServlet extends HttpServlet {
 		
 		Document doc = Jsoup.parse(response.toString());
  		
- 		Elements ClassNames = doc.select("span.subhead");
+ 		Elements CourseNames = doc.select("span.subhead");
  		
  		Datastore ds = new Datastore(_req, _resp, new ArrayList<String>());
  		
- 		int classID = 1;
- 		int courseID = 1;
+ 		ds.deleteCourses();
  		
- 		for(Element e :ClassNames) {
+ 		int courseID = 1;
+ 		int sectionID = 1;
+ 		
+ 		for(Element e :CourseNames) {
  			
  			String[] courseData = new String[11];
  			
- 			String ClassName = getName(e.toString());
+ 			String courseName = getName(e.text());
  			
- 			//ds.addClass(classID, ClassName);
- 			System.out.println(ClassName);
+ 			System.out.println(courseName);
+ 			
+ 			ds.addCourse(courseID+"", courseName);
  			
 			Elements tr = e.parent().parent().parent().getElementsByClass("body");
 
@@ -169,9 +172,9 @@ public class ProxyServlet extends HttpServlet {
 				
 				if(t.tagName() == "tr" && t.hasClass("copy") && !t.attr("bgcolor").equals("#666666") && !t.hasClass("bold")) {
 					
-					courseData[0] = courseID + "";
+					courseData[0] = sectionID + "";
 					
-					courseData[1] = ClassName;
+					courseData[1] = courseName;
 					
 					for(int i = 2; i <= 9; i++) {
 						
@@ -180,32 +183,32 @@ public class ProxyServlet extends HttpServlet {
 						courseData[i] = (!t.child(i).html().equals("&nbsp;") ? t.child(i).html() : "");
 					}
 					
-					courseData[10] = classID + "";
+					courseData[10] = courseID + "";
 					
-					ds.addCourse(courseData);
+					ds.addSection(courseData);
 					
-					courseID++;
+					sectionID++;
 				}
 			}
 			
-			classID++;
+ 			courseID++;
  		}
 	}
 	
 	private String getName(String inputLine) {
 		
-		String temp = inputLine.substring(inputLine.indexOf('>') + 1, inputLine.indexOf("</span>"));
-			/*
-			if(inputLine.indexOf('-') != 32) {
-				
-				StringBuffer text = new StringBuffer(temp);
-
-				text.replace(text.indexOf("("), text.indexOf(")") + 1, "");
-				text.replace(7,8, "-");
-				temp = text.toString();
-			}*/
+		String temp = inputLine;
+		
+		if(inputLine.indexOf('-') != 7) {
 			
-			return temp;
+			StringBuffer text = new StringBuffer(temp);
+
+			text.replace(text.indexOf("("), text.indexOf(")") + 1, "");
+			text.replace(7,8, "-");
+			temp = text.toString();
+		}
+			
+		return temp;
 	}
 	
 	public static String md5(String message) { 
