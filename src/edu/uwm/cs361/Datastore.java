@@ -1,6 +1,7 @@
 package edu.uwm.cs361;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,17 +52,20 @@ public class Datastore
 
 		Query q = _pm.newQuery(Course.class);
 		
-		q.setFilter("CourseID == CourseIDParam");
+		q.setFilter("name == CourseIDParam");
 		
 		q.declareParameters("String CourseIDParam");
 		
-		List<Course> courses = null;
+		q.setUnique(true);
+		
+		List<Course> courses = new ArrayList<Course>();
 		
 		for(int i = 1; i < 46; ++i){
 			
-			Course course = (Course) q.execute(i);
-			
-			courses.add(course);
+			Course course = (Course) q.execute(((Integer)i).toString());
+			System.out.println(course.getName());
+			if(course != null)
+				courses.add(course);
 		}
 		
 		return courses;
