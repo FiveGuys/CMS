@@ -2,6 +2,7 @@ table#schedule {
 	border-spacing:0px;
 	border-collapse: collapse;
 	width: 100%;
+	table-layout: fixed;
 }
 
 table#schedule th {
@@ -36,12 +37,19 @@ table#schedule th:first-child {
 }
 
 .standard-form .submit {
-	display:inline;
 	margin: 0;
 }
 
 .standard-form select {
-	width: 45%;
+	width: 85%;
+}
+
+.standard-form, .standard-form .submit, .standard-form .course {
+	display:inline;
+}
+
+div.success-msg {
+	display:none;
 }
 
 /* 

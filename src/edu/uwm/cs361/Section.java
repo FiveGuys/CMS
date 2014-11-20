@@ -2,8 +2,6 @@ package edu.uwm.cs361;
 
 import javax.jdo.annotations.*;
 
-import com.google.appengine.api.datastore.Key;
-
 @PersistenceCapable
 public class Section {
 	@PrimaryKey

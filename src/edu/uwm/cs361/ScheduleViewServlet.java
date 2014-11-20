@@ -5,38 +5,35 @@ import java.util.List;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.Query;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 
 @SuppressWarnings("serial")
-public class ScheduleViewServlet extends HttpServlet{
+public class ScheduleViewServlet extends HttpServlet implements CallBack{
 	
-	private String[][] table = new String[11][5];
-	private boolean buildTable = false;
-	private String courseID = "";
-	//Yes, I wrote out this array because I am a scrub
-	private String[] times = {"8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"};
-	private char[] dates = {'M','T','W','R','F'};
-	private String[] vals =new String[3];
-	private List<Course> courses;
-	private List<Section> sections;
+	private final int ACCESS_LEVEL = ACCESS_ALL;
+	
+	private String _courseID;
+	
+	private List<Course> _courses;
+	
+	private List<Section> _sections;
+	
 	private HttpServletRequest _req;
+	
 	private HttpServletResponse _resp;
-	//private final int ACCESS_LEVEL = ACCESS_ALL;
+	
+	private Form _form;
+	
+	private String[][] _table = new String[11][5];
+	
+	private String[] _times = {"8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"};
+	
+	private char[] _dates = {'M','T','W','R','F'};
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -45,63 +42,48 @@ public class ScheduleViewServlet extends HttpServlet{
 		
 		_resp = resp;
 		
-		courses = Datastore.getCourses();
+		_courses = Datastore.getCourses(null);
 		
-		courseID = (req.getParameter("course") != null ? 
-						req.getParameter("course") : courses.get(0).getID());
+		_courseID = getCourseID();
 		
-		sections = Datastore.getSections("CourseID=='"+courseID+"' && ClassType=='LEC'");
+		_sections = Datastore.getSections("CourseID=='"+_courseID+"' && ClassType=='LEC'");
 		
-		for(int i = 0; i < table.length; ++i){
-			for(int j = 0; j< table[i].length; ++j){
-				table[i][j] = "<td></td>";
-			}
-		}
+		_form = new Form(_req, _resp, new ArrayList<String>());
 		
-		//_form = new Form(_req, _resp, new ArrayList<String>());
-		
-		//_form.handleGet("Edit Your Information", 3, this, "updateUser", ACCESS_LEVEL);
-		
-		displayForm(courseID);
+		_form.handleGet("Schedule Viewer", 2, this, "", ACCESS_LEVEL);
 	}
-	
-	 //TODO doPost should take the class, instructor, or ta, from the select, and input elements from the datastore into the array table
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
 		doGet(req, resp);
 	}
 	
-	public void displayForm(String course) throws IOException{
-		
-		_resp.setContentType("text/html");
-		
-		HtmlOutputHelper.printHeader(_resp, "Schedule Viewer", 2);
-		
-		createContent();
-		
-		HtmlOutputHelper.printFooter(_resp);
-	}
-	
-	private void createContent() throws IOException{
+	@Override
+	public void printContent() throws IOException{
 		
 		courseDropdown();
 		
-		createHTMLTable();
+		createSchedule();
 	}
 
+	@Override
+	public void validate() {}
+	
 	private void courseDropdown() throws IOException{
 		
 		String html = "<form action='schedule-view' method='post' class='standard-form'>"
 				+"<select name='course'>";
 		
-		for(Course  course : courses) {
+		for(Course  course : _courses) {
 			
+
 			if(course.getID().equals(courseID))
 				html += "<option selected='selected' value='"+course.getID()+"'>"+course.getName()+"</option>";
 			
 			else
 				html += "<option value='"+course.getID()+"'>"+course.getName()+"</option>";
+
 		}
 			
 		html += "</select>"
@@ -111,11 +93,14 @@ public class ScheduleViewServlet extends HttpServlet{
 		_resp.getWriter().println(html);
 	}
 	
-	private void createHTMLTable() throws IOException{
+	private void createSchedule() throws IOException{
+		
+		initSchedule();
 		
 		courseBuilder();
 		
-		String htmlTable = "<table id='schedule'>"
+		String htmlTable = 
+		"<table id='schedule'>"
 			+"<tr>"
 				+"<th>Time</th>"
 				+"<th>Monday</th>"
@@ -125,13 +110,13 @@ public class ScheduleViewServlet extends HttpServlet{
 				+"<th>Friday</th>"
 			+"</tr>";
 		
-		for(int i = 0; i < table.length; ++i) {
+		for(int i = 0; i < _table.length; ++i) {
 			
-			htmlTable += "<tr><td>"+times[i]+"</td>";
+			htmlTable += "<tr><td>"+_times[i]+"</td>";
 			
-			for(int j = 0; j < table[i].length; ++j) {
+			for(int j = 0; j < _table[i].length; ++j) {
 				
-				htmlTable += table[i][j];
+				htmlTable += _table[i][j];
 			}
 			
 			htmlTable += "</tr>";
@@ -142,39 +127,99 @@ public class ScheduleViewServlet extends HttpServlet{
 		_resp.getWriter().println(htmlTable);
 	}
 	
-	//Creates the HTML formating for the table element
 	private void courseBuilder(){
+		
+		int rowspan = 1;
 		
 		String element = "";
 		
-		int rowspan=1;
-
-		for(Section section : sections){
+		for(Section section : _sections) {
 			
+<<<<<<< HEAD
 			if(ScheduleViewTests.testCourseValues(section)) {
 				
 				LocalTime start = LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a"));
 				LocalTime end = LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a"));
 
+=======
+			if(testSection(section)) {
+				
+				LocalTime start = parseTime(section.getStartTime());
+				
+				LocalTime end = parseTime(section.getEndTime());
+>>>>>>> origin/master
 
-				rowspan += end.getValue(0)-start.getValue(0);
+				rowspan += end.getValue(0) - start.getValue(0);
 				
 				element +=  "<td class='course' rowspan='"+rowspan+"'>"
-							+"<b>"+section.getName()+"</b><br>"
-							+section.getClassType()+"<br>"
-							+start.toString("h:mm a")+" - "+end.toString("h:mm a")+"<br>"
-							+section.getLocation()+"</td>";
+								+"<b>"+section.getName()+"</b><br>"
+								+start.toString("h:mm a")+" - "+end.toString("h:mm a")+"<br>"
+								+section.getLocation()
+								+"Lecture<br>"
+							+"</td>";
 				
 				for(char day: section.getDay().toCharArray()) {
 					
+<<<<<<< HEAD
 					this.table[Arrays.asList(times).indexOf(start.toString("h")+":00 "+start.toString("a"))][new String(dates).indexOf(day)] = element;
 					
 					if(rowspan==2) {
 						System.out.println(start.toString("h:mm a")+end.toString("h:mm a"));
 						this.table[Arrays.asList(times).indexOf(start.toString("h")+":00"+start.toString("a"))+1][new String(dates).indexOf(day)] = "";
 					}
+=======
+					fillTable(start, day, element, rowspan);
+>>>>>>> origin/master
 				}
 			}
 		}
+	}
+
+	private void fillTable(LocalTime start, char day, String element, int rowspan) {
+		
+		//Convert X:30/45 AM to X:00 AM to avoid errors
+		String temp = start.toString("h:mm a");
+		
+		temp = temp.substring(0, temp.indexOf(':')) + ":00" + temp.substring(temp.indexOf(" "));
+		
+		int startIndex = Arrays.asList(_times).indexOf(temp);
+		
+		int dayIndex = new String(_dates).indexOf(day);
+		
+		_table[startIndex][dayIndex] = element;
+		
+		if(rowspan == 2) {
+			
+			_table[startIndex+1][dayIndex] = "";
+		}
+	}
+
+	private LocalTime parseTime(String time) {
+		
+		return LocalTime.parse(time, DateTimeFormat.forPattern("h:m a"));
+	}
+
+	private String getCourseID() {
+
+		return (_req.getParameter("course") != null ? 
+				_req.getParameter("course") : _courses.get(0).getID());
+	}
+	
+	private void initSchedule() {
+		
+		for(int i = 0; i < _table.length; ++i) {
+			
+			for(int j = 0; j< _table[i].length; ++j) {
+				
+				_table[i][j] = "<td></td>";
+			}
+		}
+	}
+	
+	private boolean testSection(Section section){
+		
+		return (section.getStartTime() == "" || 
+				section.getEndTime() == "" || 
+				section.getDay() == "") ? false : true;
 	}
 }

@@ -81,4 +81,14 @@ public class User {
 	private String Semester;
 	public String getSemester() {return Semester;}
 	public void setSemester(String Semester) {this.Semester = Semester;}
+	
+	public User() {}
+	
+	public String getOfficeHour(int i) {
+		
+		String[] arr = { OfficeHour1, OfficeHour2, OfficeHour3 };
+		
+		return arr[i - 1];
+		
+	}
 }

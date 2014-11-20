@@ -22,7 +22,7 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	
 	private Form _form;
 	
-	private Map<String, String> param;
+	private User _user = null;
 	
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -34,8 +34,6 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		_errors = new ArrayList<String>();
 		
 		_form = new Form(_req, _resp, _errors);
-		
-		param = _form.getParameters();
 		
 		_form.handleGet("Edit Your Information", 3, this, "updateUser", ACCESS_LEVEL);
 	}
@@ -49,14 +47,18 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	@Override
 	public void printContent()  throws IOException {
 
+		Datastore ds = new Datastore(_req, _resp, _errors);
+		
+		_user = ds.getUser();
+		
 		_resp.getWriter().println( 
 
 				"<form action='edit-info' method='post' class='standard-form'>" +
 				
 				"<h1 class='heading'>" +
-					param.get("FirstName") + " " +
-					param.get("MiddleName") + " " +
-					param.get("LastName") +
+					setField(_user.getFirstName(), "FirstName") + " " +
+					setField(_user.getMiddleName(), "MiddleName") + " " +
+					setField(_user.getLastName(), "LastName") +
 				"</h1>" +
 				
 				"<div id= 'image'>" +
@@ -66,23 +68,23 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 
 				"<div id='name-form'>" +
 					"First Name <br/>" +
-					"<input type='text' name='FirstName' readonly='readonly' value='"+param.get("FirstName")+"'><br/>" +
+					"<input type='text' name='FirstName' readonly='readonly' value='"+setField(_user.getFirstName(), "FirstName")+"'><br/>" +
 					"Middle Name <br/>" +
-					"<input type='text' name='MiddleName' value='"+param.get("MiddleName")+"'><br/>" +
+					"<input type='text' name='MiddleName' value='"+setField(_user.getMiddleName(), "MiddleName")+"'><br/>" +
 					"Last Name<br/>" +
-					"<input type='text' name='LastName' readonly='readonly' value='"+param.get("LastName")+"'><br/>" +
+					"<input type='text' name='LastName' readonly='readonly' value='"+setField(_user.getLastName(), "LastName")+"'><br/>" +
 				"</div>" +
 				
 				"<div class='section'>Contact Information</div>" +
 				
 				"<div id='contact-form'>" +
-					"Email<br/><input type='text' name='Email'  value='"+param.get("Email")+"'><br/>" +
-					"Office Phone<br/><input type='text' name='Phone' value='"+param.get("Phone")+"'  placeholder='XXX-XXX-XXXX'>" +
+					"Email<br/><input type='text' name='Email'  value='"+setField(_user.getEmail(), "Email")+"'><br/>" +
+					"Office Phone<br/><input type='text' name='Phone' value='"+setField(_user.getPhone(),"Phone")+"'  placeholder='XXX-XXX-XXXX'>" +
 				"</div>" +
 
 				"<div id='contact-form2'>" +
-					"Office Location<br/><input type='text' name='Location' value='"+param.get("Location")+"'><br/>" +
-					"Alt Phone<br/><input type='text' name='AltPhone' value='"+param.get("AltPhone")+"' placeholder='XXX-XXX-XXXX'>" +
+					"Office Location<br/><input type='text' name='Location' value='"+setField(_user.getLocation(), "Location")+"'><br/>" +
+					"Alt Phone<br/><input type='text' name='AltPhone' value='"+setField(_user.getAltPhone(),"AltPhone")+"' placeholder='XXX-XXX-XXXX'>" +
 				"</div>" +
 				
 				"<div class='section'>Office Hours</div>" +
@@ -97,18 +99,48 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 					
 				"</div>" +
 					
+				"<div id='password'>" +
+
+					printPassword("Old", "password", "Old Password") +
+					
+					printPassword("", "text", "New Password") +
+					
+				"</div>" +
+				
 				_form.End()
 		);
 	}
 	
+	private String setField(String userField, String param) {
+		
+		return (!_form.isSubmit() || _errors.size() == 0) ? 
+				 userField : _form.getParam(param);
+	}
+	
+	private String setOfficeHours(String userField, int index) {
+		
+		return (!_form.isSubmit() || _errors.size() == 0) ? 
+				 userField : Form.calcOfficeHours(index, _req);
+	}
+
 	@Override
 	public void validate() {
 		
-		isEmail(param.get("Email"));
+		isEmail("Email");
 		
-		isPhone(param.get("Phone"), "Office Phone");
+		isPhone("Phone", "Office Phone");
 		
-		isPhone(param.get("AltPhone"), "Alt Phone");
+		isPhone("AltPhone", "Alt Phone");
+		
+		isOfficeHour(1);
+		
+		isOfficeHour(2);
+		
+		isOfficeHour(3);
+		
+		isOfficeHourOverlap();
+		
+		isPassword();
 	}
 	
 	private void isEmail(String email) {
@@ -124,10 +156,12 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	
 	private void isValid(String param, String name, String regex) {
 
-		if(!param.isEmpty()) {
+		String temp = _req.getParameter(param);
+		
+		if(!temp.isEmpty()) {
 			
 			Pattern pattern = Pattern.compile(regex);  
-			Matcher matcher = pattern.matcher(param);
+			Matcher matcher = pattern.matcher(temp);
 
 			if(!matcher.matches()) {
 
@@ -136,17 +170,40 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	private void isOfficeHour(int index) {
+		
+		String[] temp = Form.calcOfficeHours(index, _req).split(";");
+
+		if((Integer.parseInt(temp[1]) == Integer.parseInt(temp[3]) &&
+				Integer.parseInt(temp[2]) > Integer.parseInt(temp[4])) ||
+				Integer.parseInt(temp[1]) > Integer.parseInt(temp[3])) {
+
+			_errors.add("Office Hour "+index+" is invalid");
+		}
+	}
+	
+	private void isOfficeHourOverlap() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void isPassword() {
+		
+		String old = _req.getParameter("PasswordOld");
+		
+		if(!_user.getPassword().equals(old)) {
+			
+			_errors.add("Old Password doesn't match");
+		}
+	}
+	
 	private String printOfficeHours(int index) {
 
 		List<String> officeDay = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri");
 		
-		String[] arr = "Wed;0;00;0;00".split(";");
+		String officeHour = setOfficeHours(_user.getOfficeHour(1), index);
 		
-		if(param.get("OfficeHour" + index) != null) {
-			
-			arr = param.get("OfficeHour" + index).split(";");
-			
-		}
+		String[] arr = officeHour.split(";");
 		
 		return "Office Hour "+index+"<br/>" +
 				
@@ -157,5 +214,10 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 			_form.selectTime("office-hours-"+index+"-start-2", "office-hours-"+index+"-end-2", arr[3], arr[4], "") +
 			
 			"</br></br>";	
+	}
+	
+	private String printPassword(String name, String type, String label) {
+	
+		return label+"<br/><input type='"+type+"' name='Password"+name+"' /><br/>";
 	}
 }

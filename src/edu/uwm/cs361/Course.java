@@ -3,7 +3,7 @@ package edu.uwm.cs361;
 import javax.jdo.annotations.*;
 
 @PersistenceCapable
-public class Course {
+public class Course implements Comparable<Course> {
 	
 	@PrimaryKey
 	@Persistent
@@ -24,5 +24,11 @@ public class Course {
 		// name is used to set ID/Name in datastore
 		this.name = courseID;
 		this.CourseName = Name;
+	}
+	
+	@Override
+	public int compareTo(Course other) {
+		
+		return (Integer.parseInt(this.getID()) > Integer.parseInt(other.getID())) ? 1 : -1;
 	}
 }
