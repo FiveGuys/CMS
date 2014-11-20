@@ -166,7 +166,7 @@ public class Form
 		return formInput(label, cssClass, getSelectField(name, selected, "", list));
 	}
 	
-	public String EndSearchUser() {//RJP
+	public String EndSearchUser() {
 		
 		return "<div class='search submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
 	}

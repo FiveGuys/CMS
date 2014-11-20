@@ -8,11 +8,14 @@ public class Course implements Comparable<Course> {
 	@PrimaryKey
 	@Persistent
 	private String name;
+	@Persistent
+	private String CourseName;
+	
+	
 	public String getID() { return name; }
 	public void setID(String ID) { this.name = ID; }
 	
-	@Persistent
-	private String CourseName;
+	
 	public String getName() { return CourseName; }
 	public void setName(String Name) { this.CourseName = Name; }
 	
