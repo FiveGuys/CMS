@@ -1,6 +1,7 @@
 package edu.uwm.cs361;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,6 @@ public class Datastore
  		
  		return _user;
  	}
- 	
 	
 	@SuppressWarnings("unchecked")
 	public static List<User> getUsers(String query) {
@@ -46,23 +46,19 @@ public class Datastore
 		return (List<User>) q.execute();
 	}
 	
-	@SuppressWarnings({ "unchecked", "null" })
-	public static List<Course> getCourses() {
+	@SuppressWarnings("unchecked")
+	public static List<Course> getCourses(String query) {
 
 		Query q = _pm.newQuery(Course.class);
 		
-		q.setFilter("CourseID == CourseIDParam");
-		
-		q.declareParameters("String CourseIDParam");
-		
-		List<Course> courses = null;
-		
-		for(int i = 1; i < 46; ++i){
-			
-			Course course = (Course) q.execute(i);
-			
-			courses.add(course);
+		if(query != null) {
+
+			q.setFilter(query);
 		}
+		
+		List<Course> courses = (List<Course>) q.execute();
+		
+		Collections.<Course>sort(courses);
 		
 		return courses;
  	}
@@ -194,6 +190,9 @@ public class Datastore
 		
 		User user = getUser();
 		
+//		user.setFirstName( _req.getParameter("FirstName"));
+//		user.setLastName( _req.getParameter("LastName"));
+//		user.setPassword( _req.getParameter("Password"));
 		user.setMiddleName( _req.getParameter("MiddleName"));
 		user.setEmail( _req.getParameter("Email"));
 		user.setLocation( _req.getParameter("Location"));
@@ -206,36 +205,25 @@ public class Datastore
 		_pm.makePersistent(user);
 	}
 
-	//TODO Ryan see Dee for thee helpee
-	
 	private void searchUser() {
 		
 		String firstName = _req.getParameter("FirstName");
+		
 		String lastName = _req.getParameter("LastName");
 		
-		if(userExists(firstName+"."+lastName)) {
-			//TODO not sure how to do this yet RJP
-		}else{
+		if(!userExists(firstName+"."+lastName)) {
 			
+			_errors.add("No User Found");
 		}
-		
 	}
 
 	private boolean userExists(String username) {
 		
 		List<User> users = Datastore.getUsers("UserName=='"+_user.getUserName()+"'");
 		
-		if(users.size() != 0) {
-			
-			_errors.add("This person is already a user");
-			
-			return true;
-		}
-		
-		return false;
+		return (users.size() != 0);
 	}
  	
-	
 	private void addUser() {
 		
 		String firstName = _req.getParameter("FirstName");
@@ -262,6 +250,10 @@ public class Datastore
 			user.setSemester("2149");
 			
 			_pm.makePersistent(user);
+			
+		} else {
+			
+			_errors.add("This person is already a user");
 		}
 	}
 

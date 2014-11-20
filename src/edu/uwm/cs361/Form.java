@@ -3,10 +3,7 @@ package edu.uwm.cs361;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +41,7 @@ public class Form
 		
 		checkAccess(accessLevel);
 		
-		if(_req.getParameter("submit") != null) {
+		if(isSubmit()) {
 			
 			Datastore ds = new Datastore(_req, _resp, _errors);
 			
@@ -86,40 +83,6 @@ public class Form
 			out.println("</ul>");
 		}
  	}
- 	
-	public Map<String, String> getParameters() {
-
-		Map<String, String> map = new HashMap<String, String>();
-
-		if(_req.getParameter("submit") != null) {
-
-			Enumeration<?> params = _req.getParameterNames();
-
-			while(params.hasMoreElements()) {
-
-				String key = (String) params.nextElement(); 
-				String value = _req.getParameter(key);
-
-				map.put(key, value);
-			}
-			
-			// Must combine office hours into database
-			if(_req.getParameter("office-day-1") != null){
-				
-				map.put("OfficeHour1", Form.calcOfficeHours(1, _req));
-				map.put("OfficeHour2", Form.calcOfficeHours(2, _req));
-				map.put("OfficeHour3", Form.calcOfficeHours(3, _req));
-			}
-			
-		} else {
-
-			Datastore ds = new Datastore(_req, _resp, _errors);
-			
-			//map = ds.getUser();
-		}
-		
-		return map;
-	}
 	
 	public static String calcOfficeHours(int num, HttpServletRequest req) {
 		
@@ -159,12 +122,18 @@ public class Form
 	
 	private void checkAccess(int accessLevel) throws IOException {
 		
-		Datastore ds = new Datastore(_req, _resp, _errors);
-		
-		if(Form.getUserFromCookie(_req) == null ||
-			accessLevel > Integer.parseInt(ds.getUser().getAccess())) {
+		if(Form.getUserFromCookie(_req) == null) {
 			
 			_resp.sendRedirect("401.html");
+			
+		} else {
+		
+			Datastore ds = new Datastore(_req, _resp, _errors);
+			
+			if(accessLevel > Integer.parseInt(ds.getUser().getAccess())) {
+				
+				_resp.sendRedirect("401.html");
+			}
 		}
 	}
 
@@ -199,7 +168,7 @@ public class Form
 	
 	public String EndSearchUser() {//RJP
 		
-		return "<div class='submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
+		return "<div class='search submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
 	}
 	
 	public String CheckBox(String label, String cssClass, String name, Boolean checked) {
@@ -269,5 +238,16 @@ public class Form
 		select += "</select>";
 		
 		return select;
+	}
+
+	public boolean isSubmit() {
+
+		return (_req.getParameter("submit") != null);
+	}
+
+	public String getParam(String param) {
+		
+		return (_req.getParameter(param) != null && _errors.size() != 0 ? 
+				_req.getParameter(param) : "");
 	}
 }

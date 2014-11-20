@@ -14,14 +14,14 @@ public class ForgotServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
 		
-		Datastore.addAdmin();
+		//Datastore.addAdmin();
 		
-		Datastore ds = new Datastore(req, resp, new ArrayList<String>(0));
+		//Datastore ds = new Datastore(req, resp, new ArrayList<String>(0));
 		
 		resp.getWriter().println();
 		resp.getWriter().println("Created One Admin");
 		
-		//resp.sendRedirect("forgot.html");
+		resp.sendRedirect("forgot.html");
 	}
 	
 	@Override

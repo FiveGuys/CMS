@@ -51,3 +51,8 @@ div.name-heading {
 	margin-left: 20px;
 	color: grey;
 }
+
+div.notFound {
+	float: none !important;
+	margin: auto !important;
+}
