@@ -63,7 +63,7 @@ public class Datastore
 		for(int i = 1; i < 46; ++i){
 			
 			Course course = (Course) q.execute(((Integer)i).toString());
-			System.out.println(course.getName());
+			
 			if(course != null)
 				courses.add(course);
 		}

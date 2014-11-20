@@ -97,7 +97,11 @@ public class ScheduleViewServlet extends HttpServlet{
 		
 		for(Course  course : courses) {
 			
-			html += "<option value='"+course.getID()+"'>"+course.getName()+"</option>";
+			if(course.getID().equals(courseID))
+				html += "<option selected='selected' value='"+course.getID()+"'>"+course.getName()+"</option>";
+			
+			else
+				html += "<option value='"+course.getID()+"'>"+course.getName()+"</option>";
 		}
 			
 		html += "</select>"
@@ -147,11 +151,7 @@ public class ScheduleViewServlet extends HttpServlet{
 
 		for(Section section : sections){
 			
-			System.out.println("Course Name: "+section.getName());
-			
 			if(ScheduleViewTests.testCourseValues(section)) {
-				
-				System.out.println("Passed Test!");
 				
 				LocalTime start = LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a"));
 				LocalTime end = LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a"));
@@ -167,11 +167,11 @@ public class ScheduleViewServlet extends HttpServlet{
 				
 				for(char day: section.getDay().toCharArray()) {
 					
-					this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))][new String(dates).indexOf(day)] = element;
+					this.table[Arrays.asList(times).indexOf(start.toString("h")+":00 "+start.toString("a"))][new String(dates).indexOf(day)] = element;
 					
 					if(rowspan==2) {
-						
-						this.table[Arrays.asList(times).indexOf(start.toString("h:mm a"))+1][new String(dates).indexOf(day)] = "";
+						System.out.println(start.toString("h:mm a")+end.toString("h:mm a"));
+						this.table[Arrays.asList(times).indexOf(start.toString("h")+":00"+start.toString("a"))+1][new String(dates).indexOf(day)] = "";
 					}
 				}
 			}
