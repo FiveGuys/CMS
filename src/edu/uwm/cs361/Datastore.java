@@ -58,16 +58,8 @@ public class Datastore
 		
 		List<Course> courses = (List<Course>) q.execute();
 		
+		Collections.<Course>sort(courses);
 
-		for(int i = 1; i < 46; ++i){
-			
-			Course course = (Course) q.execute(((Integer)i).toString());
-			
-			if(course != null)
-				courses.add(course);
-		}
-
-		
 		return courses;
  	}
 	

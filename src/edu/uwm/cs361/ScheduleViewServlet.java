@@ -78,7 +78,7 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		for(Course  course : _courses) {
 			
 
-			if(course.getID().equals(courseID))
+			if(course.getID().equals(_courseID))
 				html += "<option selected='selected' value='"+course.getID()+"'>"+course.getName()+"</option>";
 			
 			else
@@ -135,19 +135,11 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		
 		for(Section section : _sections) {
 			
-<<<<<<< HEAD
-			if(ScheduleViewTests.testCourseValues(section)) {
-				
-				LocalTime start = LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a"));
-				LocalTime end = LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a"));
-
-=======
 			if(testSection(section)) {
 				
-				LocalTime start = parseTime(section.getStartTime());
+				LocalTime start = LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a"));
 				
-				LocalTime end = parseTime(section.getEndTime());
->>>>>>> origin/master
+				LocalTime end = LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a"));
 
 				rowspan += end.getValue(0) - start.getValue(0);
 				
@@ -160,16 +152,12 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 				
 				for(char day: section.getDay().toCharArray()) {
 					
-<<<<<<< HEAD
-					this.table[Arrays.asList(times).indexOf(start.toString("h")+":00 "+start.toString("a"))][new String(dates).indexOf(day)] = element;
+					this._table[Arrays.asList(_times).indexOf(start.toString("h")+":00 "+start.toString("a"))][new String(_dates).indexOf(day)] = element;
 					
 					if(rowspan==2) {
 						System.out.println(start.toString("h:mm a")+end.toString("h:mm a"));
-						this.table[Arrays.asList(times).indexOf(start.toString("h")+":00"+start.toString("a"))+1][new String(dates).indexOf(day)] = "";
+						_table[Arrays.asList(_times).indexOf(start.toString("h")+":00"+start.toString("a"))+1][new String(_dates).indexOf(day)] = "";
 					}
-=======
-					fillTable(start, day, element, rowspan);
->>>>>>> origin/master
 				}
 			}
 		}
