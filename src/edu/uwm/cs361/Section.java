@@ -3,7 +3,7 @@ package edu.uwm.cs361;
 import javax.jdo.annotations.*;
 
 @PersistenceCapable
-public class Section {
+public class Section implements Comparable<Section> {
 	@PrimaryKey
 	@Persistent
 	private String name;
@@ -111,5 +111,10 @@ public class Section {
 	}
 	public void setCourseID(String courseID) {
 		CourseID = courseID;
+	}
+	@Override
+	public int compareTo(Section other) {
+		
+		return (Integer.parseInt(this.getSection()) >= Integer.parseInt(other.getSection())) ? 1 : -1;
 	}
 }

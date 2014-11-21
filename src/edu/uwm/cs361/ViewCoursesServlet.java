@@ -1,5 +1,6 @@
 package edu.uwm.cs361;
 
+import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
 
@@ -28,6 +29,8 @@ public class ViewCoursesServlet extends HttpServlet implements CallBack {
 		_courses = Datastore.getCourses(null);
 		
 		_sections = Datastore.getSections(null);
+		
+		//Collections.<Section>sort(_sections);
 		
 		printContent();
 	}
