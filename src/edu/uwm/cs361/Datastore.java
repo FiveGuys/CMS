@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.appengine.api.blobstore.BlobKey;
+
 public class Datastore 
 {
 	private HttpServletRequest _req;
@@ -66,7 +68,7 @@ public class Datastore
 	@SuppressWarnings("unchecked")
 	public static List<Section> getSections(String query) {
 
-		Query q = _pm.newQuery(Section.class,query);
+		Query q = _pm.newQuery(Section.class);
 		
 		if(query != null) {
 			
@@ -90,31 +92,6 @@ public class Datastore
  		return Datastore.getUsers(query).get(0);
 	}
 	
-	/* Creating new addCourse, keeping this here for reference
-	 * 
-	 * public void addCourse(String[] courseData) {
-		
-		Entity course = new Entity("Section", courseData[0]);
-		
-		String[] section = courseData[3].split(" ");
-		String[] time = courseData[5].split("-");
-		
-		course.setProperty("Name", courseData[1]);
-		course.setProperty("Units", courseData[2]);
-		course.setProperty("ClassType", (section.length == 2 ? section[0] : ""));
-		course.setProperty("Section",   (section.length == 2 ? section[1] : ""));
-		course.setProperty("ClassNum", courseData[4]);
-		course.setProperty("StartTime", (time.length == 2 ? time[0] : "") );
-		course.setProperty("EndTime", (time.length == 2 ? time[1] : ""));
-		course.setProperty("Day", courseData[6]);
-		course.setProperty("Instructor", courseData[8]);
-		course.setProperty("Location", courseData[9]);
-		course.setProperty("CourseID", courseData[10]);
-		
-		_datastore.put(course);
-	}
-	*/
-	
 	public void addCourse(String courseID, String name) {
 		
 		Course course = new Course(courseID, name);
@@ -127,21 +104,23 @@ public class Datastore
 		String[] sectionNum = courseData[3].split(" ");
 		String[] time = courseData[5].split("-");
 		
-		Section section = new Section(
-			courseData[0],							//ID	
-			sectionNum.length == 2 ? sectionNum[1] : "", //section
-			courseData[1],//Name
-			courseData[2],
-			sectionNum.length == 2 ? sectionNum[0] : "",
-			courseData[4],
-			time.length == 2 ? time[0] : "", 
-			time.length == 2 ? time[1] : "",
-			courseData[6],
-			courseData[8],
-			courseData[9],
-			courseData[10]
-		);
+		Section section = new Section();
+		
+		section.setID(courseData[0]);
+		section.setName(courseData[1]);
+		section.setUnits(courseData[2]);
+		section.setClassNum(courseData[4]);
+		section.setDay(courseData[6]);
+		section.setInstructorID("");
+		section.setLocation(courseData[9]);
+		section.setCourseID(courseData[10]);
 			
+		section.setStartTime(time.length == 2 ? time[0] : "");
+		section.setEndTime(time.length == 2 ? time[1] : "");
+		
+		section.setClassType(sectionNum.length == 2 ? sectionNum[0] : "");
+		section.setSection(sectionNum.length == 2 ? sectionNum[1] : "");
+		
 		_pm.makePersistent(section);
 	}
 	
@@ -155,18 +134,32 @@ public class Datastore
 				case "updateUser": this.updateUser(); break;
 				case "addUser": this.addUser(); break;
 				case "searchUser": this.searchUser(); break;
+				case "editCourse": this.editCourse(); break;
 				case "": break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
 	}
 	
+	private void editCourse() {
+		
+		String SectionID = _req.getParameter("SectionID");
+		
+		Section section = Datastore.getSections("SectionID=='"+SectionID+"'").get(0);
+		
+		//TODO set section fields
+		section.setClassNum(_req.getParameter("ClassNum"));
+		
+		_pm.makePersistent(section);
+	}
+
 	public static void addAdmin() {
 		
 		if(Datastore.getUsers(null).size() == 0) {
 			
 			User user = new User();
 			
+			user.setID(newUserID());
 			user.setUserName("admin.pass"); 
 			user.setPassword( "pass"); 
 			user.setFirstName( "admin");
@@ -190,6 +183,7 @@ public class Datastore
 		
 		User user = getUser();
 		
+		user.setID(newUserID());
 //		user.setFirstName( _req.getParameter("FirstName"));
 //		user.setLastName( _req.getParameter("LastName"));
 //		user.setPassword( _req.getParameter("Password"));
@@ -219,7 +213,7 @@ public class Datastore
 
 	private boolean userExists(String username) {
 		
-		List<User> users = Datastore.getUsers("UserName=='"+_user.getUserName()+"'");
+		List<User> users = Datastore.getUsers("UserName=='"+username+"'");
 		
 		return (users.size() != 0);
 	}
@@ -234,6 +228,7 @@ public class Datastore
 			
 			User user = new User();
 			
+			user.setID(newUserID());
 			user.setUserName( firstName + "." + lastName);
 			user.setPassword( lastName); 
 			user.setFirstName( firstName);
@@ -258,12 +253,21 @@ public class Datastore
 	}
 
 	public void deleteCourses() {
-		/*
-		List<Course> course = Datastore.getAllCourses(null);
-		List<Section> section = Datastore.getAllSections(null);
 		
-		_pm.deletePersistentAll(course);
-		_pm.deletePersistentAll(section);
-		*/
+		List<Course> courses = Datastore.getCourses(null);
+		List<Section> sections = Datastore.getSections(null);
+		
+		_pm.deletePersistentAll(courses);
+		_pm.deletePersistentAll(sections);
+	}
+	
+	private static String newUserID() {
+
+		return (Datastore.getUsers(null).size() + 1) + "";
+	}
+
+	public void setImage(String blobKey) {
+		
+		_user.setImage(blobKey);
 	}
 }

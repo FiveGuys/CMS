@@ -50,7 +50,10 @@ ul.errors {
     font-weight: bold;
 }
 
-.standard-form input[type="text"], .standard-form input[type="email"], .standard-form select, .assign-table input[type=textbox]{
+.standard-form input[type="text"],
+.standard-form input[type="email"],
+.standard-form select, 
+.assign-table input[type=textbox]{
     border: 1px solid #CCC;
     color: #888;
     height: 20px;

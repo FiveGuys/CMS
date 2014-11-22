@@ -55,7 +55,7 @@ public class Form
 	
  	public void printHeader(String title, int page) throws IOException {
 		
- 		HtmlOutputHelper.printHeader(_resp, title, page);
+ 		HtmlOutputHelper.printHeader(_req, _resp, title, page);
  	}
  	
  	public void printFooter() throws IOException {
@@ -161,11 +161,6 @@ public class Form
 		return formInput(label, cssClass, "<input type='text' id='"+name+"' name='"+name+"' value='"+val+"'placeholder='"+ph+"' />");
 	}
 	
-	public String DropDown(String label,  String name, String selected, List<String> list, String cssClass) {
-		
-		return formInput(label, cssClass, getSelectField(name, selected, "", list));
-	}
-	
 	public String EndSearchUser() {
 		
 		return "<div class='search submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
@@ -226,7 +221,7 @@ public class Form
 		
 		return select;
 	}
-	
+
 	public String getSelectField(String name, String selected, String cssClass, int start, int end) {
 		
 		String select = "<select class='"+cssClass+"' name='"+name+"'>";

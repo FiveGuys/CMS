@@ -14,7 +14,7 @@ public class ForgotServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
 		
-		//Datastore.addAdmin();
+		Datastore.addAdmin();
 		
 		//Datastore ds = new Datastore(req, resp, new ArrayList<String>(0));
 		

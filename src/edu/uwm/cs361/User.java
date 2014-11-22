@@ -1,4 +1,5 @@
 package edu.uwm.cs361;
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.Key;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -12,6 +13,11 @@ public class User {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
 	
+	@Persistent
+	private String UserID;
+	public String getID() { return UserID; }
+	public void setID(String ID) { this.UserID = ID; }
+
 	@Persistent
 	private String UserName;
 	public String getUserName() {return UserName;}
@@ -82,6 +88,11 @@ public class User {
 	public String getSemester() {return Semester;}
 	public void setSemester(String Semester) {this.Semester = Semester;}
 	
+	@Persistent
+	private String Image;
+	public String getImage() { return Image; }
+	public void setImage(String Image) { this.Image = Image; }
+	
 	public User() {}
 	
 	public String getOfficeHour(int i) {
@@ -89,6 +100,5 @@ public class User {
 		String[] arr = { OfficeHour1, OfficeHour2, OfficeHour3 };
 		
 		return arr[i - 1];
-		
 	}
 }

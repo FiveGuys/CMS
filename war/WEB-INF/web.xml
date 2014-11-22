@@ -21,6 +21,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-class>edu.uwm.cs361.EditInfoServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>EditCourse</servlet-name>
+		<servlet-class>edu.uwm.cs361.EditCourseServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>Forgot</servlet-name>
 		<servlet-class>edu.uwm.cs361.ForgotServlet</servlet-class>
 	</servlet>
@@ -39,6 +43,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>Schedule</servlet-name>
 		<servlet-class>edu.uwm.cs361.ScheduleViewServlet</servlet-class>
+	</servlet>
+	 <servlet>
+    <servlet-name>ServeImage</servlet-name>
+    <servlet-class>edu.uwm.cs361.ServeImage</servlet-class>
+  </servlet>
+	<servlet>
+		<servlet-name>UploadImage</servlet-name>
+		<servlet-class>edu.uwm.cs361.UploadImage</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>UserSearch</servlet-name>
@@ -66,7 +78,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>EditInfo</servlet-name>
 		<url-pattern>/edit-info</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>EditCourse</servlet-name>
+		<url-pattern>/edit-course</url-pattern>
+	</servlet-mapping>		
 	<servlet-mapping>
 		<servlet-name>Forgot</servlet-name>
 		<url-pattern>/forgot</url-pattern>
@@ -81,12 +97,20 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Proxy</servlet-name>
-		<url-pattern>/hack</url-pattern>
+		<url-pattern>/refresh-courses</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Schedule</servlet-name>
 		<url-pattern>/schedule-view</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ServeImage</servlet-name>
+		<url-pattern>/serve</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+    	<servlet-name>UploadImage</servlet-name>
+    	<url-pattern>/upload</url-pattern>
+  	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>UserSearch</servlet-name>
 		<url-pattern>/user-search</url-pattern>

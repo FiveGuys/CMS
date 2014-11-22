@@ -2,12 +2,16 @@ package edu.uwm.cs361;
 
 import javax.jdo.annotations.*;
 
+import com.google.appengine.api.datastore.Key;
+
 @PersistenceCapable
 public class Section implements Comparable<Section> {
 	@PrimaryKey
-	@Persistent
-	private String name;
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
 	
+	@Persistent
+	private String SectionID;
 	@Persistent
 	private String Section;
 	@Persistent
@@ -25,26 +29,17 @@ public class Section implements Comparable<Section> {
 	@Persistent
 	private String Day;
 	@Persistent
-	private String Instructor;
+	private String InstructorID;
 	@Persistent
 	private String Location;
 	@Persistent
 	private String CourseID;
-	public Section(String ID, String section, String courseName, String units, String classType, String classNum,
-			String startTime, String endTime, String day, String instructor,
-			String location, String courseID) {
-		this.name = ID;
-		Section = section;
-		CourseName = courseName;
-		Units = units;
-		ClassType = classType;
-		ClassNum = classNum;
-		StartTime = startTime;
-		EndTime = endTime;
-		Day = day;
-		Instructor = instructor;
-		Location = location;
-		CourseID = courseID;
+	
+	public String getID() { 
+		return SectionID; 
+	}
+	public void setID(String ID) { 
+		this.SectionID = ID; 
 	}
 	public String getSection() {
 		return Section;
@@ -94,11 +89,11 @@ public class Section implements Comparable<Section> {
 	public void setDay(String day) {
 		Day = day;
 	}
-	public String getInstructor() {
-		return Instructor;
+	public String getInstructorID() {
+		return InstructorID;
 	}
-	public void setInstructor(String instructor) {
-		Instructor = instructor;
+	public void setInstructorID(String instructorID) {
+		InstructorID = instructorID;
 	}
 	public String getLocation() {
 		return Location;

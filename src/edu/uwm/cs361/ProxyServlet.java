@@ -44,6 +44,7 @@ public class ProxyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	
+    	/*
     	_req = req; 
     	
     	_resp = resp;
@@ -51,8 +52,9 @@ public class ProxyServlet extends HttpServlet {
     	semester = (req.getParameter("semester") != null ? req.getParameter("semester") : "2149");
     
 		getScheduleFromUWM();
-    	
+    	*/
     	//getEmailFromUWM("Rock, Jayson");
+    	 
     }
     
  	private void getScheduleFromUWM() throws IOException {

@@ -1,6 +1,5 @@
 package edu.uwm.cs361;
 
-import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
 
@@ -9,15 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-public class ViewCoursesServlet extends HttpServlet implements CallBack {
+public class ViewCoursesServlet extends HttpServlet {
 	
 	HttpServletRequest _req;
 	
 	HttpServletResponse _resp;
 	
 	List<Course> _courses;
-	
-	List<Section> _sections;
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -28,11 +25,7 @@ public class ViewCoursesServlet extends HttpServlet implements CallBack {
 		
 		_courses = Datastore.getCourses(null);
 		
-		_sections = Datastore.getSections(null);
-		
-		//Collections.<Section>sort(_sections);
-		
-		printContent();
+		displayForm();
 	}
 	
 	@Override
@@ -41,64 +34,56 @@ public class ViewCoursesServlet extends HttpServlet implements CallBack {
 		doGet(req,resp);
 	}
 	
-	@Override
-	public void printContent() throws IOException {
-		displayForm();
-	}
-	
 	public void displayForm() throws IOException{
 		
 		_resp.setContentType("text/html");
 		
-		HtmlOutputHelper.printHeader(_resp, "View Courses", 1);
+		HtmlOutputHelper.printHeader(_req, _resp, "View Courses", 1);
 		
-		createContent();
+		printContent();
 		
 		HtmlOutputHelper.printFooter(_resp);
 	}
 	
-	private void createContent() throws IOException{
-		_resp.setContentType("text/html");
+	private void printContent() throws IOException{
 		
 		String html = "<div class='view-courses'><span class='assign'>Courses in Computer Science </span><br /><br />";
 		
 		for(Course course: _courses){
 			
-			html += "<span class='subhead'>"+course.getName()+"</span>"
-					+"<table border='0' cellpadding='2' cellspacing='0'  width='100%'>"
-					  +"<tbody>"
-					  +"<tr class='body copy bold white' bgcolor='#666666'>"
-					  +"<th>GER</th>"
-	                  +"<th>&nbsp;</th>"
-	                  +"<th>Units</th>"
+			html += "<span>"+course.getName()+"</span>"
+				+"<table>"
+				  +"<tr>"
 	                  +"<th>Section</th>"
-	                  +"<th>Class#</th>"
+	                  +"<th>Class #</th>"
+	                  +"<th class='small'>Units</th>"
 	                  +"<th>Hours</th>"
-	                  +"<th>Days</th>"
+	                  +"<th class='small'>Days</th>"
 	                  +"<th>Instructor</th>"
 	                  +"<th>Room</th>"
-	                  +"<th>Syllabus</th>"
-	                  +"</tr>";
+	              +"</tr>";
 			
-			for(Section section: _sections){
+			List<Section> sections = Datastore.getSections("CourseID=='"+course.getID()+"'");
+			
+			for(Section section : sections) {
 				
-				if(section.getCourseID().equals(course.getID())){
-					html+="<tr class='body copy' bgcolor='#F4F4F4'>"
-							+"<td style=''>&nbsp;</td>"
-							+"<td style=''>(FEE)</td>"
-							+"<td style=''>"+section.getUnits()+"</td>"
-							+"<td style=''>"+section.getClassType()+" "+section.getSection()+"</td>"
-							+"<td style=''>"+section.getClassNum()+"</th>"
-							+"<td style=''>"+section.getStartTime()+"-"+section.getEndTime()+"</td>"
-							+"<td style=''>"+section.getDay()+"</td>"
-							+"<td style=''>"+section.getInstructor()+"</td>"
-							+"<td style=''>"+section.getLocation()+"</td>"
-							+"<td style=''>&nbsp;</td>"
-							+"</tr>";	
-				}
+				//TODO Should admin be the only one to edit courses? - DL
+				String link = "<a href='edit-course?SectionID="+section.getID()+"'>";
+				
+				String instructorName = getInstructorName(section.getInstructorID());
+				
+				html+="<tr>"
+						+"<td>"+link+section.getClassType()+" "+section.getSection()+"</a></td>"
+						+"<td>"+link+section.getClassNum()+"</a></td>"
+						+"<td class='small'>"+link+section.getUnits()+"</a></td>"
+						+"<td>"+link+section.getStartTime()+"-"+section.getEndTime()+"</a></td>"
+						+"<td class='small'>"+link+section.getDay()+"</a></td>"
+						+"<td>"+link+instructorName+"</a></td>"
+						+"<td>"+link+section.getLocation()+"</a></td>"
+						+"</tr>";	
 			}
-			html+="</tbody>"
-				+"</table>";
+			
+			html += "</table>";
 		}
 		
 		html+="</div>";
@@ -106,9 +91,17 @@ public class ViewCoursesServlet extends HttpServlet implements CallBack {
 		_resp.getWriter().println(html);
 	}
 
-	@Override
-	public void validate() {
-		// TODO Auto-generated method stub
+	private String getInstructorName(String instructorID) {
 		
+		List<User> instrs = Datastore.getUsers("UserID=='"+instructorID+"'");
+		
+		String name = "";
+
+		if(instrs.size() != 0) {
+
+			name = instrs.get(0).getFirstName() + "" + instrs.get(0).getLastName();
+		}
+
+		 return name;
 	}
 }

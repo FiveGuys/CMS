@@ -137,27 +137,22 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 			
 			if(testSection(section)) {
 				
-				LocalTime start = LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a"));
+				LocalTime start = parseTime(section.getStartTime());
 				
-				LocalTime end = LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a"));
+				LocalTime end =parseTime(section.getEndTime());
 
 				rowspan += end.getValue(0) - start.getValue(0);
 				
 				element +=  "<td class='course' rowspan='"+rowspan+"'>"
 								+"<b>"+section.getName()+"</b><br>"
 								+start.toString("h:mm a")+" - "+end.toString("h:mm a")+"<br>"
-								+section.getLocation()
+								+section.getLocation() + "<br />"
 								+"Lecture<br>"
 							+"</td>";
 				
 				for(char day: section.getDay().toCharArray()) {
 					
-					this._table[Arrays.asList(_times).indexOf(start.toString("h")+":00 "+start.toString("a"))][new String(_dates).indexOf(day)] = element;
-					
-					if(rowspan==2) {
-						System.out.println(start.toString("h:mm a")+end.toString("h:mm a"));
-						_table[Arrays.asList(_times).indexOf(start.toString("h")+":00"+start.toString("a"))+1][new String(_dates).indexOf(day)] = "";
-					}
+					fillTable(start, day, element, rowspan);
 				}
 			}
 		}

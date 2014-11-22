@@ -1,13 +1,5 @@
 /* View All Courses CSS */
 
-.view-courses .subhead  {
-	font-size: 16px;
-	color: grey;
-}
-.view-courses span.bold {
-	display: none;
-}
-
 .view-courses table {
 	border-radius:3px;
 	border-collapse: collapse;
@@ -15,6 +7,7 @@
 	width: 100%;
 	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 	margin-bottom: 30px;
+	text-align: center;
 }
  
 .view-courses  th {
@@ -40,6 +33,7 @@
   border-top: 1px solid #C1C3D1;
   border-bottom: 1px solid #C1C3D1;
   color:#666B85;
+  background-color: #F4F4F4;
   font-size:12px;
   text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
 }
@@ -47,12 +41,14 @@
 .view-courses tr:hover td {
   background:#4E5066;
   color:#FFFFFF;
-  border-top: 1px solid #22262e;
+  /*border-top: 1px solid #22262e;
   border-bottom: 1px solid #22262e;
+  height: 19px;*/
 }
  
 .view-courses tr:first-child {
   border-top:none;
+  background-color: #666666;
 }
 
 .view-courses tr:last-child {
@@ -74,10 +70,34 @@
 .view-courses td {
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
   border-right: 1px solid #C1C3D1;
+  height: 20px;
 }
 
 .view-courses td:last-child {
   border-right: 0px;
+}
+
+.view-courses td, .view-courses th {
+	width: 100px;
+}
+
+.view-courses td.small, .view-courses th.small {
+	width: 40px
+}
+
+.view-courses span  {
+	font-size: 16px;
+	color: grey;
+}
+
+.view-courses td a  {
+	display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    background-color: inherit;
+    padding-top:3px;
 }
 
 /* Assign Page CSS */

@@ -47,12 +47,29 @@ body {
 	margin-bottom: 0px; 
 }
 
-.settings { 
+.flyout-menu {
+	width:150px;
+	height: 30px;
+	top:5px;
 	position:absolute; 
-	right: 15px; 
-	top: 10px; 
+	left: 510px;
 }
 
+.flyout-menu:hover > .settings-content {
+	display: block;
+}
+
+.flyout-menu { 
+	 
+}
+
+.settings {
+	position:absolute; 
+	top: 0; 
+	width:150px;
+	padding: 5px;
+	height: 23px;
+}
 .settings a {
 	margin-right: 42px;
 	text-decoration: none;
@@ -60,6 +77,69 @@ body {
 	font-size: 12px;
 }
 
+.settings img {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	float: left;
+}
+
+.settings span {
+	font-size: 12px;
+	display: inline;
+	font-weight: bold;
+	color: grey;
+}
+
+.settings:hover, .settings-content:hover + .settings {
+	background: none;
+	background-color: #ffffff !important;
+	border-color: #999999;
+	border-bottom-color: transparent;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	box-shadow: none;
+	padding: 4px;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.settings-content {
+	background-color: #ffffff;
+	border: 1px solid #CCC;
+	border-radius: 2px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+	display: none;
+	outline: none;
+	position: absolute;
+	top: 26px;
+	z-index: 999;
+	width: 175px;
+	border-top: none;
+}
+
+.settings-content ul {
+	list-style: none;
+	padding-left: 20px;
+}
+
+.settings-content li {
+	margin: 10px;
+}
+
+.settings-content hr {
+	border: none;
+	border-bottom: 1px dotted #d0d0d0;
+	margin: 0;
+	margin-top: 10px;
+}
+
+.settings-content a {
+	text-decoration: none;
+	color: grey;
+	font-size: 12px;
+}
 .uwmlogo { 
 	padding-top: 30px; 
 	margin-bottom: 10px; 

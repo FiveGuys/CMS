@@ -9,9 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+
 @SuppressWarnings("serial")
 public class EditInfoServlet extends HttpServlet implements CallBack
 {
+	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+	
 	private final int ACCESS_LEVEL = ACCESS_ALL;
 	
 	private HttpServletRequest _req;
@@ -52,7 +57,17 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		_user = ds.getUser();
 		
 		_resp.getWriter().println( 
-
+//TODO remove Javascript - DL
+				"<div id= 'image'>" +
+						(_user.getImage() == null ? 
+								"<img src='images/blank-picture.png'/>" 
+								: "<img src='/serve?blob-key="+_user.getImage()+"' />")	+
+								
+						"<form action="+blobstoreService.createUploadUrl("/upload") +" method='post' enctype='multipart/form-data'>" +
+							"<input type='file' name='myFile' onchange='javascript:this.form.submit()'>" +
+						"</form>"+
+					"</div>" +
+						
 				"<form action='edit-info' method='post' class='standard-form'>" +
 				
 				"<h1 class='heading'>" +
@@ -61,11 +76,6 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 					setField(_user.getLastName(), "LastName") +
 				"</h1>" +
 				
-				"<div id= 'image'>" +
-					"<img src='images/blank-picture.png'/><br />" +
-					"<button class='simple'>Change Photo</button>" +
-				"</div>" +
-
 				"<div id='name-form'>" +
 					"First Name <br/>" +
 					"<input type='text' name='FirstName' readonly='readonly' value='"+setField(_user.getFirstName(), "FirstName")+"'><br/>" +
@@ -101,9 +111,9 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 					
 				"<div id='password'>" +
 
-					printPassword("Old", "password", "Old Password") +
+					printPassword("Old") +
 					
-					printPassword("", "text", "New Password") +
+					printPassword("New") +
 					
 				"</div>" +
 				
@@ -216,8 +226,8 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 			"</br></br>";	
 	}
 	
-	private String printPassword(String name, String type, String label) {
+	private String printPassword(String name) {
 	
-		return label+"<br/><input type='"+type+"' name='Password"+name+"' /><br/>";
+		return name+" Password<br/><input type='text' name='Password"+name+"' /><br/>";
 	}
 }

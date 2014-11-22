@@ -18,6 +18,20 @@
 
 #image {
 	float: left;
+	position: relative;
+	top: 83px;
+	left: 110px;
+}
+
+#image input[type="file"] {
+	width: 101px;
+	font-size: 16px;
+	margin-left: 10px;
+}
+
+#image img {
+	width: 122px;
+	height: 146px;
 }
 
 #name-form {
@@ -53,7 +67,7 @@ h1.heading {
 }
 
 #contact-form3 select {
-	width: 50px;
+	width: 55px;
 }
 
 #contact-form3 .separator {
