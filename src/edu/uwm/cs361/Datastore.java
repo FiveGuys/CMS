@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+
 import com.google.appengine.api.blobstore.BlobKey;
 
 public class Datastore 
@@ -141,16 +144,31 @@ public class Datastore
 		}
 	}
 	
-	private void editCourse() {
+	private void editCourse() throws IOException {
 		
 		String SectionID = _req.getParameter("SectionID");
 		
 		Section section = Datastore.getSections("SectionID=='"+SectionID+"'").get(0);
 		
+		LocalTime start = LocalTime.parse(_req.getParameter("start-start")+":"+_req.getParameter("start-end"),DateTimeFormat.forPattern("H:m"));
+		
+		LocalTime end = LocalTime.parse(_req.getParameter("end-start")+":"+_req.getParameter("end-end"),DateTimeFormat.forPattern("H:m"));
+		
+		if((start.getValue(0)+(start.getValue(1)/60)) - (end.getValue(0)+(end.getValue(1)/60)) < 0){
+			throw new IOException("Datastore.editCourse: end time is before start time"+'\n'+" Start: "+start.toString("h:mm a")+"End:"+end.toString("h:mm a"));
+		}
+		
 		//TODO set section fields
+		section.setSection(_req.getParameter("Section"));
 		section.setClassNum(_req.getParameter("ClassNum"));
+		section.setUnits(_req.getParameter("Units"));
+		section.setLocation(_req.getParameter("Location"));
+		section.setStartTime(start.toString("h:mm a"));
+		section.setEndTime(end.toString("h:mm a"));
 		
 		_pm.makePersistent(section);
+		
+		
 	}
 
 	public static void addAdmin() {

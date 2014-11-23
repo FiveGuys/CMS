@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+
 @SuppressWarnings("serial")
 public class EditCourseServlet extends HttpServlet implements CallBack
 {
@@ -38,7 +41,6 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		
 		doGet(req, resp);
 	}
 	
@@ -60,7 +62,12 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 
 				form.TextField("Room #: ", "Location", section.getLocation(), "EMS", "") +
 				//TODO ability to change hours and days ( checkboxes)
-				//form.DateTime("Hours: ", "", form.selectTime("time-start", "time-end", req)) +
+				form.DateTime("Hours: ", "", form.selectTime("start-start", "start-end",
+						LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a")).toString("h"),
+						LocalTime.parse(section.getStartTime(), DateTimeFormat.forPattern("h:m a")).toString("m"),"datetime"),
+						form.selectTime("end-start", "end-end",
+						LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a")).toString("h"),
+						LocalTime.parse(section.getEndTime(), DateTimeFormat.forPattern("h:m a")).toString("m"),"datetime")) +
 
 				//form.DateTime("Dates: ", "", form.selectDate("date-start", "date-end", req)) +
 
@@ -113,4 +120,5 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 			_resp.sendRedirect("view-courses");
 		}
 	}
+	
 }
