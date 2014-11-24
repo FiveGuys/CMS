@@ -197,6 +197,28 @@ public class Datastore
 		}
 	}
 	
+	public void updateProf(String _sectionID){
+
+		Query q = _pm.newQuery(Section.class,_sectionID);
+		
+		if(_sectionID != null ) {
+			
+			q.setFilter("CourseID=='"+_sectionID+"'");
+		}
+		List <Section> _save= (List<Section>) q.execute();
+			int i=0;
+			String name="profName";
+			System.out.println(_sectionID);
+			for(Section section: _save){
+				name="profName"+i;
+				System.out.println(name);
+				section.setInstructor(_req.getParameter("profName"+i));
+				_pm.makePersistent(section);
+				i=i+1;
+			}
+			System.out.println(name);
+		}
+	
 	private void updateUser() {
 		
 		User user = getUser();
