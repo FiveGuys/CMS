@@ -197,26 +197,61 @@ public class Datastore
 		}
 	}
 	
+	public User getUserFromeID(String _userID){
+			List<User> _user = Datastore.getUsers("UserID=='"+_userID+"'");
+			if (_user.size()==0)
+				return null;
+			return _user.get(0);
+	}
+	
 	public void updateProf(String _sectionID){
 
-		Query q = _pm.newQuery(Section.class,_sectionID);
-		
-		if(_sectionID != null ) {
-			
-			q.setFilter("CourseID=='"+_sectionID+"'");
-		}
-		List <Section> _save= (List<Section>) q.execute();
+		List<Section> _save = Datastore.getSections("CourseID=='"+_sectionID+"'");
 			int i=0;
-			String name="profName";
+			String firstName="";
+			String lastName="";
+			String ID="";
 			System.out.println(_sectionID);
 			for(Section section: _save){
-				name="profName"+i;
-				System.out.println(name);
-				section.setInstructor(_req.getParameter("profName"+i));
+				firstName=_req.getParameter("fprofName"+i);
+				lastName=_req.getParameter("lprofName"+i);
+				if(userExists(firstName+"."+lastName)){
+					List<User> _user = Datastore.getUsers("FirstName=='"+firstName+"' && LastName=='"+lastName+"'");
+					section.setInstructorID(_user.get(0).getID());
+				}
+				else{
+					User user = new User();
+					
+					ID=newUserID();
+					user.setID(ID);
+					user.setUserName( firstName + "." + lastName);
+					user.setPassword( lastName); 
+					user.setFirstName( firstName);
+					user.setMiddleName( "");
+					user.setLastName( lastName);
+					user.setEmail("");
+					user.setLocation( "");
+					user.setPhone( "");
+					user.setAltPhone( "");
+					user.setOfficeHour1( "Wed;0;00;0;00");
+					user.setOfficeHour2( "Wed;0;00;0;00");
+					user.setOfficeHour3( "Wed;0;00;0;00");
+					if(section.getClassType().equals("LEC")){
+						user.setAccess("2");
+					}
+					else{
+						user.setAccess("1");
+					}
+					
+					user.setSemester("2149");
+					_pm.makePersistent(user);
+					
+					section.setInstructorID(ID);
+					
+				}
 				_pm.makePersistent(section);
 				i=i+1;
 			}
-			System.out.println(name);
 		}
 	
 	private void updateUser() {

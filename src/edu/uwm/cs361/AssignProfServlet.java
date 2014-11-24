@@ -33,6 +33,8 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 	
 	private List<Section> _sections;
 	
+	private List<User> _user;
+	
 	private int index=0;
 	
 	@Override
@@ -58,7 +60,7 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		
 		_form.handleGet("Assign Proffesor", 1, this, "", ACCESS_LEVEL);
 		
-		
+		_user = Datastore.getUsers(null);
 	}
 	
 	@Override
@@ -89,9 +91,13 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 	@Override
 	public void validate(){	
 		for(int i=0;i<=index;++i){
-			if(!isValid(_req.getParameter("profName"+i))){
-				_errors.add("Name "+(i+1)+" is invalid");
-				System.out.println("Name "+(i+1)+" is invalid");
+			if(!isValid(_req.getParameter("fprofName"+i))){
+				_errors.add("First Name "+(i+1)+" is invalid");
+				System.out.println("First Name "+(i+1)+" is invalid");
+			}
+			if(!isValid(_req.getParameter("lprofName"+i))){
+				_errors.add("Last Name "+(i+1)+" is invalid");
+				System.out.println("Last Name "+(i+1)+" is invalid");
 			}
 		}
 	}
@@ -101,7 +107,7 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 				+"<select name='course'>";
 		
 		Datastore ds = new Datastore(_req, _resp, _errors);
-		if (Integer.parseInt(ds.getUser().getAccess())==ACCESS_ADMIN)
+		if (Integer.parseInt(ds.getUser().getAccess())==3)
 		{
 			
 		for(Course  course : _courses) {
@@ -121,7 +127,7 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 			for(Course  course : _courses) {
 				for(Section section: _sections){
 					
-					if(section.getClassType().equals("LEC")&& section.getCourseID().equals(course.getID())&&  section.getInstructor().equals(ds.getUser().getLastName()+", "+ds.getUser().getFirstName())){
+					if(section.getClassType().equals("LEC")&& section.getCourseID().equals(course.getID())&&  section.getInstructorID().equals(ds.getUser().getID())){
 						containsProf = true;
 					}		
 				}
@@ -154,18 +160,33 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 			"<tr>"+
 				"<td><strong> Class Type</strong></td>"+
 				"<td><strong> Section #</strong></td>"+
-				"<td><strong> Current Instructor</strong></td>"+         
+				"<td><strong> FirstName</strong></td>"+
+				"<td><strong> LastName</strong></td>"+ 
 			"</tr>";
 		index =0;
 		
 		String name="profName";
+		String firstName="";
+		String lastName="";
+		User prof=null;
 		 for(Section section: _sections){
 			 name="profName"+index;
-			 if(section.getCourseID().equals(_sectionID) && Integer.parseInt(ds.getUser().getAccess())==ACCESS_ADMIN){
+			 prof=ds.getUserFromeID(section.getInstructorID());
+			 if(prof==null){
+				 firstName="";
+				 lastName="";
+			 }
+			 else{
+				 firstName=prof.getFirstName();
+				 lastName=prof.getLastName();
+			 }
+				 
+			 if(section.getCourseID().equals(_sectionID) && Integer.parseInt(ds.getUser().getAccess())==3){
 				 html += "<tr>"+
 							"<td><span>"+section.getClassType() +"</span></td>"+
 							"<td><span>"+section.getSection()+"</span></td>"+
-							"<td><input value='"+section.getInstructor()+"' type='textbox' name='"+name+"'></td>"+         
+							"<td><input value='"+firstName+"' type='textbox' name='f"+name+"'></td>"+
+							"<td><input value='"+lastName+"' type='textbox' name='l"+name+"'></td>"+ 
 						"</tr>";
 				
 				index +=1;
@@ -176,17 +197,21 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 					 html += "<tr>"+
 							"<td><span>"+section.getClassType() +"</span></td>"+
 							"<td><span>"+section.getSection()+"</span></td>"+
-							"<td><input value='"+section.getInstructor()+"' type='textbox' name='"+name+"' readonly='readonly'></td>"+         
+							"<td><input value='"+firstName+"' type='textbox' name='f"+name+"' readonly='readonly'></td>"+
+							"<td><input value='"+lastName+"' type='textbox' name='l"+name+"' readonly='readonly'></td>"+ 
 						"</tr>";
 					 index+=1;
+					 System.out.println("1");
 				 }
 				 else{
 					 html += "<tr>"+
 								"<td><span>"+section.getClassType() +"</span></td>"+
 								"<td><span>"+section.getSection()+"</span></td>"+
-								"<td><input value='"+section.getInstructor()+"' type='textbox' name='"+name+"'></td>"+         
+								"<td><input value='"+firstName+"' type='textbox' name='f"+name+"'></td>"+  
+								"<td><input value='"+lastName+"' type='textbox' name='l"+name+"'></td>"+
 							"</tr>";
 					index+=1;
+					System.out.println("2");
 				 }
 			 }
 			 
@@ -211,7 +236,7 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 	
 	private boolean isValid(String input){
 		if(input!=null && !input.isEmpty()){
-			Pattern pattern = Pattern.compile("[a-zA-Z]+[,]+[ ]+[a-zA-z]+([ '-][a-zA-Z]+)*");
+			Pattern pattern = Pattern.compile("[a-zA-z]+([ '-][a-zA-Z]+)*");
 			Matcher matcher = pattern.matcher(input);
 			if(matcher.matches())
 				return true;
