@@ -7,16 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * This Servlet class handles the initial credential authentication to the CMS.
- * @author 5guys
- */
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet
 {
-	/** 
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
@@ -32,11 +25,6 @@ public class LoginServlet extends HttpServlet
 		printContent(resp, message);
 	}
 
-	/** 
-	 * If the method {@link #validate validate} returns true, access is granted for the next 24 hours 
-	 * with the creation of a cookie.
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
@@ -60,11 +48,6 @@ public class LoginServlet extends HttpServlet
 		}
 	}
 
-	/**
-	 * @param resp
-	 * @param message
-	 * @throws IOException
-	 */
 	private void printContent(HttpServletResponse resp, String message) throws IOException {
 		
 		resp.getWriter().println(
@@ -112,15 +95,6 @@ public class LoginServlet extends HttpServlet
 		);
 	}
 	
-	/**
-	 * This method validates the credentials entered; returns true if the match is positive.
-	 * 
-	 * @param username
-	 * @param password
-	 * @param req
-	 * @param resp
-	 * @return True is both username and password have a match
-	 */
 	private boolean validate(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
 
 		return true;
