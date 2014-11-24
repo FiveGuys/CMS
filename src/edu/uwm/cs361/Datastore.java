@@ -246,7 +246,7 @@ public class Datastore
 		String lastName = _req.getParameter("LastName");
 		
 		if(!userExists(firstName+"."+lastName)) {
-			
+
 			_errors.add("No User Found");
 		}
 	}
@@ -254,7 +254,7 @@ public class Datastore
 	private boolean userExists(String username) {
 		
 		List<User> users = Datastore.getUsers("UserName=='"+username+"'");
-		
+
 		return (users.size() != 0);
 	}
  	

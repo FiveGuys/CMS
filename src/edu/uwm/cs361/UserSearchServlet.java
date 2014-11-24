@@ -49,7 +49,7 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 		// CSS Styling
 		
 		Boolean userFound = (_form.isSubmit() && _errors.size() == 0);
-		
+
 		String html = 
 				"<div id='left-nav' "+(!userFound ? "class='notFound'" : "")+">" +
 					"<form action='user-search' method='post' class='standard-form'>"+
@@ -58,35 +58,42 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 					"<label for='firstname'>First Name:</label>" +
 					"<input type='text' name='FirstName'><br>" +
 					"<label for='lastname'>Last Name:</label>" +
-					"<input type='text' name='lastname'><br>" +
+					"<input type='text' name='LastName'><br>" +
 					_form.EndSearchUser() +
 				"</div>";
-		
+
 		// Display info here...
 		// Display name also...
 		if(userFound) {
+			
+//			Datastore ds = new Datastore(_req, _resp, _errors);
+			
+			final String[] positions = {"","Teaching Assistant","Instructor","Administrator"};
+			
+			List<User> userList = Datastore.getUsers("UserName=='"+_req.getParameter("FirstName")+"."+_req.getParameter("LastName")+"'");
 
-			Datastore ds = new Datastore(_req, _resp, _errors);
 			
-			User user = ds.getUser();
-			
+			int index = Integer.parseInt(userList.get(0).getAccess());
 			html += "<div id='main-section'>" +
-				"<img src='images/People.png' alt='PeopleIcon' height='30' width='30'>" +
+				//"<img src='images/People.png' alt='PeopleIcon' height='30' width='30'>" +
 				
 					"<div class='name-heading'></div>" +
-					"<br /><br />" +
+					"</br>" +
 					 "<label>Email:</label>" +
-					 "<div class='boxedResult'>"+user.getEmail()+"</div>" +
+					 "<div class='boxedResult'>"+ userList.get(0).getEmail() +"</div>" +
 					 "<br>" +
 
 					"<label>Phone:</label>" +
-					"<div class='boxedResult'></div>" +
+					"<div class='boxedResult'>" + userList.get(0).getPhone() +"</div>" +
 					"<br>" +
-					"<label>Office:</label>" +
-					"<div class='boxedResult'></div>" +
+					"<label>AltPhone:</label>" +
+					"<div class='boxedResult'>" + userList.get(0).getAltPhone() +"</div>" +
 					"<br>" +
+					"<label>Office Location:</label>" +
+					"<div class='boxedResult'>" + userList.get(0).getLocation() + "</div>" +
+					"<br>" + 
 					"<label>Position:</label>" +
-					"<div class='boxedResult'></div>" +
+					"<div class='boxedResult'>" + positions[index] + "</div>" +
 			"</div>" +
 			"<div class='clear'></div>";
 		}

@@ -68,8 +68,13 @@ public class Form
  		PrintWriter out = _resp.getWriter();
  		
  		if(_errors.size() == 0 && _req.getParameter("submit") != null) {
+ 			if(_errors.size() == 0 && (_req.getParameter("submit")).equals("Search")){
+ 				out.println("<div class='success-msg'><img src='images/People.png' alt='PeopleIcon' height='30' width='30'>  Found "+_req.getParameter("FirstName") + " " + _req.getParameter("LastName")+"</div>");
+
+ 			} else {
+ 				out.println("<div class='success-msg'>Successfully Saved</div>");
+ 			}
  			
- 			out.println("<div class='success-msg'>Successfully Saved</div>");
  			
  		} else if (_errors.size() > 0) {
  			
