@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
+/**
+ * This Servlet class edits a user's general information.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class EditInfoServlet extends HttpServlet implements CallBack
 {
@@ -49,6 +53,9 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		doGet(req, resp);
 	}
 	
+	/**
+	 * Prints Datastore content
+	 */
 	@Override
 	public void printContent()  throws IOException {
 
@@ -121,18 +128,33 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		);
 	}
 	
+	/**
+	 * Sets a form field.
+	 * @param userField
+	 * @param param
+	 * @return
+	 */
 	private String setField(String userField, String param) {
 		
 		return (!_form.isSubmit() || _errors.size() == 0) ? 
 				 userField : _form.getParam(param);
 	}
 	
+	/**
+	 * Sets Office Hours field.
+	 * @param userField
+	 * @param index
+	 * @return
+	 */
 	private String setOfficeHours(String userField, int index) {
 		
 		return (!_form.isSubmit() || _errors.size() == 0) ? 
 				 userField : Form.calcOfficeHours(index, _req);
 	}
 
+	/**
+	 * Calling all validation methods to make sure that every single field entered is valid.
+	 */
 	@Override
 	public void validate() {
 		
@@ -153,17 +175,32 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		isPassword();
 	}
 	
+	/**
+	 * Checks that the email address provided follows the smtp address format.
+	 * @param email
+	 */
 	private void isEmail(String email) {
 		
 		isValid(email, "Email", "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"); 
 	}
 	
+	/**
+	 * Checks that the phone number provided follows the US phone number standard.
+	 * @param phone
+	 * @param name
+	 */
 	private void isPhone(String phone, String name) {
 		
 		isValid(phone, name, "\\d{3}-\\d{3}-\\d{4}");
 	}
 	
+	/**
+	 * Compares the regular expressions for validation purposes.
+	 * @param param
+	 * @param name
+	 * @param regex
+	 */
 	private void isValid(String param, String name, String regex) {
 
 		String temp = _req.getParameter(param);
@@ -180,6 +217,10 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Checks that the office hours entered are in a valid time format.
+	 * @param index
+	 */
 	private void isOfficeHour(int index) {
 		
 		String[] temp = Form.calcOfficeHours(index, _req).split(";");
@@ -192,11 +233,17 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Checks that the office hours selected are not already in use.
+	 */
 	private void isOfficeHourOverlap() {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	/**
+	 * Matches with the old password.
+	 */
 	private void isPassword() {
 		
 		String old = _req.getParameter("PasswordOld");
@@ -207,6 +254,11 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Prints office hours.
+	 * @param index
+	 * @return
+	 */
 	private String printOfficeHours(int index) {
 
 		List<String> officeDay = Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri");
@@ -226,6 +278,11 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 			"</br></br>";	
 	}
 	
+	/**
+	 * This method prints a password.
+	 * @param name
+	 * @return
+	 */
 	private String printPassword(String name) {
 	
 		return name+" Password<br/><input type='text' name='Password"+name+"' /><br/>";
