@@ -109,7 +109,19 @@ public class Section implements Comparable<Section> {
 	}
 	@Override
 	public int compareTo(Section other) {
+		if(this.getSection() == "" && other.getSection() != ""){
+			return -1;
+		}
 		
-		return (Integer.parseInt(this.getSection()) >= Integer.parseInt(other.getSection())) ? 1 : -1;
+		else if(this.getSection() != "" && other.getSection() == ""){
+			return 1;
+		}
+		
+		else if(this.getSection() == "" && other.getSection() == ""){
+			return 1;
+		}
+		else{
+			return (Integer.parseInt(this.getSection()) > Integer.parseInt(other.getSection())) ? 1 : -1;
+		}
 	}
 }

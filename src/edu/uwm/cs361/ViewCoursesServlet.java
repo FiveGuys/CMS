@@ -1,5 +1,6 @@
 package edu.uwm.cs361;
 
+import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
 
@@ -64,6 +65,7 @@ public class ViewCoursesServlet extends HttpServlet {
 	              +"</tr>";
 			
 			List<Section> sections = Datastore.getSections("CourseID=='"+course.getID()+"'");
+			Collections.sort(sections);
 			
 			for(Section section : sections) {
 				
