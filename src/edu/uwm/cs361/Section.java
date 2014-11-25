@@ -4,6 +4,10 @@ import javax.jdo.annotations.*;
 
 import com.google.appengine.api.datastore.Key;
 
+/**
+ * This class manages a Section.
+ * @author 5guys
+ */
 @PersistenceCapable
 public class Section implements Comparable<Section> {
 	@PrimaryKey
@@ -107,6 +111,11 @@ public class Section implements Comparable<Section> {
 	public void setCourseID(String courseID) {
 		CourseID = courseID;
 	}
+	
+	/** 
+	 * Compares Sections.
+	 * @return 1 if the current Section# is greater than the parameter section#. Else, returns -1.
+	 */
 	@Override
 	public int compareTo(Section other) {
 		if(this.getSection() == "" && other.getSection() != ""){

@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet class manages the research of a user in the CMS sytem.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class UserSearchServlet extends HttpServlet implements CallBack
 {
@@ -41,6 +45,9 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 		doGet(req, resp);
 	}
 
+	/**
+	 * Prints html content of the results of the user search.
+	 */
 	@Override
 	public void printContent() throws IOException {
 		// TODO Finish this shit
@@ -100,7 +107,10 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 		
 		_resp.getWriter().println(html);
 	}
-
+	
+	/**
+	 * Calls all validation methods to make sure that every single field entered is valid.
+	 */
 	@Override
 	public void validate() {}
 	

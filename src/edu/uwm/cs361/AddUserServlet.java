@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This Servlet class adds a user into the system. 
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class AddUserServlet extends HttpServlet implements CallBack
 {
@@ -40,6 +44,9 @@ public class AddUserServlet extends HttpServlet implements CallBack
 		doGet(req, resp);
 	}
 
+	/**
+	 * Prints content
+	 */
 	@Override
 	public void printContent() throws IOException {
 		
@@ -68,6 +75,9 @@ public class AddUserServlet extends HttpServlet implements CallBack
 		);
 	}
 
+	/**
+	 * Calls all validation methods to make sure that every single field entered is valid.
+	 */
 	@Override
 	public void validate() {
 		
@@ -76,6 +86,11 @@ public class AddUserServlet extends HttpServlet implements CallBack
 		isRequired(_req.getParameter("LastName"), "Last Name");
 	}
 	
+	/**
+	 * Checks if the current field is required
+	 * @param param
+	 * @param name
+	 */
 	public void isRequired(String param, String name) {
 		
 		if (param.isEmpty()) {
@@ -84,12 +99,20 @@ public class AddUserServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * @param name
+	 * @return name parameter if is not null and if the _errors list is empty. Otherwise returns an empty string.
+	 */
 	private String getParam(String name) {
 		
 		return (_req.getParameter(name) != null && _errors.size() != 0 ? 
 				_req.getParameter(name) : "");
 	}
 	
+	/**
+	 * @param index
+	 * @return string "selected" if equal to index parameter. Otherwise returns an empty string.
+	 */
 	private String selected(String index) {
 		
 		return (getParam("Access").equals(index) ? "selected" : "");

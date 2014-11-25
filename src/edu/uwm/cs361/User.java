@@ -7,6 +7,10 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+/**
+ * This class defines the user objects and all its attributes.
+ * @author 5guys
+ */
 @PersistenceCapable
 public class User {
 	@PrimaryKey
@@ -95,6 +99,10 @@ public class User {
 	
 	public User() {}
 	
+	/**
+	 * @param i
+	 * @return The i office hour.
+	 */
 	public String getOfficeHour(int i) {
 		
 		String[] arr = { OfficeHour1, OfficeHour2, OfficeHour3 };

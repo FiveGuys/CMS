@@ -12,6 +12,10 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
 
+/**
+ * This servlet class manages a Blobstore service for the users' pictures.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class ServeImage extends HttpServlet {
 

@@ -5,7 +5,10 @@ import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+/**
+ * This Servlet class handles the logoff from the CMS system, and deletes the cookie.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class LogoutServlet extends HttpServlet
 {

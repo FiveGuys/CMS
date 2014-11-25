@@ -14,6 +14,10 @@ import org.joda.time.format.DateTimeFormat;
 
 import com.google.appengine.api.blobstore.BlobKey;
 
+/**
+ * This class defines the Datastore.
+ * @author 5guys
+ */
 public class Datastore 
 {
 	private HttpServletRequest _req;
@@ -33,11 +37,19 @@ public class Datastore
 		_user = findUser();
 	}
  	
+ 	/**
+ 	 * @return Datastore._user
+ 	 */
  	public User getUser() {
  		
  		return _user;
  	}
 	
+	/**
+	 * Returns a list of queried users.
+	 * @param query
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<User> getUsers(String query) {
 		
@@ -51,6 +63,11 @@ public class Datastore
 		return (List<User>) q.execute();
 	}
 	
+	/**
+	 * Returns a list of queried courses.
+	 * @param query
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<Course> getCourses(String query) {
 
@@ -68,6 +85,11 @@ public class Datastore
 		return courses;
  	}
 	
+	/**
+	 * Returns a list of queried sections.
+	 * @param query
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<Section> getSections(String query) {
 
@@ -81,11 +103,17 @@ public class Datastore
 		return (List<Section>) q.execute();
  	}
 	
+	/**
+	 * @return All users with access level 2, aka Instructors.
+	 */
 	public static List<User> getAllInstructors() {
 		
  		return Datastore.getUsers("Access=='2'");
  	}
 
+	/**
+	 * @return A user searching by username.
+	 */
 	private User findUser() {
  		
  		String username = Form.getUserFromCookie(_req);
@@ -95,6 +123,11 @@ public class Datastore
  		return Datastore.getUsers(query).get(0);
 	}
 	
+	/**
+	 * Adds a course.
+	 * @param courseID
+	 * @param name
+	 */
 	public void addCourse(String courseID, String name) {
 		
 		Course course = new Course(courseID, name);
@@ -102,6 +135,10 @@ public class Datastore
 		_pm.makePersistent(course);
 	}
 
+	/**
+	 * Adds a section.
+	 * @param courseData This is an array of strings containing all details of a single course.
+	 */
 	public void addSection(String[] courseData) {
 		
 		String[] sectionNum = courseData[3].split(" ");
@@ -127,7 +164,11 @@ public class Datastore
 		_pm.makePersistent(section);
 	}
 	
-	// Calls private method depending on servlet
+	/**
+	 * Calls private method depending on servlet
+	 * @param methodName
+	 * @throws IOException
+	 */
 	public void callMethod(String methodName) throws IOException {
 		
 		if(_errors.size() == 0) {
@@ -144,6 +185,10 @@ public class Datastore
 		}
 	}
 	
+	/**
+	 * Edits all properties of a single course.
+	 * @throws IOException
+	 */
 	private void editCourse() throws IOException {
 		
 		String SectionID = _req.getParameter("SectionID");
@@ -171,6 +216,9 @@ public class Datastore
 		
 	}
 
+	/**
+	 * Adds a user with level 3 access (Admin).
+	 */
 	public static void addAdmin() {
 		
 		if(Datastore.getUsers(null).size() == 0) {
@@ -197,6 +245,10 @@ public class Datastore
 		}
 	}
 	
+	/**
+	 * @param _userID
+	 * @return A user searching by userID.
+	 */
 	public User getUserFromeID(String _userID){
 			List<User> _user = Datastore.getUsers("UserID=='"+_userID+"'");
 			if (_user.size()==0)
@@ -204,6 +256,12 @@ public class Datastore
 			return _user.get(0);
 	}
 	
+	/**
+	 * Edits all properties of a single Professor type user.
+	 * If the Professor searched does not exist in the system, it will let you create a new Professor account.
+	 * It will be granted level 2 access for his lectures and level 1 access for all others.
+	 * @param _sectionID
+	 */
 	public void updateProf(String _sectionID){
 
 		List<Section> _save = Datastore.getSections("CourseID=='"+_sectionID+"'");
@@ -254,6 +312,9 @@ public class Datastore
 			}
 		}
 	
+	/**
+	 * Edits all properties of a single user.
+	 */
 	private void updateUser() {
 		
 		User user = getUser();
@@ -274,6 +335,9 @@ public class Datastore
 		_pm.makePersistent(user);
 	}
 
+	/**
+	 * Search user by name.
+	 */
 	private void searchUser() {
 		
 		String firstName = _req.getParameter("FirstName");
@@ -286,6 +350,10 @@ public class Datastore
 		}
 	}
 
+	/**
+	 * @param username
+	 * @return true if user exists
+	 */
 	private boolean userExists(String username) {
 		
 		List<User> users = Datastore.getUsers("UserName=='"+username+"'");
@@ -293,6 +361,10 @@ public class Datastore
 		return (users.size() != 0);
 	}
  	
+	/**
+	 * Adds a generic user.
+	 * If user already exists, add an error to {@link #_errors _errors}
+	 */
 	private void addUser() {
 		
 		String firstName = _req.getParameter("FirstName");
@@ -327,6 +399,9 @@ public class Datastore
 		}
 	}
 
+	/**
+	 * Delete courses.
+	 */
 	public void deleteCourses() {
 		
 		List<Course> courses = Datastore.getCourses(null);
@@ -336,11 +411,19 @@ public class Datastore
 		_pm.deletePersistentAll(sections);
 	}
 	
+	/** 
+	 * Generates a new userID.
+	 * @return userID.
+	 */
 	private static String newUserID() {
 
 		return (Datastore.getUsers(null).size() + 1) + "";
 	}
 
+	/**
+	 * Assigns a photo to a user.
+	 * @param blobKey
+	 */
 	public void setImage(String blobKey) {
 		
 		_user.setImage(blobKey);

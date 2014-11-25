@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet class manages the view of Courses.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class ViewCoursesServlet extends HttpServlet {
 	
@@ -35,6 +39,11 @@ public class ViewCoursesServlet extends HttpServlet {
 		doGet(req,resp);
 	}
 	
+	/**
+	 * Displays the form by calling {@link #printHeader printHeader}, 
+	 * {@link #printContent printContent} and {@link #printFooter printFooter}.
+	 * @throws IOException
+	 */
 	public void displayForm() throws IOException{
 		
 		_resp.setContentType("text/html");
@@ -46,6 +55,10 @@ public class ViewCoursesServlet extends HttpServlet {
 		HtmlOutputHelper.printFooter(_resp);
 	}
 	
+	/**
+	 * Prints html content.
+	 * @throws IOException
+	 */
 	private void printContent() throws IOException{
 		
 		String html = "<div class='view-courses'><span class='assign'>Courses in Computer Science </span><br /><br />";
@@ -93,6 +106,11 @@ public class ViewCoursesServlet extends HttpServlet {
 		_resp.getWriter().println(html);
 	}
 
+	/**
+	 * Retrieves the name of an instructor from the instructorID.
+	 * @param instructorID
+	 * @return Instructor name in string form.
+	 */
 	private String getInstructorName(String instructorID) {
 		
 		List<User> instrs = Datastore.getUsers("UserID=='"+instructorID+"'");

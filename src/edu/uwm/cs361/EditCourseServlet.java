@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 
+/**
+ * This Servlet class is used to edit CMS courses.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class EditCourseServlet extends HttpServlet implements CallBack
 {
@@ -44,6 +48,10 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 		doGet(req, resp);
 	}
 	
+	/** 
+	 * Prints html content.
+	 * @see edu.uwm.cs361.CallBack#printContent()
+	 */
 	@Override
 	public void printContent()  throws IOException {
 
@@ -87,6 +95,10 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 	@Override
 	public void validate() {}
 	
+	/**
+	 * Gets SectionID.
+	 * @throws IOException
+	 */
 	private void handleGet() throws IOException {
 		
 		String SectionID = _req.getParameter("SectionID");
@@ -101,6 +113,11 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Gets a Section if the sections list is populated. Otherwise, redirects to the Course view.
+	 * @param SectionID
+	 * @throws IOException
+	 */
 	private void getSection(String SectionID) throws IOException {
 		
 		List<Section> sections = Datastore.getSections("SectionID=='"+SectionID+"'");

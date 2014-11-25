@@ -9,6 +9,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This class manages the webpage view.
+ * @author 5guys
+ */
 public class Form
 {
 	private HttpServletRequest _req;
@@ -26,6 +30,13 @@ public class Form
 		_errors = errors;
 	}
 
+	/**
+	 * Displays the form.
+	 * @param header
+	 * @param page
+	 * @param servlet
+	 * @throws IOException
+	 */
 	private void displayForm(String header, int page, CallBack servlet) throws IOException {
 		
 		printHeader(header, page);
@@ -37,6 +48,15 @@ public class Form
 		printFooter();
 	}
 	
+	/**
+	 * If the access level requirement is satisfied, it creates a new datastore, validates the servlet and calls {@link #displayForm displayForm}.
+	 * @param header
+	 * @param page
+	 * @param servlet
+	 * @param method
+	 * @param accessLevel
+	 * @throws IOException
+	 */
 	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
 		
 		checkAccess(accessLevel);
@@ -53,16 +73,29 @@ public class Form
 		displayForm(header, page, servlet);
 	}
 	
+ 	/**Prints the header.
+ 	 * @param title
+ 	 * @param page
+ 	 * @throws IOException
+ 	 */
  	public void printHeader(String title, int page) throws IOException {
 		
  		HtmlOutputHelper.printHeader(_req, _resp, title, page);
  	}
  	
+ 	/**
+ 	 * Prints the footer.
+ 	 * @throws IOException
+ 	 */
  	public void printFooter() throws IOException {
  		
  		HtmlOutputHelper.printFooter(_resp);
  	}
  	
+ 	/**
+ 	 * Prints a message.
+ 	 * @throws IOException
+ 	 */
  	public void printMessage() throws IOException{
  		
  		PrintWriter out = _resp.getWriter();
@@ -89,11 +122,22 @@ public class Form
 		}
  	}
 	
+	/**
+	 * Calculates office hours.
+	 * @param num
+	 * @param req
+	 * @return
+	 */
 	public static String calcOfficeHours(int num, HttpServletRequest req) {
 		
 		return req.getParameter("office-day-"+num) + ";" +req.getParameter("office-hours-"+num+"-start-1") + ";" + req.getParameter("office-hours-"+num+"-end-1") + ";" + req.getParameter("office-hours-"+num+"-start-2") + ";" + req.getParameter("office-hours-"+num+"-end-2");
 	}
 
+	/**
+	 * Retrieves the user from a saved cookie.
+	 * @param req
+	 * @return
+	 */
 	public static String getUserFromCookie(HttpServletRequest req) {
  		
  		Cookie cookies[] = req.getCookies();  
@@ -116,6 +160,11 @@ public class Form
  		return user;
  	}
 
+	/**
+	 * Deletes saved cookie.
+	 * @param resp
+	 * @throws IOException
+	 */
 	public static void deleteCookie(HttpServletResponse resp) throws IOException {
 		
 		Cookie c = new Cookie("user", null);
@@ -125,6 +174,11 @@ public class Form
 		resp.addCookie(c);
 	}
 	
+	/**
+	 * Checks access level of user retrieved from cookie.
+	 * @param accessLevel
+	 * @throws IOException
+	 */
 	private void checkAccess(int accessLevel) throws IOException {
 		
 		if(Form.getUserFromCookie(_req) == null) {
@@ -240,11 +294,18 @@ public class Form
 		return select;
 	}
 
+	/**
+	 * @return True if the form has been submitted.
+	 */
 	public boolean isSubmit() {
 
 		return (_req.getParameter("submit") != null);
 	}
-
+	
+	/**
+	 * @param param
+	 * @return param parameter if not null and if the _errors list is empty. Otherwise returns an empty string.
+	 */
 	public String getParam(String param) {
 		
 		return (_req.getParameter(param) != null && _errors.size() != 0 ? 

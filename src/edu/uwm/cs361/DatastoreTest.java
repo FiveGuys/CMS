@@ -18,6 +18,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class tests if the Datastore is functioning properly.
+ * @author 5guys
+ */
 public class DatastoreTest {
 
     private final LocalServiceTestHelper helper =
@@ -35,6 +39,9 @@ public class DatastoreTest {
         helper.tearDown();
     }
 
+    /**
+     * Tests the creation of a new user.
+     */
     @Test
     public void testAddUser() {
     	
@@ -49,6 +56,10 @@ public class DatastoreTest {
         assertEquals(2, ds.prepare(new Query("add")).countEntities(withLimit(10)));
     }
 
+    /**
+     * Tests the update of an existing user.
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testUpdateUser() throws EntityNotFoundException {
         
@@ -69,6 +80,9 @@ public class DatastoreTest {
     	assertEquals(Long.parseLong("1000"), ds.get(KeyFactory.createKey("update", update.getKey().getId())).getProperty("Param1"));
     }
     
+    /**
+     * Tests the creation of a new Admin.
+     */
     @Test
     public void addAdmin() {
     	

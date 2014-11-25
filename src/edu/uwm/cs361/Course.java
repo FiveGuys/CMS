@@ -4,6 +4,10 @@ import javax.jdo.annotations.*;
 
 import com.google.appengine.api.datastore.Key;
 
+/**
+ * This class defines the CMS course objects.
+ * @author 5guys
+ */
 @PersistenceCapable
 public class Course implements Comparable<Course> {
 	
@@ -30,6 +34,10 @@ public class Course implements Comparable<Course> {
 		this.CourseName = Name;
 	}
 	
+	/** Compares two Course IDs
+	 * @param other if this ID is greater returns -1, otherwise returns 1
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(Course other) {
 		

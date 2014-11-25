@@ -24,6 +24,10 @@ import org.jsoup.select.Elements;
 
 /* http://www.mkyong.com/java/how-to-send-http-request-getpost-in-java/ */
 
+/**
+ * This servlet class handles the proxy.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class ProxyServlet extends HttpServlet {
 	
@@ -57,6 +61,10 @@ public class ProxyServlet extends HttpServlet {
     	 
     }
     
+ 	/**
+ 	 * Gets schedule from UWM website.
+ 	 * @throws IOException
+ 	 */
  	private void getScheduleFromUWM() throws IOException {
 
  		url = "http://www4.uwm.edu/schedule/pdf/pf_dsp_soc_search_results.cfm?strm="+semester;
@@ -70,6 +78,12 @@ public class ProxyServlet extends HttpServlet {
  		parseSchedule();
  	}
 
+ 	/**
+ 	 * Gets Email addresses from UWM website.
+ 	 * @param name
+ 	 * @return{@link #parseEmail parseEmail}
+ 	 * @throws IOException
+ 	 */
  	private String getEmailFromUWM(String name) throws IOException {
 		
  		url = "http://www4.uwm.edu/search.cfm?s=people&q="+ name.replace(", ", "%2C+");
@@ -81,6 +95,12 @@ public class ProxyServlet extends HttpServlet {
  		return parseEmail();
 	}
  	
+	/**
+	 * Initiates an HTTP connection with POST method.
+	 * @param url
+	 * @param action
+	 * @throws IOException
+	 */
 	private void initConnection(String url, String action) throws IOException {
 
 		con = (HttpURLConnection) new URL(url).openConnection();
@@ -136,6 +156,10 @@ public class ProxyServlet extends HttpServlet {
 		_resp.getWriter().println(response);
 	}
 
+	/**
+	 * Parses text for email addresses.
+	 * @return Smtp address.
+	 */
 	private String parseEmail() {
 		
 		Document doc = Jsoup.parse(response.toString());
@@ -145,6 +169,9 @@ public class ProxyServlet extends HttpServlet {
 		return email.text();
 	}
 
+	/**
+	 * Parses the page for class schedule details.
+	 */
 	private void parseSchedule() {
 		
 		Document doc = Jsoup.parse(response.toString());
@@ -197,6 +224,11 @@ public class ProxyServlet extends HttpServlet {
  		}
 	}
 	
+	/**
+	 * Gets Course name.
+	 * @param inputLine
+	 * @return
+	 */
 	private String getName(String inputLine) {
 		
 		String temp = inputLine;
@@ -213,6 +245,10 @@ public class ProxyServlet extends HttpServlet {
 		return temp;
 	}
 	
+	/**
+	 * @param message
+	 * @return md5 hash
+	 */
 	public static String md5(String message) { 
 
 		String hash = null; 
@@ -239,6 +275,11 @@ public class ProxyServlet extends HttpServlet {
 		return hash; 
 	}
 	
+	/**
+	 * Finds the correct semester.
+	 * @param type
+	 * @return
+	 */
 	private String getTerm(int type) {
 		
 		String term = "";

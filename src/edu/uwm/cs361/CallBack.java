@@ -2,6 +2,10 @@ package edu.uwm.cs361;
 
 import java.io.IOException;
 
+/**
+ * Callback interface
+ * @author 5guys
+ */
 public interface CallBack {
 	
 	public static final int ACCESS_ALL = 1;

@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**
+ * This Servlet class assigns a Professor to the CMS system. 
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class AssignProfServlet extends HttpServlet implements CallBack
 {
@@ -69,6 +72,9 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		doGet(req, resp);
 	}
 	
+	/**
+	 * Prints html content.
+	 */	
 	@Override
 	public void printContent()  throws IOException {
 		_resp.getWriter().println(
@@ -88,6 +94,10 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 	"</div>");
 	}
 	
+	/**
+	 * Calls all validation methods to make sure that every single field entered is valid.
+	 * If invalid, it is added to  {@link #_errors _errors}
+	 */
 	@Override
 	public void validate(){	
 		for(int i=0;i<=index;++i){
@@ -102,6 +112,10 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Prints course table
+	 * @throws IOException
+	 */
 	private void printCourse() throws IOException{
 		String html = "<form action='course' method='post' class='standard-form'>"
 				+"<select name='course'>";
@@ -153,6 +167,10 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		_resp.getWriter().println(html);
 	}
 	
+	/**
+	 * Prints section
+	 * @throws IOException
+	 */
 	private void printSection() throws IOException{
 		Datastore ds = new Datastore(_req, _resp, _errors);
 		String html ="<form action='assign-prof' method='post' class='standard-form'>"+
@@ -222,6 +240,9 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		 _holdID=_sectionID;
 	}
 	
+	/**
+	 * Validates and saves selection
+	 */
 	private void save(){
 		if (_req.getParameter("submit")!= null){
 			validate();
@@ -234,6 +255,11 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 	}
 	
 	
+	/**
+	 * Makes sure this is an alphabetical string, suitable for a person's given name.
+	 * @param input
+	 * @return True if legit
+	 */
 	private boolean isValid(String input){
 		if(input!=null && !input.isEmpty()){
 			Pattern pattern = Pattern.compile("[a-zA-z]+([ '-][a-zA-Z]+)*");
@@ -246,6 +272,10 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		return true;
 	}
 	
+	/**
+	 * Gets the course ID
+	 * @return
+	 */
 	public String getCourseID() {
 
 		return (_req.getParameter("course") != null ? 

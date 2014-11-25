@@ -61,6 +61,7 @@ public class LoginServlet extends HttpServlet
 	}
 
 	/**
+	 * Prints html content
 	 * @param resp
 	 * @param message
 	 * @throws IOException

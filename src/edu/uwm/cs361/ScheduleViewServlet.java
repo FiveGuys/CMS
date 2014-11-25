@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 
+/**
+ * This servlet class implements the view to schedule Courses.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class ScheduleViewServlet extends HttpServlet implements CallBack{
 	
@@ -59,6 +63,9 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		doGet(req, resp);
 	}
 	
+	/**
+	 * Calls {@link #courseDropdown courseDropdown} and {@link #createSchedule createSchedule}.
+	 */
 	@Override
 	public void printContent() throws IOException{
 		
@@ -67,9 +74,16 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		createSchedule();
 	}
 
+	/**
+	 * Calls all validation methods to make sure that every single field entered is valid.
+	 */
 	@Override
 	public void validate() {}
 	
+	/**
+	 * Shows Courses in the dropdown menu.
+	 * @throws IOException
+	 */
 	private void courseDropdown() throws IOException{
 		
 		String html = "<form action='schedule-view' method='post' class='standard-form'>"
@@ -93,6 +107,10 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		_resp.getWriter().println(html);
 	}
 	
+	/**
+	 * Creates the schedule.
+	 * @throws IOException
+	 */
 	private void createSchedule() throws IOException{
 		
 		initSchedule();
@@ -127,6 +145,9 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		_resp.getWriter().println(htmlTable);
 	}
 	
+	/**
+	 * Course Builder.
+	 */
 	private void courseBuilder(){
 		
 		int rowspan = 1;
@@ -158,6 +179,13 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		}
 	}
 
+	/**
+	 * Fills the custom table.
+	 * @param start
+	 * @param day
+	 * @param element
+	 * @param rowspan
+	 */
 	private void fillTable(LocalTime start, char day, String element, int rowspan) {
 		
 		//Convert X:30/45 AM to X:00 AM to avoid errors
@@ -177,17 +205,27 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		}
 	}
 
+	/**
+	 * @param time
+	 * @return Local time parsed from the input string.
+	 */
 	private LocalTime parseTime(String time) {
 		
 		return LocalTime.parse(time, DateTimeFormat.forPattern("h:m a"));
 	}
 
+	/**
+	 * @return The courseID
+	 */
 	private String getCourseID() {
 
 		return (_req.getParameter("course") != null ? 
 				_req.getParameter("course") : _courses.get(0).getID());
 	}
 	
+	/**
+	 * Initializes html table for the schedule.
+	 */
 	private void initSchedule() {
 		
 		for(int i = 0; i < _table.length; ++i) {
@@ -199,6 +237,11 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		}
 	}
 	
+	/**
+	 * Tests Section.
+	 * @param section
+	 * @return
+	 */
 	private boolean testSection(Section section){
 		
 		return (section.getStartTime() == "" || 

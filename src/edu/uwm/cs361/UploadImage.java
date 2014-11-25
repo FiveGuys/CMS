@@ -13,6 +13,10 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
+/**
+ * This class uploads images to the Blobstore service.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class UploadImage extends HttpServlet {
 

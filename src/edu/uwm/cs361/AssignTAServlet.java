@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This Servlet class assigns a Teaching Assistant to the CMS system. 
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class AssignTAServlet extends HttpServlet
 {

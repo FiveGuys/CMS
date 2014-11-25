@@ -153,7 +153,7 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	}
 
 	/**
-	 * Calling all validation methods to make sure that every single field entered is valid.
+	 * Calls all validation methods to make sure that every single field entered is valid.
 	 */
 	@Override
 	public void validate() {

@@ -6,10 +6,22 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * HTML output helper
+ * @author 5guys
+ */
 public class HtmlOutputHelper 
 {
 	private final static String[] STYLE = {"", "course.css", "views.css", "edit-info.css", "user.css"};
 	
+ 	/**
+ 	 * Prints header.
+ 	 * @param req
+ 	 * @param rsp
+ 	 * @param title
+ 	 * @param index
+ 	 * @throws IOException
+ 	 */
  	public static void printHeader(HttpServletRequest req, HttpServletResponse rsp, String title, int index) throws IOException {
 		
  		rsp.setContentType("text/html");
@@ -91,6 +103,11 @@ public class HtmlOutputHelper
  		);
  	}
  	
+ 	/**
+ 	 * Prints footer.
+ 	 * @param rsp
+ 	 * @throws IOException
+ 	 */
  	public static void printFooter(HttpServletResponse rsp) throws IOException {
  		
  		rsp.getWriter().println("</div></div></body></html>");
