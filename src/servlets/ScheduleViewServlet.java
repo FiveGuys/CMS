@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jdo.Course;
+import jdo.Section;
+
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
+
+import edu.uwm.cs361.CallBack;
+import edu.uwm.cs361.Datastore;
+import edu.uwm.cs361.Form;
 
 /**
  * This servlet class implements the view to schedule Courses.

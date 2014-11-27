@@ -13,6 +13,10 @@ public final class PMF {
 	
 	private PMF() {}
 
+	/**
+	 * 
+	 * @return the single instance of persistence manager in our application
+	 */
     public static PersistenceManagerFactory get() {
         return pmfInstance;
     }

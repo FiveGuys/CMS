@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +7,12 @@ import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jdo.Course;
+import jdo.Section;
+import jdo.User;
+import edu.uwm.cs361.Datastore;
+import edu.uwm.cs361.HtmlOutputHelper;
 
 /**
  * This servlet class manages the view of Courses.

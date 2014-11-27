@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import edu.uwm.cs361.Datastore;
 
 /**
  * Class for forgotten credentials

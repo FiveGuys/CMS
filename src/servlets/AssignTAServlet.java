@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package tests;
 
 import static org.junit.Assert.*;
 

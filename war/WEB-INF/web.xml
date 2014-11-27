@@ -6,59 +6,59 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>AddUser</servlet-name>
-		<servlet-class>edu.uwm.cs361.AddUserServlet</servlet-class>
+		<servlet-class>servlets.AddUserServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>AssignProf</servlet-name>
-		<servlet-class>edu.uwm.cs361.AssignProfServlet</servlet-class>
+		<servlet-class>servlets.AssignProfServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>AssignTA</servlet-name>
-		<servlet-class>edu.uwm.cs361.AssignTAServlet</servlet-class>
+		<servlet-class>servlets.AssignTAServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>EditInfo</servlet-name>
-		<servlet-class>edu.uwm.cs361.EditInfoServlet</servlet-class>
+		<servlet-class>servlets.EditInfoServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>EditCourse</servlet-name>
-		<servlet-class>edu.uwm.cs361.EditCourseServlet</servlet-class>
+		<servlet-class>servlets.EditCourseServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Forgot</servlet-name>
-		<servlet-class>edu.uwm.cs361.ForgotServlet</servlet-class>
+		<servlet-class>servlets.ForgotServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Login</servlet-name>
-		<servlet-class>edu.uwm.cs361.LoginServlet</servlet-class>
+		<servlet-class>servlets.LoginServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Logout</servlet-name>
-		<servlet-class>edu.uwm.cs361.LogoutServlet</servlet-class>
+		<servlet-class>servlets.LogoutServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Proxy</servlet-name>
-		<servlet-class>edu.uwm.cs361.ProxyServlet</servlet-class>
+		<servlet-class>servlets.ProxyServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Schedule</servlet-name>
-		<servlet-class>edu.uwm.cs361.ScheduleViewServlet</servlet-class>
+		<servlet-class>servlets.ScheduleViewServlet</servlet-class>
 	</servlet>
 	 <servlet>
     <servlet-name>ServeImage</servlet-name>
-    <servlet-class>edu.uwm.cs361.ServeImage</servlet-class>
+    <servlet-class>servlets.ServeImage</servlet-class>
   </servlet>
 	<servlet>
 		<servlet-name>UploadImage</servlet-name>
-		<servlet-class>edu.uwm.cs361.UploadImage</servlet-class>
+		<servlet-class>servlets.UploadImage</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>UserSearch</servlet-name>
-		<servlet-class>edu.uwm.cs361.UserSearchServlet</servlet-class>
+		<servlet-class>servlets.UserSearchServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>ViewCourses</servlet-name>
-		<servlet-class>edu.uwm.cs361.ViewCoursesServlet</servlet-class>
+		<servlet-class>servlets.ViewCoursesServlet</servlet-class>
 	</servlet>
 	<!-- end servlets -->
 	

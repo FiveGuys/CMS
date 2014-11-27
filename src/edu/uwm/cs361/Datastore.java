@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import jdo.Course;
+import jdo.Section;
+import jdo.User;
+
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -112,7 +116,7 @@ public class Datastore
  	}
 
 	/**
-	 * @return A user searching by username.
+	 * @return A user searching by username based on logged-in cookie
 	 */
 	private User findUser() {
  		
@@ -124,7 +128,7 @@ public class Datastore
 	}
 	
 	/**
-	 * Adds a course.
+	 * Adds a course to datastore
 	 * @param courseID
 	 * @param name
 	 */
@@ -136,7 +140,7 @@ public class Datastore
 	}
 
 	/**
-	 * Adds a section.
+	 * Adds a section to datastore
 	 * @param courseData This is an array of strings containing all details of a single course.
 	 */
 	public void addSection(String[] courseData) {
@@ -400,7 +404,7 @@ public class Datastore
 	}
 
 	/**
-	 * Delete courses.
+	 * Deletes all courses
 	 */
 	public void deleteCourses() {
 		

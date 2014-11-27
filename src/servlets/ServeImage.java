@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,6 +11,8 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
+
+import edu.uwm.cs361.Datastore;
 
 /**
  * This servlet class manages a Blobstore service for the users' pictures.

@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -21,6 +21,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import edu.uwm.cs361.Datastore;
 
 /* http://www.mkyong.com/java/how-to-send-http-request-getpost-in-java/ */
 

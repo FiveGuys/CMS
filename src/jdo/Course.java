@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package jdo;
 
 import javax.jdo.annotations.*;
 

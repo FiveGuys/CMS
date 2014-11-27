@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package servlets;
 
 import java.io.IOException;
 import java.util.*;
@@ -8,6 +8,13 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jdo.Course;
+import jdo.Section;
+import jdo.User;
+import edu.uwm.cs361.CallBack;
+import edu.uwm.cs361.Datastore;
+import edu.uwm.cs361.Form;
 
 /**
  * This Servlet class assigns a Professor to the CMS system. 

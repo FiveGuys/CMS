@@ -203,28 +203,59 @@ public class Form
 					html +
 				"</label>";
 	}
-	
+	/**
+	 * 
+	 * @param label
+	 * @param text
+	 * @param action
+	 * @return start of an HTML form as a string
+	 */
 	public String Start(String label, String text, String action) {
 		
 		return "<form action='"+action+"' method='post' class='standard-form'>" +
 				"<h1>"+label+"<span>"+text+"</span></h1>";
 	}
 	
+	/**
+	 * 
+	 * @return end of form with a save button at bottom
+	 */
 	public String End() {
 		
 		return "<div class='submit'><input type='submit' name='submit' class='button' value='Save' /></div></form>";
 	}
 	
+	/**
+	 * 
+	 * @param label
+	 * @param name
+	 * @param val
+	 * @param ph
+	 * @param cssClass
+	 * @return text field HTML for a form
+	 */
 	public String TextField(String label, String name, String val, String ph, String cssClass) {
 		
 		return formInput(label, cssClass, "<input type='text' id='"+name+"' name='"+name+"' value='"+val+"'placeholder='"+ph+"' />");
 	}
 	
+	/**
+	 * 
+	 * @return last HTML line of user search form
+	 */
 	public String EndSearchUser() {
 		
 		return "<div class='search submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
 	}
 	
+	/**
+	 * 
+	 * @param label
+	 * @param cssClass
+	 * @param name
+	 * @param checked
+	 * @return an html checkbox string
+	 */
 	public String CheckBox(String label, String cssClass, String name, Boolean checked) {
 
 		return formInput(label, cssClass,
@@ -234,6 +265,14 @@ public class Form
 				"</div>");
 	}
 	
+	/**
+	 * 
+	 * @param label
+	 * @param cssClass
+	 * @param firstSelect
+	 * @param secondSelect
+	 * @return html string of date time label
+	 */
 	public String DateTime(String label, String cssClass, String firstSelect, String secondSelect){
 		
 		return formInput(label, cssClass, 
@@ -251,6 +290,15 @@ public class Form
 				"</label>";
 	}
 	
+	/**
+	 * 
+	 * @param startName
+	 * @param endName
+	 * @param selected1
+	 * @param selected2
+	 * @param cssClass
+	 * @return creates a select date dropdown
+	 */
 	public String selectDate(String startName, String endName, String selected1, String selected2, String cssClass) {
 		
 		return getSelectField(startName, (selected1 != null ? selected1 : ""), cssClass, 1, 12) +
@@ -258,6 +306,15 @@ public class Form
 				getSelectField(endName, (selected2 != null ? selected2 : ""), cssClass, 1, 31);
 	}
 	
+	/**
+	 * 
+	 * @param startName
+	 * @param endName
+	 * @param selected1
+	 * @param selected2
+	 * @param cssClass
+	 * @return creates a select date dropdown
+	 */
 	public String selectTime(String startName, String endName, String selected1, String selected2, String cssClass) {
 		
 		List<String> endTime = Arrays.asList("00","10","15","30","40","45","50");
@@ -267,6 +324,14 @@ public class Form
 				getSelectField(endName, (selected2 != null ? selected2 : ""), cssClass, endTime);
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param selected
+	 * @param cssClass
+	 * @param options
+	 * @return return select list html with options param appended
+	 */
 	public String getSelectField(String name, String selected, String cssClass, List<String> options) {
 		
 		String select = "<select class='"+cssClass+"' name='"+name+"'>";
@@ -280,7 +345,16 @@ public class Form
 		
 		return select;
 	}
-
+    
+	/**
+	 * 
+	 * @param name
+	 * @param selected
+	 * @param cssClass
+	 * @param start
+	 * @param end
+	 * @return value of select in form
+	 */
 	public String getSelectField(String name, String selected, String cssClass, int start, int end) {
 		
 		String select = "<select class='"+cssClass+"' name='"+name+"'>";

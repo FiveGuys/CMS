@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package tests;
 
 /**
  * This class tests if the Schedule View is functioning properly.

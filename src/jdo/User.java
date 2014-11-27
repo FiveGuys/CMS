@@ -1,4 +1,4 @@
-package edu.uwm.cs361;
+package jdo;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.Key;
 
