@@ -247,8 +247,8 @@ public class EditInfoServlet extends HttpServlet implements CallBack
 	private void isPassword() {
 		
 		String old = _req.getParameter("PasswordOld");
-		
-		if(!_user.getPassword().equals(old)) {
+		old.trim();
+		if((!_user.getPassword().equals(old) && (!old.equalsIgnoreCase("")))) {
 			
 			_errors.add("Old Password doesn't match");
 		}
