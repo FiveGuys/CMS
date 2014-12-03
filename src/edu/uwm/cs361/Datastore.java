@@ -26,6 +26,8 @@ public class Datastore
 {
 	private HttpServletRequest _req;
 	
+	private HttpServletResponse _resp;
+	
 	private User _user;
 	
 	private List<String> _errors;
@@ -35,6 +37,8 @@ public class Datastore
  	public Datastore(HttpServletRequest req, HttpServletResponse resp, List<String> errors) {
  		
  		_req = req;
+ 		
+ 		_resp = resp;
  		
 		_errors = errors;
 		
@@ -183,12 +187,24 @@ public class Datastore
 				case "addUser": this.addUser(); break;
 				case "searchUser": this.searchUser(); break;
 				case "editCourse": this.editCourse(); break;
+				case "refreshCourses": this.refreshCourses(); break;
 				case "": break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
 	}
 	
+	/**
+	 * Scrape Courses from UWM
+	 * @throws IOException
+	 */
+	private void refreshCourses() throws IOException {
+		
+		Scrape scrape = new Scrape(_req, _resp);
+		
+		scrape.getScheduleFromUWM();
+	}
+
 	/**
 	 * Edits all properties of a single course.
 	 * @throws IOException
@@ -243,7 +259,7 @@ public class Datastore
 			user.setOfficeHour2( "Wed;0;00;0;00");
 			user.setOfficeHour3( "Wed;0;00;0;00");
 			user.setAccess("3");
-			user.setSemester("2149");
+			user.setKeyword("");
 			
 			_pm.makePersistent(user);
 		}
@@ -298,14 +314,15 @@ public class Datastore
 					user.setOfficeHour1( "Wed;0;00;0;00");
 					user.setOfficeHour2( "Wed;0;00;0;00");
 					user.setOfficeHour3( "Wed;0;00;0;00");
+					user.setKeyword("");
+					
 					if(section.getClassType().equals("LEC")){
 						user.setAccess("2");
 					}
 					else{
 						user.setAccess("1");
 					}
-					
-					user.setSemester("2149");
+
 					_pm.makePersistent(user);
 					
 					section.setInstructorID(ID);
@@ -393,7 +410,7 @@ public class Datastore
 			user.setOfficeHour2( "Wed;0;00;0;00");
 			user.setOfficeHour3( "Wed;0;00;0;00");
 			user.setAccess(access);
-			user.setSemester("2149");
+			user.setKeyword("");
 			
 			_pm.makePersistent(user);
 			
@@ -431,5 +448,40 @@ public class Datastore
 	public void setImage(String blobKey) {
 		
 		_user.setImage(blobKey);
+	}
+
+	public void addTestInstructor(String instructorName, String email, String classType) {
+		
+		String[] type = classType.split(" ");
+		String[] name = instructorName.split(", ");
+		
+		if(name.length == 2) {
+			
+			String firstName = name[1];
+			String lastName = name[0];
+			
+			if(!userExists(firstName+"."+lastName)) {
+				
+				User user = new User();
+				
+				user.setID(newUserID());
+				user.setUserName( firstName + "." + lastName);
+				user.setPassword( lastName); 
+				user.setFirstName( firstName);
+				user.setMiddleName( "");
+				user.setLastName( lastName);
+				user.setEmail(email);
+				user.setLocation( "");
+				user.setPhone( "");
+				user.setAltPhone( "");
+				user.setOfficeHour1( "Wed;0;00;0;00");
+				user.setOfficeHour2( "Wed;0;00;0;00");
+				user.setOfficeHour3( "Wed;0;00;0;00");
+				user.setKeyword("");
+				user.setAccess("LEC".equals(type[0]) ? "2" : "1");
+			
+				_pm.makePersistent(user);
+			}
+		}
 	}
 }

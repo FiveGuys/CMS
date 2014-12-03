@@ -24,9 +24,9 @@
 }
 
 #image input[type="file"] {
-	width: 101px;
+	width: 90px;
 	font-size: 16px;
-	margin-left: 10px;
+	margin-left: 20px;
 }
 
 #image img {

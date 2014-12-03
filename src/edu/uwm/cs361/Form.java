@@ -59,18 +59,19 @@ public class Form
 	 */
 	public void handleGet(String header, int page, CallBack servlet, String method, int accessLevel) throws IOException {
 		
-		checkAccess(accessLevel);
+		if(checkAccess(accessLevel)) {
 		
-		if(isSubmit()) {
+			if(isSubmit()) {
+				
+				Datastore ds = new Datastore(_req, _resp, _errors);
+				
+				servlet.validate();
+				
+				ds.callMethod(method);
+			}
 			
-			Datastore ds = new Datastore(_req, _resp, _errors);
-			
-			servlet.validate();
-			
-			ds.callMethod(method);
+			displayForm(header, page, servlet);
 		}
-		
-		displayForm(header, page, servlet);
 	}
 	
  	/**Prints the header.
@@ -179,11 +180,15 @@ public class Form
 	 * @param accessLevel
 	 * @throws IOException
 	 */
-	private void checkAccess(int accessLevel) throws IOException {
+	private boolean checkAccess(int accessLevel) throws IOException {
+		
+		boolean success = true;
 		
 		if(Form.getUserFromCookie(_req) == null) {
 			
 			_resp.sendRedirect("401.html");
+			
+			success = false;
 			
 		} else {
 		
@@ -192,8 +197,12 @@ public class Form
 			if(accessLevel > Integer.parseInt(ds.getUser().getAccess())) {
 				
 				_resp.sendRedirect("401.html");
+				
+				success = false;
 			}
 		}
+		
+		return success;
 	}
 
 	private String formInput(String label, String cssClass, String html) {

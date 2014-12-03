@@ -53,7 +53,7 @@ public class HtmlOutputHelper
 		    + "<div class='settings-content'>" 
 		    + "<ul>"
 		    + "<li><a href='add-user'>Add New User</a><li>" // TODO Admin only - DL
-		    + "<li><a href='hack'>Refresh Courses</a><hr /></li>" //TODO Admin Only - DL
+		    + "<li><a href='refresh-courses'>Refresh Courses</a><hr /></li>" //TODO Admin Only - DL
 		    + "<li><a href='index.html'>Logout</a></li>"
 		    + "</ul>"
 		    + "</div>"

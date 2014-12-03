@@ -86,16 +86,16 @@ public class User {
 	private String Access;
 	public String getAccess() {return Access;}
 	public void setAccess(String Access) {this.Access = Access;}
-	
-	@Persistent
-	private String Semester;
-	public String getSemester() {return Semester;}
-	public void setSemester(String Semester) {this.Semester = Semester;}
-	
+
 	@Persistent
 	private String Image;
 	public String getImage() { return Image; }
 	public void setImage(String Image) { this.Image = Image; }
+	
+	@Persistent
+	private String Keyword;
+	public String getKeyword() { return Keyword; }
+	public void setKeyword(String Keyword) { this.Keyword = Keyword; }
 	
 	public User() {}
 	

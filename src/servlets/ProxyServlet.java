@@ -1,303 +1,95 @@
 package servlets;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import edu.uwm.cs361.Datastore;
-
-/* http://www.mkyong.com/java/how-to-send-http-request-getpost-in-java/ */
+import edu.uwm.cs361.CallBack;
+import edu.uwm.cs361.Form;
 
 /**
- * This servlet class handles the proxy.
+ * This servlet class handles the Scraping.
  * @author 5guys
  */
 @SuppressWarnings("serial")
-public class ProxyServlet extends HttpServlet {
+public class ProxyServlet extends HttpServlet implements CallBack {
+	
+private final int ACCESS_LEVEL = ACCESS_ADMIN;
 	
 	private HttpServletRequest _req;
 	
 	private HttpServletResponse _resp;
 	
-	private String url; 
+	private List<String> _errors;
 	
-	private String urlParameters;
-	
-	private String semester;
-	
-	private HttpURLConnection con;
-    
-	private String response;
+	private Form _form;
 	
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	
-    	/*
-    	_req = req; 
-    	
-    	_resp = resp;
-    	
-    	semester = (req.getParameter("semester") != null ? req.getParameter("semester") : "2149");
+    	_req = req;
+		
+		_resp = resp;
+		
+		_errors = new ArrayList<String>();
+		
+		_form = new Form(_req, _resp, _errors);
+		
+		_form.handleGet("Refresh Courses", 0, this, "refreshCourses", ACCESS_LEVEL);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
-		getScheduleFromUWM();
-    	*/
-    	//getEmailFromUWM("Rock, Jayson");
-    	 
+    	doGet(req, resp);
     }
     
- 	/**
- 	 * Gets schedule from UWM website.
- 	 * @throws IOException
- 	 */
- 	private void getScheduleFromUWM() throws IOException {
-
- 		url = "http://www4.uwm.edu/schedule/pdf/pf_dsp_soc_search_results.cfm?strm="+semester;
- 		
- 		initConnection(url, "POST");
- 		
- 		sendRequest();
- 		
- 		getResponse();
- 		
- 		parseSchedule();
- 	}
-
- 	/**
- 	 * Gets Email addresses from UWM website.
- 	 * @param name
- 	 * @return{@link #parseEmail parseEmail}
- 	 * @throws IOException
- 	 */
- 	private String getEmailFromUWM(String name) throws IOException {
+	@Override
+	public void printContent() throws IOException {
 		
- 		url = "http://www4.uwm.edu/search.cfm?s=people&q="+ name.replace(", ", "%2C+");
- 		
- 		initConnection(url, "GET");
- 		
- 		getResponse();
- 		
- 		return parseEmail();
-	}
- 	
-	/**
-	 * Initiates an HTTP connection with POST method.
-	 * @param url
-	 * @param action
-	 * @throws IOException
-	 */
-	private void initConnection(String url, String action) throws IOException {
-
-		con = (HttpURLConnection) new URL(url).openConnection();
-
-		con.setRequestMethod(action);
-
-		con.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-		
-		if(action == "POST") {
-			
-			urlParameters = "mon=0&tue=0&wed=0&thu=0&fri=0&sat=0&sun=0&gergroup=100&checkurl=N&subject=COMPSCI&category=&lastname=&firstname=&EXACTWORDPHRASE=&COURSETYPE=ALL&timerangefrom=&timerangeto=&datebeginning=&strm="+semester+
-					"&school=ALL&school_descrformal=&results_title=&term_descr="+getTerm(0)+"&term_status=L&term_season="+getTerm(1)+"&datasource=cf_web_soc&subjdtlhide=false&submit_couns=Printer-Friendly+Version";
-		}
-		
-		System.out.println("\nSending "+action+" request to URL : " + url);
-	}
-	
-	private void sendRequest() throws IOException {
-		
-		con.setDoOutput(true);
-		
- 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
- 		
- 		wr.writeBytes(urlParameters);
- 		
- 		wr.flush();
- 		
- 		wr.close();
-	}
-
-	private void getResponse() throws IOException {
-		
- 		System.out.println("Response Code : " + con.getResponseCode());
-  
- 		BufferedReader in = new BufferedReader(
- 		        new InputStreamReader(con.getInputStream()));
- 		
- 		String inputLine;
- 		
- 		StringBuffer temp = new StringBuffer();
-  
- 		while ((inputLine = in.readLine()) != null) {
- 		
- 			temp.append(inputLine);
- 		}
- 		
- 		in.close();
- 		
-		response = temp.toString();
-		
-		_resp.getWriter().println(response);
-	}
-
-	/**
-	 * Parses text for email addresses.
-	 * @return Smtp address.
-	 */
-	private String parseEmail() {
-		
-		Document doc = Jsoup.parse(response.toString());
- 		
- 		Elements email = doc.select("td.email");
- 		
-		return email.text();
-	}
-
-	/**
-	 * Parses the page for class schedule details.
-	 */
-	private void parseSchedule() {
-		
-		Document doc = Jsoup.parse(response.toString());
- 		
- 		Elements CourseNames = doc.select("span.subhead");
- 		
- 		Datastore ds = new Datastore(_req, _resp, new ArrayList<String>());
- 		
- 		ds.deleteCourses();
- 		
- 		int courseID = 1;
- 		int sectionID = 1;
- 		
- 		for(Element e :CourseNames) {
- 			
- 			String[] courseData = new String[11];
- 			
- 			String courseName = getName(e.text());
- 			
- 			System.out.println(courseName);
- 			
- 			ds.addCourse(courseID+"", courseName);
- 			
-			Elements tr = e.parent().parent().parent().getElementsByClass("body");
-
-			for(Element t : tr) {
+		_resp.getWriter().println( 
 				
-				if(t.tagName() == "tr" && t.hasClass("copy") && !t.attr("bgcolor").equals("#666666") && !t.hasClass("bold")) {
+				"<form action='/refresh-courses' method='post' class='standard-form'>" + 
+					"<h1>Change Semester</h1>" +
+					"<label>" +   
+					  "<span>Semester: </span>" +
+						"<select name='Semester'>" +
+							"<option value='2149' "+ selected("2149") +">Fall 2014</option>" +
+							"<option value='2151' "+ selected("2151") +">UWinteriM 2015</option>" +
+							"<option value='2152' "+ selected("2152") +">Spring 2015</option>" +
+						"</select>" +
+					"</label>" +
+					_form.CheckBox("Test Instructor", "", "TestInstructor", false) + 
 					
-					courseData[0] = sectionID + "";
-					
-					courseData[1] = courseName;
-					
-					for(int i = 2; i <= 9; i++) {
-						
-						System.out.println(i + " " + t.child(i).html());
-						
-						courseData[i] = (!t.child(i).html().equals("&nbsp;") ? t.child(i).html() : "");
-					}
-					
-					courseData[10] = courseID + "";
-					
-					ds.addSection(courseData);
-					
-					sectionID++;
-				}
-			}
-			
- 			courseID++;
- 		}
+				"<div class='submit'><input type='submit' style='margin-top: 50px;' name='submit' class='button' value='Submit' /></div>" +
+				"</form>"
+			);
+		
+	}
+
+	@Override
+	public void validate() { }
+	
+	/**
+	 * @param name
+	 * @return name parameter if is not null and if the _errors list is empty. Otherwise returns an empty string.
+	 */
+	private String getParam(String name) {
+		
+		return (_req.getParameter(name) != null && _errors.size() != 0 ? 
+				_req.getParameter(name) : "");
 	}
 	
 	/**
-	 * Gets Course name.
-	 * @param inputLine
-	 * @return
+	 * @param index
+	 * @return string "selected" if equal to index parameter. Otherwise returns an empty string.
 	 */
-	private String getName(String inputLine) {
+	private String selected(String index) {
 		
-		String temp = inputLine;
-		
-		if(inputLine.indexOf('-') != 7) {
-			
-			StringBuffer text = new StringBuffer(temp);
-
-			text.replace(text.indexOf("("), text.indexOf(")") + 1, "");
-			text.replace(7,8, "-");
-			temp = text.toString();
-		}
-			
-		return temp;
-	}
-	
-	/**
-	 * @param message
-	 * @return md5 hash
-	 */
-	public static String md5(String message) { 
-
-		String hash = null; 
-
-		try { 
-			
-			MessageDigest md = MessageDigest.getInstance("MD5"); 
-			
-			byte[] bytes = md.digest(message.getBytes("UTF-8")); 
-			
-			StringBuilder sb = new StringBuilder(2 * bytes.length); 
-			
-			for(byte b : bytes){ 
-				
-				sb.append(String.format("%02x", b&0xff)); 
-			} 
-			
-			hash = sb.toString(); 
-			
-		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) { 
-			
-		}
-		
-		return hash; 
-	}
-	
-	/**
-	 * Finds the correct semester.
-	 * @param type
-	 * @return
-	 */
-	private String getTerm(int type) {
-		
-		String term = "";
-		
-		if(semester.equals("2149")) {
-			term = (type == 0 ? "Fall+2014" : "Fall+");
-		}
-		
-		if(semester.equals("2151")) {
-			term = (type == 0 ? "UWinteriM+2015" : "UWinteriM+");
-		}
-		
-		if(semester.equals("2152")) {
-			term = (type == 0 ? "Spring+2015" : "Spring+");
-		}
-		
-		return term;
+		return (getParam("Access").equals(index) ? "selected" : "");
 	}
 }

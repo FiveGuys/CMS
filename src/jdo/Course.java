@@ -21,11 +21,17 @@ public class Course implements Comparable<Course> {
 	@Persistent
 	private String CourseName;
 	
+	@Persistent
+	private String UserID;
+	
 	public String getID() { return CourseID; }
 	public void setID(String ID) { this.CourseID = ID; }
 	
 	public String getName() { return CourseName; }
 	public void setName(String Name) { this.CourseName = Name; }
+	
+	public String getUserID() { return UserID; }
+	public void setUserID(String UserID) { this.UserID = UserID; }
 	
 	public Course(String CourseID, String Name) {
 		
