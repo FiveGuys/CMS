@@ -206,9 +206,10 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		
 		_table[startIndex][dayIndex] = element;
 		
-		if(rowspan == 2) {
-			
-			_table[startIndex+1][dayIndex] = "";
+		if(rowspan > 2){
+			for(int j = 0; j < rowspan - 1 ; ++j){
+				_table[startIndex+j+1][dayIndex] = "";
+			}
 		}
 	}
 

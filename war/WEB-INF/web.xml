@@ -60,6 +60,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>ViewCourses</servlet-name>
 		<servlet-class>servlets.ViewCoursesServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>ViewOfficeHours</servlet-name>
+		<servlet-class>servlets.OfficeHourViewServlet</servlet-class>
+	</servlet>
+	
 	<!-- end servlets -->
 	
 	
@@ -118,6 +123,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>ViewCourses</servlet-name>
 		<url-pattern>/view-courses</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ViewOfficeHours</servlet-name>
+		<url-pattern>/officehours</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

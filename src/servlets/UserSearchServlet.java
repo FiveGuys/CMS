@@ -82,7 +82,11 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 			
 			final String[] positions = {"","Teaching Assistant","Instructor","Administrator"};
 			
-			List<User> userList = Datastore.getUsers("UserName=='"+_req.getParameter("FirstName")+"."+_req.getParameter("LastName")+"'");
+			String firstName = _req.getParameter("FirstName");
+			
+			String lastName = _req.getParameter("LastName");
+			
+			List<User> userList = Datastore.getUsers("UserName=='"+ firstName+"."+lastName+"'");
 
 			
 			int index = Integer.parseInt(userList.get(0).getAccess());
@@ -107,7 +111,10 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 					"<label>Position:</label>" +
 					"<div class='boxedResult'>" + positions[index] + "</div>" +
 			"</div>" +
-			"<div class='clear'></div>";
+			"<div class='clear'></div>" +
+			"<form action='officehours?firstname="+firstName+"&lastname="+lastName+"' method='post' class='standard-form'>" +
+			"<div class='submit'><input type='submit' name='submit' class='button' value='View Office Hours' /></div>"+
+			"</form>";
 		}
 		
 		_resp.getWriter().println(html);
