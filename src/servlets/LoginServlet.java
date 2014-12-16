@@ -1,12 +1,15 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jdo.User;
+import edu.uwm.cs361.Datastore;
 import edu.uwm.cs361.Form;
 
 /**
@@ -125,17 +128,15 @@ public class LoginServlet extends HttpServlet
 	 * @return True is both username and password have a match
 	 */
 	private boolean validate(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
-
-		return true;
-		/*for(User user : users) {
+		List<User> users = Datastore.getUsers(null);
+		for(User user : users) {
 			
 			if(username.equals(user.getUserName()) && 
-				password.equals(user.getPassword())) {
-				
+				password.equals(user.getPassword())) {	
 				return true;
 			}
 		}
 		
-		return false;*/
+		return false;
 	}
 }

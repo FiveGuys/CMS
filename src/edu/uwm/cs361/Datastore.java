@@ -388,21 +388,22 @@ public class Datastore
 	 */
 	private void addUser() {
 		
-		String firstName = _req.getParameter("FirstName");
-		String lastName = _req.getParameter("LastName");
+		String firstName = formatName(_req.getParameter("FirstName"));
+		String lastName = formatName(_req.getParameter("LastName"));
 		String access = _req.getParameter("Access");
-		
+		String email = _req.getParameter("Email");
+
 		if(!userExists(firstName+"."+lastName)) {
 			
 			User user = new User();
 			
 			user.setID(newUserID());
-			user.setUserName( firstName + "." + lastName);
+			user.setUserName(email.substring(0, email.indexOf('@')));
 			user.setPassword( lastName); 
 			user.setFirstName( firstName);
 			user.setMiddleName( "");
 			user.setLastName( lastName);
-			user.setEmail("");
+			user.setEmail(email);
 			user.setLocation( "");
 			user.setPhone( "");
 			user.setAltPhone( "");
@@ -418,6 +419,12 @@ public class Datastore
 			
 			_errors.add("This person is already a user");
 		}
+	}
+	
+	//first letter is capital, rest lowercase 
+	private String formatName(String name){
+		name = name.toLowerCase();
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
 
 	/**

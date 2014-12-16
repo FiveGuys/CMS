@@ -65,6 +65,10 @@ public class AddUserServlet extends HttpServlet implements CallBack
 				  "<span>Last Name: </span>" +
 				  "<input type='text' name='LastName' value='"+getParam("LastName")+"' />" +
 				"</label>" +
+				"<label>" +
+				  "<span>Email: </span>" +
+				  "<input type='Email' name='Email' value='" + getParam("Email")+ " ' placeholder='xxx@uwm.edu' />" +
+				"</label>" +				  
 				"<label>" +   
 				  "<span>Access Level: </span>" +
 					"<select name='Access'>" +
@@ -85,8 +89,9 @@ public class AddUserServlet extends HttpServlet implements CallBack
 	public void validate() {
 		
 		isRequired(_req.getParameter("FirstName"), "First Name");
-		
 		isRequired(_req.getParameter("LastName"), "Last Name");
+		isRequired(_req.getParameter("Email"), "Email");
+		checkValidUwmEmail(_req.getParameter("Email"));
 	}
 	
 	/**
@@ -100,6 +105,11 @@ public class AddUserServlet extends HttpServlet implements CallBack
 			
 			_errors.add(name + " is required");
 		}
+	}
+	
+	private void checkValidUwmEmail(String email){
+		if((email.indexOf('@') != -1) && (!email.substring(email.indexOf('@')).equalsIgnoreCase("@uwm.edu")))
+			_errors.add("Please enter a valid uwm email address");
 	}
 	
 	/**
