@@ -68,7 +68,9 @@ public class AddUserServlet extends HttpServlet implements CallBack
 				"<label>" +
 				  "<span>Email: </span>" +
 				  "<input type='Email' name='Email' value='" + getParam("Email")+ " ' placeholder='xxx@uwm.edu' />" +
-				"</label>" +				  
+				"</label>" +				
+				"<textarea style='height: 45px; width: 500px' placeholder='If you are adding a TA, please enter in their skills separated by semi colons. example: HTML; CSS; Eating; Java' name='taSkills' rows='4' cols='50'>" + 
+			    "</textarea>" +
 				"<label>" +   
 				  "<span>Access Level: </span>" +
 					"<select name='Access'>" +

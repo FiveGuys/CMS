@@ -1,6 +1,8 @@
 package edu.uwm.cs361;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -272,7 +274,6 @@ public class Datastore
 			user.setOfficeHour2( "Wed;0;00;0;00");
 			user.setOfficeHour3( "Wed;0;00;0;00");
 			user.setAccess("3");
-			user.setKeyword("");
 			
 			_pm.makePersistent(user);
 		}
@@ -393,8 +394,10 @@ public class Datastore
 			user.setOfficeHour2( "Wed;0;00;0;00");
 			user.setOfficeHour3( "Wed;0;00;0;00");
 			user.setAccess(access);
-			user.setKeyword("");
 			
+			if(access.equalsIgnoreCase("1")){
+				user.setKeyword(_req.getParameter("taSkills").toString());
+			}
 			_pm.makePersistent(user);
 			
 		} else {
@@ -471,7 +474,6 @@ public class Datastore
 				user.setOfficeHour1( "Wed;0;00;0;00");
 				user.setOfficeHour2( "Wed;0;00;0;00");
 				user.setOfficeHour3( "Wed;0;00;0;00");
-				user.setKeyword("");
 				user.setAccess("LEC".equals(type[0]) ? "2" : "1");
 			
 				_pm.makePersistent(user);

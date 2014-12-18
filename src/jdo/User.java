@@ -1,4 +1,7 @@
 package jdo;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.Key;
 
@@ -91,11 +94,11 @@ public class User {
 	private String Image;
 	public String getImage() { return Image; }
 	public void setImage(String Image) { this.Image = Image; }
-	
+		
 	@Persistent
 	private String Keyword;
-	public String getKeyword() { return Keyword; }
-	public void setKeyword(String Keyword) { this.Keyword = Keyword; }
+	public String getKeyword() { return this.Keyword; }
+	public void setKeyword(String keyword ) { this.Keyword = keyword; }
 	
 	public User() {}
 	
