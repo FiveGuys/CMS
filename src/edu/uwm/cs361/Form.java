@@ -9,6 +9,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jdo.Course;
+
 /**
  * This class manages the webpage view.
  * @author 5guys
@@ -102,13 +104,8 @@ public class Form
  		PrintWriter out = _resp.getWriter();
  		
  		if(_errors.size() == 0 && _req.getParameter("submit") != null) {
- 			if(_errors.size() == 0 && (_req.getParameter("submit")).equals("Search")){
- 				out.println("<div class='success-msg'><img src='images/People.png' alt='PeopleIcon' height='30' width='30'>  Found "+_req.getParameter("FirstName") + " " + _req.getParameter("LastName")+"</div>");
-
- 			} else {
- 				out.println("<div class='success-msg'>Successfully Saved</div>");
- 			}
  			
+ 			out.println("<div class='success-msg'>Successfully Saved</div>");
  			
  		} else if (_errors.size() > 0) {
  			
@@ -393,5 +390,32 @@ public class Form
 		
 		return (_req.getParameter(param) != null && _errors.size() != 0 ? 
 				_req.getParameter(param) : "");
+	}
+
+	/**
+	 * Shows Courses in the dropdown menu.
+	 * @param _courseID 
+	 * @param courses 
+	 * @throws IOException
+	 * @return dropdown list
+	 */
+	public String courseDropdown(List<Course> courses, String courseID) throws IOException {
+
+		String html = "<select name='course'>";
+
+		for(Course  course : courses) {
+
+
+			if(course.getID().equals(courseID))
+				html += "<option selected='selected' value='"+course.getID()+"'>"+course.getName()+"</option>";
+
+			else
+				html += "<option value='"+course.getID()+"'>"+course.getName()+"</option>";
+
+		}
+
+		html += "</select>";
+
+		return html;
 	}
 }

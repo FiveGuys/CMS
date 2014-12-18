@@ -63,12 +63,11 @@ private final int ACCESS_LEVEL = ACCESS_ADMIN;
 							"<option value='2152' "+ selected("2152") +">Spring 2015</option>" +
 						"</select>" +
 					"</label>" +
-					_form.CheckBox("Test Instructor", "", "TestInstructor", false) + 
+				//	_form.CheckBox("Test Instructor", "", "TestInstructor", false) + 
 					
 				"<div class='submit'><input type='submit' style='margin-top: 50px;' name='submit' class='button' value='Submit' /></div>" +
 				"</form>"
 			);
-		
 	}
 
 	@Override

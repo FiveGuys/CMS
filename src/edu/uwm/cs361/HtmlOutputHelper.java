@@ -74,7 +74,7 @@ public class HtmlOutputHelper
 		        +"<li class='active has-sub'><a "+( index == 1 ? "class='selected'" : "")+" href='#'>Courses</a>" 
 		           +"<ul>" 
 		            +"<li><a href='assign-prof'>Assign Professor</a></li>" 
-		            //  +"<li style='display: none><a href='assign-ta'>Assign TA</a></li>" 
+		            +"<li><a href='assign-ta'>Assign TA</a></li>" 
 		              //+"<li><a href='create-course.html'>Create a Course</a></li>" 
 		              //+"<li><a href='create-lab-dis.html'>Create Lab/Discussion</a></li>	" 	
 		              +"<li><a href='view-courses'>View All Courses</a></li>" 

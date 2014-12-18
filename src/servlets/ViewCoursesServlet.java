@@ -84,11 +84,11 @@ public class ViewCoursesServlet extends HttpServlet {
 	              +"</tr>";
 			
 			List<Section> sections = Datastore.getSections("CourseID=='"+course.getID()+"'");
+			
 			Collections.sort(sections);
 			
 			for(Section section : sections) {
 				
-				//TODO Should admin be the only one to edit courses? - DL
 				String link = "<a href='edit-course?SectionID="+section.getID()+"'>";
 				
 				String instructorName = getInstructorName(section.getInstructorID());
@@ -107,7 +107,7 @@ public class ViewCoursesServlet extends HttpServlet {
 			html += "</table>";
 		}
 		
-		html+="</div>";
+		html += "</div>";
 		
 		_resp.getWriter().println(html);
 	}
@@ -125,7 +125,7 @@ public class ViewCoursesServlet extends HttpServlet {
 
 		if(instrs.size() != 0) {
 
-			name = instrs.get(0).getFirstName() + "" + instrs.get(0).getLastName();
+			name = instrs.get(0).getFirstName() + " " + instrs.get(0).getLastName();
 		}
 
 		 return name;

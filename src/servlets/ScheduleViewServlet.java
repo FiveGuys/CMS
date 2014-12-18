@@ -94,22 +94,10 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 	private void courseDropdown() throws IOException{
 		
 		String html = "<form action='schedule-view' method='post' class='standard-form'>"
-				+"<select name='course'>";
-		
-		for(Course  course : _courses) {
-			
 
-			if(course.getID().equals(_courseID))
-				html += "<option selected='selected' value='"+course.getID()+"'>"+course.getName()+"</option>";
-			
-			else
-				html += "<option value='"+course.getID()+"'>"+course.getName()+"</option>";
-
-		}
-			
-		html += "</select>"
-					+"<div class='submit'><input type='submit' name='submit' class='button' value='Submit' /></div>"
-				+"</form>";
+		 + _form.courseDropdown(_courses, _courseID)
+		 
+		 + _form.End();
 		
 		_resp.getWriter().println(html);
 	}

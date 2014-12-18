@@ -188,12 +188,25 @@ public class Datastore
 				case "searchUser": this.searchUser(); break;
 				case "editCourse": this.editCourse(); break;
 				case "refreshCourses": this.refreshCourses(); break;
+				case "updateProf": this.updateProf(); break;
+				case "adminAssignTA": this.adminAssignTA(); break;
+				case "profAssignTA": this.profAssignTA(); break;
 				case "": break;
 				default: throw new IOException("Datastore.callMethod: "+methodName+" not found");
 			}
 		}
 	}
 	
+	private void profAssignTA() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void adminAssignTA() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * Scrape Courses from UWM
 	 * @throws IOException
@@ -277,61 +290,30 @@ public class Datastore
 	}
 	
 	/**
-	 * Edits all properties of a single Professor type user.
-	 * If the Professor searched does not exist in the system, it will let you create a new Professor account.
-	 * It will be granted level 2 access for his lectures and level 1 access for all others.
-	 * @param _sectionID
+	 * Called when assign professor is saved
+	 * Updates all section with professors
 	 */
-	public void updateProf(String _sectionID){
+	private void updateProf(){
 
-		List<Section> _save = Datastore.getSections("CourseID=='"+_sectionID+"'");
-			int i=0;
-			String firstName="";
-			String lastName="";
-			String ID="";
-			System.out.println(_sectionID);
-			for(Section section: _save){
-				firstName=_req.getParameter("fprofName"+i);
-				lastName=_req.getParameter("lprofName"+i);
-				if(userExists(firstName+"."+lastName)){
-					List<User> _user = Datastore.getUsers("FirstName=='"+firstName+"' && LastName=='"+lastName+"'");
-					section.setInstructorID(_user.get(0).getID());
-				}
-				else{
-					User user = new User();
-					
-					ID=newUserID();
-					user.setID(ID);
-					user.setUserName( firstName + "." + lastName);
-					user.setPassword( lastName); 
-					user.setFirstName( firstName);
-					user.setMiddleName( "");
-					user.setLastName( lastName);
-					user.setEmail("");
-					user.setLocation( "");
-					user.setPhone( "");
-					user.setAltPhone( "");
-					user.setOfficeHour1( "Wed;0;00;0;00");
-					user.setOfficeHour2( "Wed;0;00;0;00");
-					user.setOfficeHour3( "Wed;0;00;0;00");
-					user.setKeyword("");
-					
-					if(section.getClassType().equals("LEC")){
-						user.setAccess("2");
-					}
-					else{
-						user.setAccess("1");
-					}
+		String courseID = _req.getParameter("courseID");
+		
+		String professor = "";
+		
+		int i = 0;
 
-					_pm.makePersistent(user);
-					
-					section.setInstructorID(ID);
-					
-				}
-				_pm.makePersistent(section);
-				i=i+1;
-			}
+		List<Section> sections = Datastore.getSections("CourseID=='"+courseID+"' && ClassType=='LEC'");
+
+		for(Section section : sections){
+			
+			professor = _req.getParameter("prof"+i);
+			
+			section.setInstructorID(professor);
+			
+			_pm.makePersistent(section);
+			
+			i++;
 		}
+	}
 	
 	/**
 	 * Edits all properties of a single user.
@@ -421,7 +403,10 @@ public class Datastore
 		}
 	}
 	
-	//first letter is capital, rest lowercase 
+	/*
+	 * Capitalize the first letter of a word
+	 * @param - name
+	 */
 	private String formatName(String name){
 		name = name.toLowerCase();
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -462,17 +447,19 @@ public class Datastore
 		String[] type = classType.split(" ");
 		String[] name = instructorName.split(", ");
 		
-		if(name.length == 2) {
+		if(name.length == 2 && email != null) {
 			
 			String firstName = name[1];
 			String lastName = name[0];
+			String username = email.substring(0, email.indexOf('@'));
 			
-			if(!userExists(firstName+"."+lastName)) {
+			if(!userExists(username)) {
 				
 				User user = new User();
 				
 				user.setID(newUserID());
-				user.setUserName( firstName + "." + lastName);
+				System.out.println(user.getID());
+				user.setUserName( username);
 				user.setPassword( lastName); 
 				user.setFirstName( firstName);
 				user.setMiddleName( "");
