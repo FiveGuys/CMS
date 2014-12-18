@@ -41,7 +41,7 @@ public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 		
 		System.out.println(_req.getParameter("firstname"));
 		
-		userList = Datastore.getUsers("UserName=='"+_req.getParameter("firstname")+"."+_req.getParameter("lastname")+"'");
+		userList = Datastore.getUsers("FirstName=='"+_req.getParameter("firstname")+"' && LastName=='"+_req.getParameter("lastname")+"'");
 		
 		printContent();
 	}
