@@ -75,15 +75,20 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 	@Override
 	public void printContent()  throws IOException {
 		
-		printCourse();
-		
 		if(isAdmin) {
+			
+			printAdminTA();
 			
 			adminAssignTA();
 			
 		} else {
 			
-			profAssignTA();
+			printCourse();
+			
+			if(_req.getParameter("save") != null) {
+				
+				profAssignTA();
+			}
 		}
 	}
 	
@@ -100,7 +105,8 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 	private void printTA() throws IOException {
 		// CTRL - Windows , Command on Mac
 		String html = "<form action='assign-ta' method='post' class='standard-form'>"+
-		TADropdown("1", "test1", "multiple") + "</form>";
+		
+				TADropdown("1", "test1", "multiple") + "</form>";
 		
 		_resp.getWriter().println(html);
 	}
@@ -116,7 +122,7 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 	 * Prints course table
 	 * @throws IOException
 	 */
-	private void printCourse() throws IOException{
+	private void printAdminTA() throws IOException{
 		
 		String html = "<form action='assign-ta' method='post' class='standard-form'>"+
 						"<label><span class='assign'>Course: </span>" +
@@ -157,7 +163,7 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 				 html += "<tr>"+
 							"<td>"+section.getClassType() +"</td>"+
 							"<td>"+section.getSection()+"</td>"+
-							"<td>"+TADropdown(section.getInstructorID(), "prof"+i, null)+"</td>"+
+							"<td>"+getAssignedTa(section.getInstructorID(), "prof"+i)+"</td>"+
 						"</tr>";
 			i++;
 		 }
@@ -185,6 +191,64 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		html += "</select>";
 		
 		return html;
+	}
+	
+	private String getAssignedTa(String instructorID, String name){
+		
+		List<Course> _course = Datastore.getCourses("CourseID=='"+_courseID+"'");
+		
+		String[] userIDs =_course.get(0).getUserID().split("[;]");
+		
+		String html = "<select class='ta' name='"+name+"'>";
+
+		for(String userID : userIDs) {
+
+				User user = Datastore.getUserFromID(userID);
+				
+				html += "<option "+ (user.getID().equals(instructorID) ? "selected='selected'" : "") +
+						" value='"+user.getID()+"'>"+ user.getFirstName() + " " + user.getLastName()+
+						"</option>";
+		}
+
+		html += "</select>";
+		
+		return html;
+	}
+	private void printCourse() throws IOException{
+		String html = "<form action='assign-ta' method='post' class='standard-form'>"
+				+"<select name='course'>";
+
+		List<Section> temp;
+		
+		boolean containsProf = false;
+		
+		Datastore ds = new Datastore(_req, _resp, new ArrayList<String>());
+
+		for(Course  course : _courses) {
+			
+			temp  = Datastore.getSections("CourseID=='"+course.getID()+"' && ClassType=='LEC' && InstructorID=='"+ds.getUser().getID()+"'");
+
+			if(temp.size() > 0 ){
+				
+				html += "<option "+(course.getID().equals(_courseID) ? "selected='selected" : "")+
+						" value='"+course.getID()+"'>"+course.getName()+"</option>";	
+				
+				containsProf = true;
+			}
+		}
+		
+		html += "</select>"
+				+"<div class='submit'><input type='submit' name='save' class='button' value='Submit' /></div>"
+				+"</form>";
+		
+		if(containsProf) {
+			
+			_resp.getWriter().println(html);
+			
+		} else {
+			
+			_resp.getWriter().println("<div class='not-found'>No Lectures Found</div>");
+		}
 	}
 	
 	/**

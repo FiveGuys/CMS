@@ -283,7 +283,7 @@ public class Datastore
 	 * @param _userID
 	 * @return A user searching by userID.
 	 */
-	public User getUserFromeID(String _userID){
+	public static User getUserFromID(String _userID){
 			List<User> _user = Datastore.getUsers("UserID=='"+_userID+"'");
 			if (_user.size()==0)
 				return null;
