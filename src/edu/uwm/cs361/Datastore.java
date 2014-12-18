@@ -348,7 +348,7 @@ public class Datastore
 		
 		String lastName = _req.getParameter("LastName");
 		
-		if(!userExists(firstName+"."+lastName)) {
+		if(!userExists(firstName, lastName)) {
 
 			_errors.add("No User Found");
 		}
@@ -358,9 +358,9 @@ public class Datastore
 	 * @param username
 	 * @return true if user exists
 	 */
-	private boolean userExists(String username) {
+	private boolean userExists(String firstname, String lastname) {
 		
-		List<User> users = Datastore.getUsers("UserName=='"+username+"'");
+		List<User> users = Datastore.getUsers("FirstName=='"+ firstname +"' && LastName=='" + lastname + "'");
 
 		return (users.size() != 0);
 	}
@@ -376,7 +376,7 @@ public class Datastore
 		String access = _req.getParameter("Access");
 		String email = _req.getParameter("Email");
 
-		if(!userExists(firstName+"."+lastName)) {
+		if(!userExists(firstName, lastName)) {
 			
 			User user = new User();
 			
@@ -456,7 +456,7 @@ public class Datastore
 			String lastName = name[0];
 			String username = email.substring(0, email.indexOf('@'));
 			
-			if(!userExists(username)) {
+			if(!userExists(firstName, lastName)) {
 				
 				User user = new User();
 				

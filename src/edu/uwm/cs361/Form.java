@@ -251,7 +251,7 @@ public class Form
 	 */
 	public String EndSearchUser() {
 		
-		return "<div class='search submit'><input type='submit' name='submit' class='button' value='Search' /></div></form>";
+		return "<div class='search submit'><input type='submit' name='search' class='button' value='Search' /></div></form>";
 	}
 	
 	/**

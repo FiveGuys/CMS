@@ -55,12 +55,8 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 	 */
 	@Override
 	public void printContent() throws IOException {
-		// TODO Finish this shit
-		// For admin should be able to edit the fields or should redirect to edit info?
-		// Everybody else is read only
-		// CSS Styling
 		
-		Boolean userFound = (_form.isSubmit() && _errors.size() == 0);
+		Boolean userFound = (_req.getParameter("search") != null && _errors.size() == 0);
 
 		String html = 
 				"<div id='left-nav' "+(!userFound ? "class='notFound'" : "")+">" +
@@ -86,7 +82,7 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 			
 			String lastName = _req.getParameter("LastName");
 			
-			List<User> userList = Datastore.getUsers("UserName=='"+ firstName+"."+lastName+"'");
+			List<User> userList = Datastore.getUsers("FirstName=='"+ firstName +"' && LastName=='" + lastName + "'");
 
 			
 			int index = Integer.parseInt(userList.get(0).getAccess());
