@@ -55,8 +55,13 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 	 */
 	@Override
 	public void printContent() throws IOException {
-		
-		Boolean userFound = (_req.getParameter("search") != null && _errors.size() == 0);
+		String firstName = _req.getParameter("FirstName") != null ? 
+				Datastore.firstLetterUpperRestLowerFormat(_req.getParameter("FirstName"))
+				: "";
+		String lastName = _req.getParameter("FirstName") != null ? 
+				Datastore.firstLetterUpperRestLowerFormat(_req.getParameter("LastName"))
+				: "";
+		Boolean userFound = (_req.getParameter("search") != null && _errors.size() == 0 && Datastore.getUsers("FirstName=='"+ firstName +"' && LastName=='" + lastName + "'").size() != 0);
 
 		String html = 
 				"<div id='left-nav' "+(!userFound ? "class='notFound'" : "")+">" +
@@ -78,9 +83,7 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 			
 			final String[] positions = {"","Teaching Assistant","Instructor","Administrator"};
 			
-			String firstName = Datastore.firstLetterUpperRestLowerFormat(_req.getParameter("FirstName"));
-			
-			String lastName = Datastore.firstLetterUpperRestLowerFormat(_req.getParameter("LastName"));
+
 			
 			List<User> userList = Datastore.getUsers("FirstName=='"+ firstName +"' && LastName=='" + lastName + "'");
 
@@ -111,6 +114,8 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 			"<form action='officehours?firstname="+firstName+"&lastname="+lastName+"' method='post' class='standard-form'>" +
 			"<div class='submit'><input type='submit' name='submit' class='button' value='View Office Hours' /></div>"+
 			"</form>";
+		}else{
+			_errors.add("User not Found");
 		}
 		
 		_resp.getWriter().println(html);
