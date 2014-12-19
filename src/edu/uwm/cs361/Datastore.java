@@ -408,8 +408,8 @@ public class Datastore
 	 */
 	private void addUser() {
 		
-		String firstName = formatName(_req.getParameter("FirstName"));
-		String lastName = formatName(_req.getParameter("LastName"));
+		String firstName = firstLetterUpperRestLowerFormat(_req.getParameter("FirstName"));
+		String lastName = firstLetterUpperRestLowerFormat(_req.getParameter("LastName"));
 		String access = _req.getParameter("Access");
 		String email = _req.getParameter("Email");
 
@@ -443,11 +443,11 @@ public class Datastore
 		}
 	}
 	
-	/*
+	/**
 	 * Capitalize the first letter of a word
 	 * @param - name
 	 */
-	private String formatName(String name){
+	public static String firstLetterUpperRestLowerFormat(String name){
 		name = name.toLowerCase();
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}

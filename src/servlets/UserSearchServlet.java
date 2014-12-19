@@ -78,9 +78,9 @@ public class UserSearchServlet extends HttpServlet implements CallBack
 			
 			final String[] positions = {"","Teaching Assistant","Instructor","Administrator"};
 			
-			String firstName = _req.getParameter("FirstName");
+			String firstName = Datastore.firstLetterUpperRestLowerFormat(_req.getParameter("FirstName"));
 			
-			String lastName = _req.getParameter("LastName");
+			String lastName = Datastore.firstLetterUpperRestLowerFormat(_req.getParameter("LastName"));
 			
 			List<User> userList = Datastore.getUsers("FirstName=='"+ firstName +"' && LastName=='" + lastName + "'");
 
