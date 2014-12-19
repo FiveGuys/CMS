@@ -37,6 +37,9 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 	
 	private Boolean sectionFound = false;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
@@ -49,6 +52,9 @@ public class EditCourseServlet extends HttpServlet implements CallBack
 		handleGet();
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		doGet(req, resp);

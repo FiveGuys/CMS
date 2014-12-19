@@ -35,6 +35,9 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 	
 	private String _courseID;
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
@@ -53,6 +56,9 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		_form.handleGet("Assign Professor", 1, this, "updateProf", ACCESS_LEVEL);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
@@ -77,6 +83,10 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Prints No Lectures Found
+	 * @throws IOException
+	 */
 	private void printNoSectionFound() throws IOException {
 		
 		String html = "<form action='assign-prof' method='post' class='standard-form no-border'>" +
@@ -143,6 +153,12 @@ public class AssignProfServlet extends HttpServlet implements CallBack
 		 _resp.getWriter().println(html);
 	}
 	
+	/**
+	 * Displays dropdown list of Professors
+	 * @param instructorID
+	 * @param name
+	 * @return
+	 */
 	private String profDropdown(String instructorID, String name) {
 		
 		List<User> users = Datastore.getUsers("Access=='2'");

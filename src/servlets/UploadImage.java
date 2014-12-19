@@ -22,6 +22,9 @@ public class UploadImage extends HttpServlet {
 
 	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {

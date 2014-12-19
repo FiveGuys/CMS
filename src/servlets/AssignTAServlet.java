@@ -15,7 +15,7 @@ import edu.uwm.cs361.Datastore;
 import edu.uwm.cs361.Form;
 
 /**
- * This Servlet class assigns a Professor to the CMS system. 
+ * This Servlet class assigns a Teaching Assistant to the CMS system. 
  * @author 5guys
  */
 @SuppressWarnings("serial")
@@ -37,6 +37,9 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 
 	private boolean isAdmin;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
@@ -63,6 +66,9 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		_form.handleGet("Assign TA", 1, this, callback, ACCESS_LEVEL);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
@@ -94,16 +100,26 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * @throws IOException
+	 */
 	private void profAssignTA() throws IOException {
 		
 		printSection();
 	}
 
+	/**
+	 * @throws IOException
+	 */
 	private void adminAssignTA() throws IOException {
 		
 		printTA();
 	}
 
+	/**
+	 * Prints TA
+	 * @throws IOException
+	 */
 	private void printTA() throws IOException {
 		// CTRL - Windows , Command on Mac
 		String html = "<form action='assign-ta' method='post' class='standard-form'>"+
@@ -183,6 +199,13 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		 _resp.getWriter().println(html);
 	}
 	
+	/**
+	 * Displays dropdown list of TAs
+	 * @param instructorID
+	 * @param name
+	 * @param multiple
+	 * @return
+	 */
 	private String TADropdown(String instructorID, String name, String multiple) {
 		
 		List<User> users = Datastore.getUsers("Access=='1'");
@@ -202,6 +225,11 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		return html;
 	}
 	
+	/**
+	 * Checks keyword
+	 * @param key
+	 * @return
+	 */
 	private boolean checkKeyWord(String key){
 		String input = _req.getParameter("keyword");
 		String[] inputWord=input.split("[;]");
@@ -223,6 +251,12 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 	}
 	
 	
+	/**
+	 * Finds assigned TA
+	 * @param instructorID
+	 * @param name
+	 * @return
+	 */
 	private String getAssignedTa(String instructorID, String name){
 		String html="<select class='ta' name='"+name+"'>";
 		html+="<option value=''> </option>";
@@ -246,6 +280,11 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		
 		return html;
 	}
+	
+	/**
+	 * Prints assigned courses
+	 * @throws IOException
+	 */
 	private void printCourse() throws IOException{
 		String html = "<form action='assign-ta' method='post' class='standard-form'>"
 				+"<select name='course'>";

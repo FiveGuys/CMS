@@ -28,6 +28,9 @@ private final int ACCESS_LEVEL = ACCESS_ADMIN;
 	
 	private Form _form;
 	
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	
@@ -42,12 +45,18 @@ private final int ACCESS_LEVEL = ACCESS_ADMIN;
 		_form.handleGet("Refresh Courses", 0, this, "refreshCourses", ACCESS_LEVEL);
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
     	doGet(req, resp);
     }
     
+	/**
+	 * Prints content
+	 */
 	@Override
 	public void printContent() throws IOException {
 		

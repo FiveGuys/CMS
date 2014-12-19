@@ -21,12 +21,15 @@ import javax.mail.internet.MimeMessage;
 import jdo.User;
 
 /**
- * Class for forgotten credentials
+ * This Servlet class is used to recover forgotten credentials.
  * @author 5guys
  */
 @SuppressWarnings("serial")
 public class ForgotServlet extends HttpServlet
 {	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     
@@ -36,12 +39,18 @@ public class ForgotServlet extends HttpServlet
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
 		printContent(resp);
 	}
 	
+	/**
+	 * Prints Datastore content
+	 */	
 	private void printContent(HttpServletResponse resp) throws IOException {
 		
 		resp.setContentType("text/html");
@@ -51,6 +60,12 @@ public class ForgotServlet extends HttpServlet
 		
 	}
 	
+	/**
+	 * Sends email with credentials
+	 * @param req
+	 * @param resp
+	 * @throws IOException
+	 */
 	private void sendEmail(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
 		List<User> users = Datastore.getUsers("Email=='"+req.getParameter("Email")+"'");

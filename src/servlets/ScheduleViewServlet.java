@@ -46,6 +46,9 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 	
 	private char[] _dates = {'M','T','W','R','F'};
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
@@ -64,6 +67,9 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 		_form.handleGet("Schedule Viewer", 2, this, "", ACCESS_LEVEL);
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		

@@ -27,6 +27,9 @@ public class AddUserServlet extends HttpServlet implements CallBack
 	
 	private Form _form;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
    
@@ -41,6 +44,9 @@ public class AddUserServlet extends HttpServlet implements CallBack
 		_form.handleGet("Add User", 0, this, "addUser", ACCESS_LEVEL);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
@@ -109,6 +115,10 @@ public class AddUserServlet extends HttpServlet implements CallBack
 		}
 	}
 	
+	/**
+	 * Checks if it is a valid UWM smtp address
+	 * @param email
+	 */
 	private void checkValidUwmEmail(String email){
 		if((email.indexOf('@') != -1) && (!email.substring(email.indexOf('@')).equalsIgnoreCase("@uwm.edu")))
 			_errors.add("Please enter a valid uwm email address");

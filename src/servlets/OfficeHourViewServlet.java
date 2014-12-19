@@ -17,6 +17,10 @@ import edu.uwm.cs361.CallBack;
 import edu.uwm.cs361.Datastore;
 import edu.uwm.cs361.HtmlOutputHelper;
 
+/**
+ * This servlet class is used to manage office hours.
+ * @author 5guys
+ */
 @SuppressWarnings("serial")
 public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 
@@ -32,6 +36,9 @@ public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 	
 	private List<User> userList;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
@@ -46,12 +53,18 @@ public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 		printContent();
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
 		doGet(req, resp);
 	}
 	
+	/** 
+	 * Prints content
+	 */
 	@Override
 	public void printContent() throws IOException{
 		HtmlOutputHelper.printHeader(_req, _resp, "Office Hours", 2);
@@ -59,6 +72,10 @@ public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 		HtmlOutputHelper.printFooter(_resp);
 	}
 	
+	/**
+	 * Generates schedule
+	 * @throws IOException
+	 */
 	private void createSchedule() throws IOException{
 		
 		initSchedule();
@@ -93,6 +110,9 @@ public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 		_resp.getWriter().println(htmlTable);
 	}
 
+	/**
+	 * Prepares table
+	 */
 	private void initSchedule() {
 	
 		for(int i = 0; i < _table.length; ++i) {
@@ -104,6 +124,9 @@ public class OfficeHourViewServlet extends HttpServlet implements CallBack{
 		}
 	}
 	
+	/**
+	 * Parses office hours
+	 */
 	private void parseOfficeHours(){
 		
 		int rowspan = 1;

@@ -14,6 +14,9 @@ import edu.uwm.cs361.Form;
 @SuppressWarnings("serial")
 public class LogoutServlet extends HttpServlet
 {
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
@@ -22,6 +25,9 @@ public class LogoutServlet extends HttpServlet
 		resp.sendRedirect("index.html");
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{

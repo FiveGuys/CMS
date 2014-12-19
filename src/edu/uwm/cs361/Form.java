@@ -202,6 +202,13 @@ public class Form
 		return success;
 	}
 
+	/**
+	 * Format input
+	 * @param label
+	 * @param cssClass
+	 * @param html
+	 * @return
+	 */
 	private String formInput(String label, String cssClass, String html) {
 		
 		return "<label class='"+cssClass+"'>" +
@@ -209,6 +216,7 @@ public class Form
 					html +
 				"</label>";
 	}
+	
 	/**
 	 * 
 	 * @param label
@@ -246,7 +254,6 @@ public class Form
 	}
 	
 	/**
-	 * 
 	 * @return last HTML line of user search form
 	 */
 	public String EndSearchUser() {
@@ -287,8 +294,10 @@ public class Form
 		);
 	}
 	
-	public String WeekCheckBoxes() {
-		
+	/**
+	 * @return html checkboxes
+	 */
+	public String WeekCheckBoxes() {		
 		//<TODO> CHANGE INTO 7 CHECKBOXES ON SCREEN </TODO>
 		return "<label>" +
 				  "<span>Days: </br>(ex: MWF) </span>" +

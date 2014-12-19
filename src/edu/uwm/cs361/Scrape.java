@@ -29,6 +29,9 @@ import edu.uwm.cs361.Datastore;
 
 /* http://www.mkyong.com/java/how-to-send-http-request-getpost-in-java/ */
 
+/**
+ * @author 5guys
+ */
 public class Scrape {
 
 	private HttpServletRequest _req;
@@ -113,6 +116,9 @@ public class Scrape {
 		System.out.println("\nSending "+action+" request to URL : " + url);
 	}
 
+	/**
+	 * @throws IOException
+	 */
 	private void sendRequest() throws IOException {
 
 		con.setDoOutput(true);
@@ -126,6 +132,9 @@ public class Scrape {
 		wr.close();
 	}
 
+	/**
+	 * @throws IOException
+	 */
 	private void getResponse() throws IOException {
 
 		System.out.println("Response Code : " + con.getResponseCode());
