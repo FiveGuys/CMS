@@ -108,7 +108,9 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		// CTRL - Windows , Command on Mac
 		String html = "<form action='assign-ta' method='post' class='standard-form'>"+
 		
-				TADropdown("1", "test1", "multiple") + "</form>";
+				TADropdown("1", "prof", "multiple") + 
+				"<input type='hidden' name='courseID' value='"+_courseID+"' />"+
+				_form.End();
 		
 		_resp.getWriter().println(html);
 	}
@@ -155,7 +157,11 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 				"<tr>"+
 					"<td><b>Class Type<b/></td>"+
 					"<td><b>Section #</b></td>"+
-					"<td><b>TA</b></td>"+
+					"<td><b><div>TA Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> </b></td>"+
 				"</tr>";
 		
 		int i = 0;
@@ -201,6 +207,8 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		String[] inputWord=input.split("[;]");
 		String[] userWords=key.split("[;]");
 		boolean check=false;
+		if(input.replaceAll("\\s+","").equals(""))
+			return true;
 		for(String inputKey : inputWord)
 		{
 			for(String userKey : userWords){
