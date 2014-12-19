@@ -199,14 +199,51 @@ public class Datastore
 		}
 	}
 	
+	public static void dummyData(){
+		//List<Course> course = Datastore.getCourses("CourseID=='4'");
+		//course.get(0).setUserID("7;10;15;9");
+	}
+	
 	private void profAssignTA() {
 		// TODO Auto-generated method stub
+
+		String courseID = _req.getParameter("courseID");
 		
+		String professor = "";
+		
+		int i = 0;
+
+		List<Section> sections = Datastore.getSections("CourseID=='"+courseID+"' && ClassType!='LEC'");
+
+		for(Section section : sections){
+			
+			professor = _req.getParameter("prof"+i);
+			
+			section.setInstructorID(professor);
+			
+			_pm.makePersistent(section);
+			
+			i++;
+		}
 	}
 
 	private void adminAssignTA() {
 		// TODO Auto-generated method stub
-		
+		String courseID="";
+		String[] ta=_req.getParameterValues("prof");
+		if(ta!=null)
+		{
+		for(String name:ta){
+			System.out.println(name);
+			courseID+=name+";";
+		}
+		String course = _req.getParameter("courseID");
+		List<Course> courses = Datastore.getCourses("CourseID=='"+course+"'");
+		if(courses.get(0)!=null){
+			courses.get(0).setUserID(courseID);
+			_pm.makePersistent(courses.get(0));
+		}	
+		}
 	}
 
 	/**

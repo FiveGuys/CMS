@@ -78,8 +78,10 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		if(isAdmin) {
 			
 			printAdminTA();
-			
-			adminAssignTA();
+			if(_req.getParameter("save")!=null){
+				
+				adminAssignTA();
+			}
 			
 		} else {
 			
@@ -106,7 +108,9 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		// CTRL - Windows , Command on Mac
 		String html = "<form action='assign-ta' method='post' class='standard-form'>"+
 		
-				TADropdown("1", "test1", "multiple") + "</form>";
+				TADropdown("1", "prof", "multiple") + 
+				"<input type='hidden' name='courseID' value='"+_courseID+"' />"+
+				_form.End();
 		
 		_resp.getWriter().println(html);
 	}
@@ -153,7 +157,11 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 				"<tr>"+
 					"<td><b>Class Type<b/></td>"+
 					"<td><b>Section #</b></td>"+
-					"<td><b>TA</b></td>"+
+					"<td><b><div>TA Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div> </b></td>"+
 				"</tr>";
 		
 		int i = 0;
@@ -182,10 +190,11 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		String html = "<select "+multiple+" class='prof' "+(multiple != null ? "size='"+users.size()+"'" : "") + " name='"+name+"'>";
 
 		for(User user : users) {
-
+			if(checkKeyWord(user.getKeyword())){
 				html += "<option "+ (user.getID().equals(instructorID) ? "selected='selected'" : "") +
 						" value='"+user.getID()+"'>"+ user.getFirstName() + " " + user.getLastName()+
 						"</option>";
+			}
 		}
 
 		html += "</select>";
@@ -193,13 +202,36 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 		return html;
 	}
 	
+	private boolean checkKeyWord(String key){
+		String input = _req.getParameter("keyword");
+		String[] inputWord=input.split("[;]");
+		String[] userWords=key.split("[;]");
+		boolean check=false;
+		if(input.replaceAll("\\s+","").equals(""))
+			return true;
+		for(String inputKey : inputWord)
+		{
+			for(String userKey : userWords){
+				if(inputKey.replaceAll("\\s+","").equalsIgnoreCase(userKey.replaceAll("\\s+","")))
+					check=true;
+			}
+			if(!check)
+				return false;
+			check=false;
+		}
+		return true;
+	}
+	
+	
 	private String getAssignedTa(String instructorID, String name){
-		
+		String html="<select class='ta' name='"+name+"'>";
+		html+="<option value=''> </option>";
 		List<Course> _course = Datastore.getCourses("CourseID=='"+_courseID+"'");
-		
+		if(!_course.isEmpty()&&_course.get(0).getUserID()!=null)
+		{
 		String[] userIDs =_course.get(0).getUserID().split("[;]");
 		
-		String html = "<select class='ta' name='"+name+"'>";
+		// html = "<select class='ta' name='"+name+"'>";
 
 		for(String userID : userIDs) {
 
@@ -209,7 +241,7 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 						" value='"+user.getID()+"'>"+ user.getFirstName() + " " + user.getLastName()+
 						"</option>";
 		}
-
+		}
 		html += "</select>";
 		
 		return html;
