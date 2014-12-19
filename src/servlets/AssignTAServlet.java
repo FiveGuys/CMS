@@ -194,12 +194,14 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 	}
 	
 	private String getAssignedTa(String instructorID, String name){
-		
+		String html="<select class='ta' name='"+name+"'>";
+		html+="<option value=''> </option>";
 		List<Course> _course = Datastore.getCourses("CourseID=='"+_courseID+"'");
-		
+		if(!_course.isEmpty()&&_course.get(0).getUserID()!=null)
+		{
 		String[] userIDs =_course.get(0).getUserID().split("[;]");
 		
-		String html = "<select class='ta' name='"+name+"'>";
+		// html = "<select class='ta' name='"+name+"'>";
 
 		for(String userID : userIDs) {
 
@@ -209,7 +211,7 @@ public class AssignTAServlet extends HttpServlet implements CallBack
 						" value='"+user.getID()+"'>"+ user.getFirstName() + " " + user.getLastName()+
 						"</option>";
 		}
-
+		}
 		html += "</select>";
 		
 		return html;
