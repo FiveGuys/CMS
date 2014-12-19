@@ -171,6 +171,7 @@ public class ScheduleViewServlet extends HttpServlet implements CallBack{
 					fillTable(start, day, element, rowspan);
 				}
 			}
+			element = "";
 		}
 	}
 
